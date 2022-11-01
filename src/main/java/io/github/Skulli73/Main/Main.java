@@ -30,6 +30,9 @@ public class Main {
         new Main();
     }
 
+    public static SlashCommandListener slashCommandListener;
+
+    public static MessageComponentListener messageComponentCreateListener;
 
     public Main() {
         loadCouncils();
@@ -46,8 +49,8 @@ public class Main {
 
         new SlashCommandManager(lApi);
 
-        SlashCommandListener            slashCommandListener           = new SlashCommandListener();
-        MessageComponentListener        messageComponentCreateListener = new MessageComponentListener();
+        slashCommandListener           = new SlashCommandListener();
+        messageComponentCreateListener = new MessageComponentListener();
 
         lApi.addSlashCommandCreateListener(slashCommandListener);
         lApi.addMessageComponentCreateListener(messageComponentCreateListener);

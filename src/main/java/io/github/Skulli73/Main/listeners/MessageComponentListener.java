@@ -2,7 +2,6 @@ package io.github.Skulli73.Main.listeners;
 
 import io.github.Skulli73.Main.objects.Council;
 import io.github.Skulli73.Main.objects.Motion;
-import org.javacord.api.DiscordApi;
 import org.javacord.api.event.interaction.MessageComponentCreateEvent;
 import org.javacord.api.interaction.Interaction;
 import org.javacord.api.interaction.MessageComponentInteraction;
@@ -12,9 +11,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Scanner;
 
-import static io.github.Skulli73.Main.Main.councils;
-import static io.github.Skulli73.Main.Main.councilsPath;
-import static io.github.Skulli73.Main.Main.gson;
+import static io.github.Skulli73.Main.Main.*;
 
 public class MessageComponentListener implements MessageComponentCreateListener {
     @Override
@@ -30,6 +27,7 @@ public class MessageComponentListener implements MessageComponentCreateListener 
         String lUserId = lInteraction.getUser().getIdAsString();
         Motion lMotion   = null;
         boolean lEnd     = false;
+        Council lCouncil = null;
 
         int j = 0;
 
@@ -52,6 +50,7 @@ public class MessageComponentListener implements MessageComponentCreateListener 
                         System.out.println(lEvent.getMessageComponentInteraction().getMessage().getIdAsString() + "\n" + councils.get(j).motionArrayList.get(councils.get(j).currentMotion).dmMessages);
                         if(councils.get(j).motionArrayList.get(councils.get(j).currentMotion).dmMessages.contains(lEvent.getMessageComponentInteraction().getMessage().getIdAsString())) {
                             lMotion = councils.get(j).motionArrayList.get(councils.get(j).currentMotion);
+                            lCouncil = councils.get(j);
                         }
                     }
                 } else
@@ -92,5 +91,7 @@ public class MessageComponentListener implements MessageComponentCreateListener 
                 lMotion.abstainVotes.add(lUserId);
                 break;
         }
+        assert lCouncil != null;
+        SlashCommandListener.saveMotion(lCouncil, lMotion);
     }
 }

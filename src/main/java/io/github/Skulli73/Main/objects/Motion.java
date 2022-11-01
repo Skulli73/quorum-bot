@@ -22,6 +22,8 @@ public class Motion {
     public double                       neededMajority;
     public int                          typeOfMajority;
 
+    public boolean                      isMoved = false;
+
     public Motion(String pTitle, String pText, long pIntroducerId, long pAgendaMessageId, double pNeededMajority, int pTypeOfMajority, int pId) {
         title           = pTitle;
         text            = pText;

@@ -28,7 +28,8 @@ public class Council {
         resultChannel       = pResultChannel.getId();
         id                  = pId;
         serverId            = pServer;
-        councillorRoleId     = pCouncillorRoleId;
+        councillorRoleId    = pCouncillorRoleId;
+        proposeRoleId       = councillorRoleId;
         motionArrayList     = new ArrayList<>();
     }
 
