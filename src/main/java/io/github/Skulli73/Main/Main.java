@@ -17,8 +17,8 @@ import java.util.Scanner;
 public class Main {
 
     public static ArrayList<Council>  councils             = new ArrayList<>();
-    public static String              councilsPath         = System.getProperty("user.dir") + "\\src\\main\\java\\com\\github\\Skulli73\\Main\\councils\\";
-    public static String              path                 = System.getProperty("user.dir") + "\\src\\main\\java\\com\\github\\Skulli73\\Main\\";
+    public static String              councilsPath         = System.getProperty("user.dir") + "\\src\\main\\java\\io\\github\\Skulli73\\Main\\councils\\";
+    public static String              path                 = System.getProperty("user.dir") + "\\src\\main\\java\\io\\github\\Skulli73\\Main\\";
     public static Gson                gson                 = new Gson();
 
     public static DiscordApi    lApi;
