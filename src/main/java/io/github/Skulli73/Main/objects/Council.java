@@ -12,10 +12,9 @@ import java.util.Scanner;
 
 public class Council {
     private                    String name;
-    private long               floorChannel, agendaChannel, resultChannel;
+    private long               floorChannel, agendaChannel, resultChannel, councillorRoleId, proposeRoleId;
     private final int          id;
     private final long         serverId;
-    private long               councillorRoleId, proposeRoleId;
     public ArrayList<Motion>   motionArrayList;
     public int                 currentMotion = 0;
     public int                 nextMotion = 1;
