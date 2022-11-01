@@ -3,7 +3,6 @@ package io.github.Skulli73.Main.commands;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import io.github.Skulli73.Main.listeners.SlashCommandListener;
-import io.github.Skulli73.Main.managers.SlashCommandManager;
 import io.github.Skulli73.Main.objects.Council;
 import io.github.Skulli73.Main.objects.Motion;
 import org.javacord.api.DiscordApi;
@@ -41,7 +40,7 @@ public class MoveCommand {
                             .setTitle(lMotion.getTitle())
                             .setDescription(lMotion.getText())
                             .setColor(Color.YELLOW)
-                            .setAuthor(lApi.getUserById(lMotion.introducerId).get().getDisplayName(interaction.getServer().get()), lApi.getUserById(lMotion.introductorId).get().getAvatar().getUrl().toString(), lApi.getUserById(lMotion.introductorId).get().getAvatar());
+                            .setAuthor(lApi.getUserById(lMotion.introducerId).get().getName(), "", lApi.getUserById(lMotion.introducerId).get().getAvatar());
                 } catch (InterruptedException | ExecutionException e) {
                     throw new RuntimeException(e);
                 }

@@ -9,8 +9,7 @@ import java.util.concurrent.ExecutionException;
 
 public class Motion {
 
-    public long                         introductorId;
-    private String                      text, title;
+   private String                      text, title;
     private final boolean               isBill;
     private final long                  agendaMessageId;
     public boolean                      completed = false;
