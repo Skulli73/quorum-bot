@@ -38,25 +38,23 @@ public class Main {
 
 
     private void loadBot() {
-        DiscordApi api = new DiscordApiBuilder()
+        lApi = new DiscordApiBuilder()
                 .setToken(getToken())
                 .setAllIntents()
                 .login()
                 .join();
 
-        lApi = api;
-
-        new SlashCommandManager(api);
+        new SlashCommandManager(lApi);
 
         SlashCommandListener            slashCommandListener           = new SlashCommandListener();
         MessageComponentListener        messageComponentCreateListener = new MessageComponentListener();
 
-        api.addSlashCommandCreateListener(slashCommandListener);
-        api.addMessageComponentCreateListener(messageComponentCreateListener);
+        lApi.addSlashCommandCreateListener(slashCommandListener);
+        lApi.addMessageComponentCreateListener(messageComponentCreateListener);
 
         System.out.println("The following Councils exist as of right now:");
         System.out.println(Arrays.toString(councils.toArray()));
-        System.out.println("Invite Link: " + api.createBotInvite());
+        System.out.println("Invite Link: " + lApi.createBotInvite());
     }
 
     private void loadCouncils() {
