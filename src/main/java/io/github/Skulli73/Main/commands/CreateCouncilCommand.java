@@ -19,10 +19,8 @@ import static io.github.Skulli73.Main.Main.councils;
 import static io.github.Skulli73.Main.Main.councilsPath;
 
 public class CreateCouncilCommand {
-    private final DiscordApi lApi;
 
     public CreateCouncilCommand(SlashCommandInteraction interaction, DiscordApi pApi) {
-        lApi = pApi;
         System.out.println("createcouncil executed");
 
         boolean     lFail = false;
@@ -64,7 +62,7 @@ public class CreateCouncilCommand {
                     myReader.close();
                     String lJson = lStringBuilder.toString();
                     Gson lGson = new Gson();
-                    if(lGson.fromJson(lJson, Council.class).getFloorChannel(lApi) == lFloorChannel) {
+                    if(lGson.fromJson(lJson, Council.class).getFloorChannel(pApi) == lFloorChannel) {
                         lFail = true;
                         interaction.createImmediateResponder().setContent("The floor channel, you wish to use for your council, is already used by a council").respond();
                     }
@@ -76,7 +74,7 @@ public class CreateCouncilCommand {
         }
 
         if(!lFail) {
-            System.out.println(lApi);
+            System.out.println(pApi);
             councils.add(new Council(lCouncilName,lFloorChannel, lAgendaChannel, lResultChannel,  lCouncillorRole.getId(), interaction.getServer().get().getId(), councils.size()));
 
             GsonBuilder builder = new GsonBuilder();

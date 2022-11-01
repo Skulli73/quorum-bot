@@ -9,21 +9,19 @@ import java.util.concurrent.ExecutionException;
 
 public class Motion {
 
-    public long introductorId;
-    private String              text, title;
-    private final boolean       isBill;
-    private final long          agendaMessageId;
+    public long                         introductorId;
+    private String                      text, title;
+    private final boolean               isBill;
+    private final long                  agendaMessageId;
+    public boolean                      completed = false;
 
-    public boolean                     completed = false;
-    public ArrayList<String>           ayeVotes;
-    public ArrayList<String> nayVotes;
-    public ArrayList<String> abstainVotes;
-    public ArrayList<String> notVoted;
-    public ArrayList<String> dmMessages;
-    public long                        introducerId;
-    public int id;
-    public double                      neededMajority;
-    public int                         typeOfMajority;
+    public ArrayList<String>            ayeVotes, nayVotes, abstainVotes, notVoted, dmMessages;
+
+    public long                         introducerId;
+    public int                          id;
+
+    public double                       neededMajority;
+    public int                          typeOfMajority;
 
     public Motion(String pTitle, String pText, long pIntroducerId, long pAgendaMessageId, double pNeededMajority, int pTypeOfMajority, int pId) {
         title           = pTitle;

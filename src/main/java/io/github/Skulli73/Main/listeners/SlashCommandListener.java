@@ -46,7 +46,7 @@ public class SlashCommandListener implements SlashCommandCreateListener {
         }
 
         public static void createMotion(SlashCommandInteraction pInteraction) throws ExecutionException, InterruptedException {
-            Council lCouncil = councils.get(0).councilByFloorChannel((TextChannel) pInteraction.getChannel().get(), lApi, councils, councilsPath);
+            Council lCouncil = councils.get(0).councilByFloorChannel(pInteraction.getChannel().get(), lApi, councils, councilsPath);
 
             String lMotionName;
             double lMajority = lCouncil.standardMajority;
@@ -94,7 +94,7 @@ public class SlashCommandListener implements SlashCommandCreateListener {
             Gson gson = builder.create();
             for(int i = 0; i<councils.size(); i++) {
                 String fileName = councilsPath + i + "council.json";
-                FileWriter myWriter = null;
+                FileWriter myWriter;
                 try {
                     myWriter = new FileWriter(fileName);
                     myWriter.write(gson.toJson(councils.get(i)));

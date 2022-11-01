@@ -43,6 +43,5 @@ public class SlashCommandManager {
                         setEnabledInDms(false)
                         .createGlobal(api)
                         .join();
-        // List<SlashCommand> commands = (List<SlashCommand>) api.getGlobalSlashCommands().join();
     }
 }

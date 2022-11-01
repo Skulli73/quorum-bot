@@ -16,7 +16,7 @@ import java.util.Scanner;
 
 public class Main {
 
-    public static ArrayList<Council>  councils             = new ArrayList<>();;
+    public static ArrayList<Council>  councils             = new ArrayList<>();
     public static String              councilsPath         = System.getProperty("user.dir") + "\\src\\main\\java\\com\\github\\Skulli73\\Main\\councils\\";
     public static String              path                 = System.getProperty("user.dir") + "\\src\\main\\java\\com\\github\\Skulli73\\Main\\";
     public static Gson                gson                 = new Gson();
@@ -43,19 +43,16 @@ public class Main {
 
         lApi = api;
 
+        new SlashCommandManager(api);
+
         SlashCommandListener            slashCommandListener           = new SlashCommandListener();
-        MessageComponentListener messageComponentCreateListener = new MessageComponentListener(api);
+        MessageComponentListener        messageComponentCreateListener = new MessageComponentListener();
 
         api.addSlashCommandCreateListener(slashCommandListener);
+        api.addMessageComponentCreateListener(messageComponentCreateListener);
 
         System.out.println("The following Councils exist as of right now:");
         System.out.println(Arrays.toString(councils.toArray()));
-        /*
-            for(int j = 0; j<councils.size(); j++)
-            System.out.println(((councils.get(j))).getName());
-        */
-
-        new SlashCommandManager(api);
         System.out.println("Invite Link: " + api.createBotInvite());
     }
 

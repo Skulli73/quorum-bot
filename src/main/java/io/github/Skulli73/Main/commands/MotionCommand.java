@@ -11,18 +11,14 @@ import static io.github.Skulli73.Main.Main.councils;
 import static io.github.Skulli73.Main.Main.councilsPath;
 
 public class MotionCommand {
-    private final DiscordApi lApi;
     public MotionCommand(SlashCommandInteraction interaction, DiscordApi pApi) {
-        lApi = pApi;
         if(councils.size()==0) {
             interaction.getChannel().get().sendMessage("This is no floor channel of a council, <@" + interaction.getUser().getId() + ">");
         }
-        else if(councils.get(0).isChannelFloor((TextChannel) interaction.getChannel().get(), lApi, councils, councilsPath)) {
+        else if(councils.get(0).isChannelFloor(interaction.getChannel().get(), pApi, councils, councilsPath)) {
             try {
                 SlashCommandListener.createMotion(interaction);
-            } catch (ExecutionException e) {
-                throw new RuntimeException(e);
-            } catch (InterruptedException e) {
+            } catch (ExecutionException | InterruptedException e) {
                 throw new RuntimeException(e);
             }
         }

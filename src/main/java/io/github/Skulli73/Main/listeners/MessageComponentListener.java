@@ -17,10 +17,6 @@ import static io.github.Skulli73.Main.Main.councilsPath;
 import static io.github.Skulli73.Main.Main.gson;
 
 public class MessageComponentListener implements MessageComponentCreateListener {
-    public MessageComponentListener(DiscordApi api) {
-
-    }
-
     @Override
     public void onComponentCreate(MessageComponentCreateEvent lEvent) {
         MessageComponentInteraction messageComponentInteraction = lEvent.getMessageComponentInteraction();
@@ -32,7 +28,6 @@ public class MessageComponentListener implements MessageComponentCreateListener 
                 .respond();
 
         String lUserId = lInteraction.getUser().getIdAsString();
-        Council lCouncil = null;
         Motion lMotion   = null;
         boolean lEnd     = false;
 
@@ -56,7 +51,6 @@ public class MessageComponentListener implements MessageComponentCreateListener 
                     if(councils.get(j).motionArrayList.size()-1 >= councils.get(j).currentMotion ) {
                         System.out.println(lEvent.getMessageComponentInteraction().getMessage().getIdAsString() + "\n" + councils.get(j).motionArrayList.get(councils.get(j).currentMotion).dmMessages);
                         if(councils.get(j).motionArrayList.get(councils.get(j).currentMotion).dmMessages.contains(lEvent.getMessageComponentInteraction().getMessage().getIdAsString())) {
-                            lCouncil = councils.get(j);
                             lMotion = councils.get(j).motionArrayList.get(councils.get(j).currentMotion);
                         }
                     }
