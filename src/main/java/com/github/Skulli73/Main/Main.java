@@ -31,7 +31,9 @@ public class Main {
 
     public static ArrayList<Council> councils;
 
-    public static String path = System.getProperty("user.dir") + "\\src\\main\\java\\com\\github\\Skulli73\\Main\\councils\\";
+    public static String mainPath =System.getProperty("user.dir") + "\\src\\main\\java\\com\\github\\Skulli73\\Main\\";
+
+    public static String path = mainPath + "councils\\";
 
     static String[] lTypeOfMajorityArray = new String[]{"Majority Vote", "Majority of the entire Membership", "Majority in the Negative"};
 
@@ -412,23 +414,23 @@ public class Main {
 
     public static void main(String[] args) {
         // Insert your bot's token here
-        String token = "";
+        StringBuilder token = new StringBuilder();
         try {
-            File myObj = new File("TOKEN");
+            File myObj = new File(mainPath + "TOKEN");
             if(myObj.exists()){
                 Scanner myReader = new Scanner(myObj);
                 while (myReader.hasNextLine()) {
                     String data = myReader.nextLine();
-                    token = token + data;
+                    token.append(data);
                 }
                 myReader.close();
-            }
+            } else System.out.println("Error");
         } catch (FileNotFoundException e) {
             System.out.println("An error occurred.");
             e.printStackTrace();
         }
-
-        DiscordApi api = new DiscordApiBuilder().setToken(token).setAllIntents().login().join();
+        System.out.println(token.toString());
+        DiscordApi api = new DiscordApiBuilder().setToken(token.toString()).setAllIntents().login().join();
         Gson gson = new Gson();
 
         SlashCommandListener slashCommandListener = new SlashCommandListener(api);
