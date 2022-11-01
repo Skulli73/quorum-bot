@@ -62,7 +62,7 @@ public class Main {
         while(!end) {
             StringBuilder lJsonBuilder = new StringBuilder();
             try {
-                File myObj = new File(path + i + "council.json");
+                File myObj = new File(councilsPath + i + "council.json");
                 if(myObj.exists()){
                     Scanner myReader = new Scanner(myObj);
                     while (myReader.hasNextLine()) {
