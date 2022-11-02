@@ -67,6 +67,7 @@ public class MessageComponentListener implements MessageComponentCreateListener 
         switch (customId) {
             case "aye":
                 assert lMotion != null;
+                lMotion.ayeVotes.remove(lUserId);
                 lMotion.nayVotes.remove(lUserId);
                 lMotion.abstainVotes.remove(lUserId);
                 lMotion.notVoted.remove(lUserId);
@@ -76,6 +77,7 @@ public class MessageComponentListener implements MessageComponentCreateListener 
             case "nay":
                 assert lMotion != null;
                 lMotion.ayeVotes.remove(lUserId);
+                lMotion.nayVotes.remove(lUserId);
                 lMotion.abstainVotes.remove(lUserId);
                 lMotion.notVoted.remove(lUserId);
 
@@ -85,6 +87,7 @@ public class MessageComponentListener implements MessageComponentCreateListener 
                 assert lMotion != null;
                 lMotion.ayeVotes.remove(lUserId);
                 lMotion.nayVotes.remove(lUserId);
+                lMotion.abstainVotes.remove(lUserId);
                 lMotion.notVoted.remove(lUserId);
 
 
