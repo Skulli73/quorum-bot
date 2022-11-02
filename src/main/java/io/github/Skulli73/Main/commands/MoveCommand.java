@@ -174,6 +174,19 @@ public class MoveCommand {
                                             lPassed = ayeVotes>=lTotalCouncillors*lResultMotion.neededMajority;
                                         else
                                             lPassed = !(nayVotes>=lTotalCouncillors*lResultMotion.neededMajority);
+                                        String lQuorumFailed = "";
+                                        if(lResultCouncil.absentionsCountToQuorum) {
+                                            if(ayeVotes + nayVotes + abstainVotes >= lResultCouncil.quorum * lTotalCouncillors) {
+                                                lPassed = false;
+                                                lQuorumFailed = " due to the Quorum not being reached";
+                                            }
+                                        }
+                                        else {
+                                            if(ayeVotes + nayVotes >= lResultCouncil.quorum * lTotalCouncillors) {
+                                                lPassed = false;
+                                                lQuorumFailed = " due to the Quorum not being reached";
+                                            }
+                                        }
                                         Color lColour;
                                         if(lPassed)
                                             lColour = Color.GREEN;
@@ -184,7 +197,7 @@ public class MoveCommand {
                                         if(lPassed)
                                             lResultString = "The following motion passed";
                                         else
-                                            lResultString = "The following motion was denied";
+                                            lResultString = "The following motion was denied" + lQuorumFailed;
                                         new MessageBuilder()
                                                 .append(lResultString)
                                                 .setEmbed(

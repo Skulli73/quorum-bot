@@ -37,6 +37,7 @@ public class Main {
     public Main() {
         loadCouncils();
         loadBot();
+        setAllMotionsToNotMoved();
     }
 
 
@@ -105,5 +106,13 @@ public class Main {
             e.printStackTrace();
         }
         return token.toString();
+    }
+
+    private void setAllMotionsToNotMoved() {
+        for(int i = 0; i<councils.size(); i++) {
+            Council lCouncil = councils.get(i);
+            lCouncil.motionArrayList.get(lCouncil.currentMotion).isMoved = false;
+            SlashCommandListener.saveCouncil(lCouncil);
+        }
     }
 }

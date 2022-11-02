@@ -24,6 +24,10 @@ public class Council {
 
     public double               timeOutTime;
 
+    public double               quorum;
+
+    public boolean              absentionsCountToQuorum;
+
 
     public Council(String pName, TextChannel pFloorChannel, TextChannel pAgendaChannel, TextChannel pResultChannel,  long pCouncillorRoleId, long pServer, int pId) {
         name                = pName;
@@ -40,6 +44,8 @@ public class Council {
         timeOutTime = 24;
         nextMotion = 1;
         currentMotion = 0;
+        quorum = 0.5;
+        absentionsCountToQuorum = true;
     }
 
 
