@@ -42,3 +42,5 @@ bin/
 .DS_Store
 
 TOKEN
+
+!**/src/main/java/io/github/Skulli73/Main/councils/

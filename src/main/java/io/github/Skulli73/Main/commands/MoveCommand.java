@@ -245,7 +245,7 @@ public class MoveCommand {
                                         }
                                     }
                                 },
-                                (int)lCouncil.timeOutTime* 3600000L
+                                (int)(lCouncil.timeOutTime* 3600000)
                         );
                     }
                     else

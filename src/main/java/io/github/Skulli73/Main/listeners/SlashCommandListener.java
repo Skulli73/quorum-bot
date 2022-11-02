@@ -29,7 +29,7 @@ public class SlashCommandListener implements SlashCommandCreateListener {
             if(interaction.getCommandName().equals("motion"))        new MotionCommand(interaction, lApi);
             if(interaction.getCommandName().equals("move"))          new MoveCommand(interaction, lApi);
             if(interaction.getFullCommandName().equals("config default_majority"))        new ConfigDefaultMajorityCommand(interaction, lApi);
-            if(interaction.getFullCommandName().equals("config motion_timeout"))        new MotionTimeout(interaction, lApi);
+            if(interaction.getFullCommandName().equals("config motion_timeout"))        new ConfigMotionTimeout(interaction, lApi);
         }
 
         public static void saveMotion(Council lCouncil, Motion lMotion) {
