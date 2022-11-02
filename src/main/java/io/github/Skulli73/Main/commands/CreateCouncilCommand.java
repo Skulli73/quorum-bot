@@ -100,7 +100,6 @@ public class CreateCouncilCommand {
                 throw new RuntimeException(e);
             }
             interaction.createImmediateResponder().setContent("Your council was successfully created.").respond();
-            interaction.getChannel().get().sendMessage("The council \"" + lCouncilName + "\" was created in this channel.");
             System.out.println("The following Councils exist as of right now:");
             System.out.println(Arrays.toString(councils.toArray()));
         }
