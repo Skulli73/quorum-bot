@@ -43,4 +43,4 @@ bin/
 
 TOKEN
 
-**/councils/
+**/councils/*.json
