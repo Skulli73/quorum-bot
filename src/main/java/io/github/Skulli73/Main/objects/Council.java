@@ -20,6 +20,8 @@ public class Council {
     public int                 nextMotion = 1;
     public double              standardMajority = 0.501;
 
+    public int                 standardMajorityType = 0;
+
 
     public Council(String pName, TextChannel pFloorChannel, TextChannel pAgendaChannel, TextChannel pResultChannel,  long pCouncillorRoleId, long pServer, int pId) {
         name                = pName;

@@ -2,20 +2,14 @@ package io.github.Skulli73.Main.listeners;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import io.github.Skulli73.Main.Main;
+import io.github.Skulli73.Main.commands.ConfigDefaultMajorityCommand;
 import io.github.Skulli73.Main.commands.CreateCouncilCommand;
 import io.github.Skulli73.Main.commands.MotionCommand;
 import io.github.Skulli73.Main.commands.MoveCommand;
 import io.github.Skulli73.Main.objects.Council;
 import io.github.Skulli73.Main.objects.Motion;
-import org.javacord.api.DiscordApi;
-import org.javacord.api.entity.channel.TextChannel;
-import org.javacord.api.entity.message.Message;
 import org.javacord.api.entity.message.MessageBuilder;
-import org.javacord.api.entity.message.component.ActionRow;
-import org.javacord.api.entity.message.component.Button;
 import org.javacord.api.entity.message.embed.EmbedBuilder;
-import org.javacord.api.entity.user.User;
 import org.javacord.api.event.interaction.SlashCommandCreateEvent;
 import org.javacord.api.interaction.SlashCommandInteraction;
 import org.javacord.api.listener.interaction.SlashCommandCreateListener;
@@ -23,7 +17,6 @@ import org.javacord.api.listener.interaction.SlashCommandCreateListener;
 import java.awt.*;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 
 import static io.github.Skulli73.Main.Main.*;
@@ -38,6 +31,7 @@ public class SlashCommandListener implements SlashCommandCreateListener {
             if(interaction.getCommandName().equals("createcouncil")) new CreateCouncilCommand(interaction, lApi);
             if(interaction.getCommandName().equals("motion"))        new MotionCommand(interaction, lApi);
             if(interaction.getCommandName().equals("move"))          new MoveCommand(interaction, lApi);
+            if(interaction.getFullCommandName().equals("config default_majority"))        new ConfigDefaultMajorityCommand(interaction, lApi);
         }
 
         public static void saveMotion(Council lCouncil, Motion lMotion) {
@@ -50,7 +44,7 @@ public class SlashCommandListener implements SlashCommandCreateListener {
 
             String lMotionName;
             double lMajority = lCouncil.standardMajority;
-            int lTypeOfMajority = 0;
+            int lTypeOfMajority = lCouncil.standardMajorityType;
             if(pInteraction.getArguments().size() > 1 && pInteraction.getArguments().get(1).getName().equals("title"))
             {lMotionName = "Motion #" + (lCouncil.motionArrayList.size()+1) + ": " +  pInteraction.getArguments().get(1).getStringValue().get();}
             else if(pInteraction.getArguments().size() > 2 && pInteraction.getArguments().get(2).getName().equals("title"))

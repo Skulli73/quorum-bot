@@ -43,5 +43,22 @@ public class SlashCommandManager {
                         setEnabledInDms(false)
                         .createGlobal(api)
                         .join();
+        SlashCommand configCommand =
+                SlashCommand.with("config", "Change the configurations of the Quorum Bot in this Council.", Arrays.asList(
+                        SlashCommandOption.createWithOptions(SlashCommandOptionType.SUB_COMMAND, "default_majority", "The majority needed if not stated in the motion.", Arrays.asList(
+                                SlashCommandOption.create(SlashCommandOptionType.DECIMAL, "majority", "Required majority (e.g 50% = 0.5)", true),
+                                SlashCommandOption.createWithChoices(SlashCommandOptionType.DECIMAL, "type_of_majority", "What type of a majority is necessary", true,
+                                        Arrays.asList(
+                                            SlashCommandOptionChoice.create("majority_vote", 0),
+                                            SlashCommandOptionChoice.create("majority_of_the_entire_membership", 1),
+                                            SlashCommandOptionChoice.create("majority_in_the_negative", 2)
+                                        )
+                                )
+                        ))
+                ))
+                        .setDefaultEnabledForPermissions(PermissionType.MANAGE_CHANNELS, PermissionType.ADMINISTRATOR)
+                        .setEnabledInDms(false)
+                        .createGlobal(api)
+                        .join();
     }
 }
