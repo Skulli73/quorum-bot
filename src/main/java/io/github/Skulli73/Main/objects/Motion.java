@@ -14,7 +14,7 @@ public class Motion {
     private final long                  agendaMessageId;
     public boolean                      completed = false;
 
-    public ArrayList<String>            ayeVotes, nayVotes, abstainVotes, notVoted, dmMessages;
+    public ArrayList<String>            ayeVotes, nayVotes, abstainVotes, notVoted, dmMessages, dmMessagesCouncillors;
 
     public long                         introducerId;
     public int                          id;
@@ -37,6 +37,7 @@ public class Motion {
         neededMajority  = pNeededMajority;
         typeOfMajority  = pTypeOfMajority;
         dmMessages      = new ArrayList<>();
+        dmMessagesCouncillors = new ArrayList<>();
         id              = pId;
     }
 

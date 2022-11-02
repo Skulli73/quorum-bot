@@ -16,11 +16,13 @@ public class Council {
     private final int          id;
     private final long         serverId;
     public ArrayList<Motion>   motionArrayList;
-    public int                 currentMotion = 0;
-    public int                 nextMotion = 1;
-    public double              standardMajority = 0.501;
+    public int                 currentMotion;
+    public int                 nextMotion;
+    public double              standardMajority;
 
-    public int                 standardMajorityType = 0;
+    public int                 standardMajorityType;
+
+    public double               timeOutTime;
 
 
     public Council(String pName, TextChannel pFloorChannel, TextChannel pAgendaChannel, TextChannel pResultChannel,  long pCouncillorRoleId, long pServer, int pId) {
@@ -33,6 +35,11 @@ public class Council {
         councillorRoleId    = pCouncillorRoleId;
         proposeRoleId       = councillorRoleId;
         motionArrayList     = new ArrayList<>();
+        standardMajority = 0.501;
+        standardMajorityType = 0;
+        timeOutTime = 24;
+        nextMotion = 1;
+        currentMotion = 0;
     }
 
 

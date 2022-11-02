@@ -2,10 +2,7 @@ package io.github.Skulli73.Main.listeners;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import io.github.Skulli73.Main.commands.ConfigDefaultMajorityCommand;
-import io.github.Skulli73.Main.commands.CreateCouncilCommand;
-import io.github.Skulli73.Main.commands.MotionCommand;
-import io.github.Skulli73.Main.commands.MoveCommand;
+import io.github.Skulli73.Main.commands.*;
 import io.github.Skulli73.Main.objects.Council;
 import io.github.Skulli73.Main.objects.Motion;
 import org.javacord.api.entity.message.MessageBuilder;
@@ -32,6 +29,7 @@ public class SlashCommandListener implements SlashCommandCreateListener {
             if(interaction.getCommandName().equals("motion"))        new MotionCommand(interaction, lApi);
             if(interaction.getCommandName().equals("move"))          new MoveCommand(interaction, lApi);
             if(interaction.getFullCommandName().equals("config default_majority"))        new ConfigDefaultMajorityCommand(interaction, lApi);
+            if(interaction.getFullCommandName().equals("config motion_timeout"))        new MotionTimeout(interaction, lApi);
         }
 
         public static void saveMotion(Council lCouncil, Motion lMotion) {

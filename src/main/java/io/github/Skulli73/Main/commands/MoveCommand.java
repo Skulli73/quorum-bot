@@ -6,6 +6,7 @@ import io.github.Skulli73.Main.listeners.SlashCommandListener;
 import io.github.Skulli73.Main.objects.Council;
 import io.github.Skulli73.Main.objects.Motion;
 import org.javacord.api.DiscordApi;
+import org.javacord.api.entity.channel.PrivateChannel;
 import org.javacord.api.entity.message.Message;
 import org.javacord.api.entity.message.MessageBuilder;
 import org.javacord.api.entity.message.component.ActionRow;
@@ -68,6 +69,14 @@ public class MoveCommand {
                         Object[] lCouncillors = lCouncil.getCouncillorRole(lApi).getUsers().toArray();
 
                         for(int i = 0; i<lCouncillors.length;i++) {
+                            PrivateChannel lChannel = null;
+                            try {
+                                lChannel = ((User)lCouncillors[i]).openPrivateChannel().get();
+                            } catch (InterruptedException e) {
+                                throw new RuntimeException(e);
+                            } catch (ExecutionException e) {
+                                throw new RuntimeException(e);
+                            }
                             lMotion.notVoted.add(((User)lCouncillors[i]).getIdAsString());
                             try {
                                 lMotion.dmMessages.add( new MessageBuilder().append("Vote")
@@ -81,7 +90,8 @@ public class MoveCommand {
                                                         Button.secondary("abstain" , "Abstain")
                                                 )
                                         )
-                                        .send(((User)lCouncillors[i]).openPrivateChannel().get()).get().getIdAsString());
+                                        .send(lChannel).get().getIdAsString());
+                                lMotion.dmMessagesCouncillors.add(((User) lCouncillors[i]).getIdAsString());
                             } catch (InterruptedException | ExecutionException e) {
                                 throw new RuntimeException(e);
                             }
@@ -204,6 +214,16 @@ public class MoveCommand {
                                         lResultCouncil.nextMotion = lNextMotionOld +1;
 
                                         this.saveMotion(lResultCouncil, lResultMotion);
+
+                                        for(int i = 0; i<lResultMotion.dmMessages.size(); i++) {
+                                            try {
+                                                pApi.getMessageById(lResultMotion.dmMessages.get(i), pApi.getUserById(lResultMotion.dmMessagesCouncillors.get(i)).get().openPrivateChannel().get()).get().delete();
+                                            } catch (InterruptedException e) {
+                                                throw new RuntimeException(e);
+                                            } catch (ExecutionException e) {
+                                                throw new RuntimeException(e);
+                                            }
+                                        }
                                     }
 
                                     private void saveMotion(Council lCouncil, Motion lMotion) {
@@ -225,7 +245,7 @@ public class MoveCommand {
                                         }
                                     }
                                 },
-                                10000
+                                (int)lCouncil.timeOutTime* 3600000L
                         );
                     }
                     else
