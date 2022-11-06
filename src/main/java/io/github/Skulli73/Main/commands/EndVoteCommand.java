@@ -12,6 +12,17 @@ public class EndVoteCommand extends CouncilCommand {
     @Override
     public void executeCommand(SlashCommandInteraction pInteraction, DiscordApi pApi) {
         Motion lMotion = council.motionArrayList.get(council.currentMotion);
-        lMotion.endMotionVote(pApi, council, pInteraction, council.getCouncillorRole(pApi).getUsers().toArray());
+        if(lMotion.isMoved) {
+            pInteraction.createImmediateResponder()
+                    .append(pInteraction.getUser().getMentionTag() + "ended the vote on " + lMotion.getTitle() + ".")
+                    .respond();
+            lMotion.endMotionVote(pApi, council, pInteraction, council.getCouncillorRole(pApi).getUsers().toArray());
+        } else {
+            pInteraction.createImmediateResponder()
+                    .append("There is no active Motion")
+                    .respond();
+        }
     }
+
+
 }

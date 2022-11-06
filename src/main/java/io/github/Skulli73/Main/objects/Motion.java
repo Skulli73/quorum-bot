@@ -21,6 +21,7 @@ import java.util.concurrent.ExecutionException;
 
 import static io.github.Skulli73.Main.Main.councils;
 import static io.github.Skulli73.Main.Main.councilsPath;
+import static io.github.Skulli73.Main.listeners.SlashCommandListener.lTypeOfMajorityArray;
 
 public class Motion {
 
@@ -79,9 +80,7 @@ public class Motion {
                         .setDescription(getText())
                         .setColor(Color.GREEN)
                         .setAuthor(pApi.getUserById(introducerId).get().getName(), "", pApi.getUserById(introducerId).get().getAvatar());
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            } catch (ExecutionException e) {
+            } catch (InterruptedException | ExecutionException e) {
                 throw new RuntimeException(e);
             }
             final int ayeVotesAmount = ayeVotes.size();
@@ -185,6 +184,7 @@ public class Motion {
                                     .addField("Abstain", abstainVotesAmount + " (" + abstainVotesMembers.toString() + ")")
                                     .addField("Did not Vote", notVotedAmount + " (" + notVotedMembers.toString() + ")")
                                     .setColor(lColour)
+                                    .setFooter(lTypeOfMajorityArray[typeOfMajority] + ", " +  neededMajority*100 + "%")
                     ).send(pCouncil.getResultChannel(pApi));
 
             Message lAgendaMessage = null;
@@ -200,19 +200,22 @@ public class Motion {
             completed = true;
 
 
-            pCouncil.currentMotion = pCouncil.nextMotion;
-            pCouncil.nextMotion = pCouncil.currentMotion +1;
+            pCouncil.toNextMotion();
 
             SlashCommandListener.saveMotion(pCouncil, this);
 
-            for(int i = 0; i<dmMessages.size(); i++) {
-                try {
-                    pApi.getMessageById(dmMessages.get(i), pApi.getUserById(dmMessagesCouncillors.get(i)).get().openPrivateChannel().get()).get().delete();
-                } catch (InterruptedException e) {
-                    throw new RuntimeException(e);
-                } catch (ExecutionException e) {
-                    throw new RuntimeException(e);
-                }
+            deleteMessages(pApi);
+        }
+    }
+
+    public void deleteMessages(DiscordApi pApi) {
+        for(int i = 0; i<dmMessages.size(); i++) {
+            try {
+                pApi.getMessageById(dmMessages.get(i), pApi.getUserById(dmMessagesCouncillors.get(i)).get().openPrivateChannel().get()).get().delete();
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            } catch (ExecutionException e) {
+                throw new RuntimeException(e);
             }
         }
     }

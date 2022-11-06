@@ -80,6 +80,7 @@ public class Main {
                     myReader.close();
                     String lJson = lJsonBuilder.toString();
                     councils.add(gson.fromJson(lJson, Council.class));
+                    timers.add(null);
                 } else
                     end = true;
             } catch (FileNotFoundException e) {

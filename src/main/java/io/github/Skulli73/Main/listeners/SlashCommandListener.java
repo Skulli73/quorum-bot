@@ -25,10 +25,12 @@ public class SlashCommandListener implements SlashCommandCreateListener {
         @Override
         public void onSlashCommandCreate(SlashCommandCreateEvent event) {
             SlashCommandInteraction interaction = event.getSlashCommandInteraction();
-            if(interaction.getCommandName().equals("createcouncil")) new CreateCouncilCommand(interaction, lApi);
-            if(interaction.getCommandName().equals("motion"))        new MotionCommand(interaction, lApi);
-            if(interaction.getCommandName().equals("move"))          new MoveCommand(interaction, lApi);
-            if(interaction.getCommandName().equals("end_vote"))      new EndVoteCommand(interaction, lApi);
+            if(interaction.getCommandName().equals("createcouncil"))                        new CreateCouncilCommand(interaction, lApi);
+            if(interaction.getCommandName().equals("motion"))                               new MotionCommand(interaction, lApi);
+            if(interaction.getCommandName().equals("move"))                                 new MoveCommand(interaction, lApi);
+            if(interaction.getCommandName().equals("end_vote"))                             new EndVoteCommand(interaction, lApi);
+            if(interaction.getCommandName().equals("withdraw"))                             new WithdrawCommand(interaction, lApi);
+            if(interaction.getCommandName().equals("kill_motion"))                          new KillCommand(interaction, lApi);
             if(interaction.getFullCommandName().equals("config default_majority"))          new ConfigDefaultMajorityCommand(interaction, lApi);
             if(interaction.getFullCommandName().equals("config motion_timeout"))            new ConfigMotionTimeout(interaction, lApi);
             if(interaction.getFullCommandName().equals("config quorum"))                    new ConfigQuorum(interaction, lApi);

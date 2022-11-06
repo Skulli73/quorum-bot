@@ -133,4 +133,20 @@ public class Council {
 
         return lResult;
     }
+
+    public void toNextMotion () {
+        boolean end = false;
+        while(!end) {
+            currentMotion++;
+            if(currentMotion < motionArrayList.size()) {
+                Motion lMotion = motionArrayList.get(currentMotion);
+                if(!lMotion.isMoved && !lMotion.completed) {
+                    end = true;
+                }
+            } else {
+                end = true;
+            }
+        }
+        nextMotion = currentMotion + 1;
+    }
 }

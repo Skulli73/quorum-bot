@@ -69,5 +69,20 @@ public class SlashCommandManager {
                         .setEnabledInDms(false)
                         .createGlobal(api)
                         .join();
+        SlashCommand withdrawCommand =
+                SlashCommand.with("withdraw", "Withdraw your own motion.", Arrays.asList(
+                            SlashCommandOption.create(SlashCommandOptionType.DECIMAL, "motion_id", "Id of the Motion you wish to withdraw", true)
+                        ))
+                        .setEnabledInDms(false)
+                        .createGlobal(api)
+                        .join();
+        SlashCommand killCommand =
+                SlashCommand.with("kill_motion", "Kill a motion.", Arrays.asList(
+                                SlashCommandOption.create(SlashCommandOptionType.DECIMAL, "motion_id", "Id of the Motion you wish to kill", true)
+                        ))
+                        .setDefaultEnabledForPermissions(PermissionType.MANAGE_CHANNELS, PermissionType.ADMINISTRATOR)
+                        .setEnabledInDms(false)
+                        .createGlobal(api)
+                        .join();
     }
 }
