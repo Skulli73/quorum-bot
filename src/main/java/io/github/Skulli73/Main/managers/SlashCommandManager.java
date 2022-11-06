@@ -63,5 +63,11 @@ public class SlashCommandManager {
                         .setEnabledInDms(false)
                         .createGlobal(api)
                         .join();
+        SlashCommand endVoteCommand =
+                SlashCommand.with("end_vote", "Ends the current vote and gets the results.")
+                        .setDefaultEnabledForPermissions(PermissionType.MANAGE_CHANNELS, PermissionType.ADMINISTRATOR)
+                        .setEnabledInDms(false)
+                        .createGlobal(api)
+                        .join();
     }
 }
