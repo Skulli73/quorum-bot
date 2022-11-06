@@ -1,7 +1,5 @@
 package io.github.Skulli73.Main.commands;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import io.github.Skulli73.Main.listeners.SlashCommandListener;
 import io.github.Skulli73.Main.objects.Council;
 import io.github.Skulli73.Main.objects.Motion;
@@ -15,8 +13,6 @@ import org.javacord.api.entity.user.User;
 import org.javacord.api.interaction.SlashCommandInteraction;
 
 import java.awt.*;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.util.concurrent.ExecutionException;
 
 import static io.github.Skulli73.Main.Main.councils;
@@ -95,40 +91,9 @@ public class MoveCommand {
                                 throw new RuntimeException(e);
                             }
                         }
+                        lMotion.startMotionVote(pApi, lCouncil, interaction, lCouncillors);
                         SlashCommandListener.saveMotion(lCouncil, lMotion);
 
-                        EmbedBuilder finalLEmbed = lEmbed;
-                        new java.util.Timer().schedule(
-                                new java.util.TimerTask() {
-
-                                    @Override
-                                    public void run() {
-                                        Council lResultCouncil = councils.get((int)lCouncil.getId());
-                                        Motion lResultMotion = lResultCouncil.motionArrayList.get(lResultCouncil.currentMotion);
-
-                                    }
-
-                                    private void saveMotion(Council lCouncil, Motion lMotion) {
-                                        lCouncil.motionArrayList.set(lMotion.id, lMotion);
-                                        this.saveCouncil(lCouncil);
-                                    }
-
-                                    public void saveCouncil(Council pCouncil) {
-                                        GsonBuilder builder = new GsonBuilder();
-                                        Gson gson = builder.create();
-                                        String fileName = councilsPath +(pCouncil.getId()) + "council.json";
-                                        FileWriter myWriter = null;
-                                        try {
-                                            myWriter = new FileWriter(fileName);
-                                            myWriter.write(gson.toJson(pCouncil));
-                                            myWriter.close();
-                                        } catch (IOException e) {
-                                            throw new RuntimeException(e);
-                                        }
-                                    }
-                                },
-                                (int)(lCouncil.timeOutTime* 3600000)
-                        );
                     }
                     else
                         interaction.getChannel().get().sendMessage(interaction.getUser().getMentionTag() + ", you do not have the propose role and cannot move the motion.");

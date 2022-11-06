@@ -46,8 +46,8 @@ public class SlashCommandManager {
         SlashCommand configCommand =
                 SlashCommand.with("config", "Change the configurations of the Quorum Bot in this Council.", Arrays.asList(
                         SlashCommandOption.createWithOptions(SlashCommandOptionType.SUB_COMMAND, "default_majority", "The majority needed if not stated in the motion.", Arrays.asList(
-                                SlashCommandOption.create(SlashCommandOptionType.DECIMAL, "majority", "Required majority (e.g 50% = 0.5)", false),
-                                SlashCommandOption.createWithChoices(SlashCommandOptionType.DECIMAL, "type_of_majority", "What type of a majority is necessary", false,
+                                SlashCommandOption.create(SlashCommandOptionType.DECIMAL, "majority", "Required majority (e.g 50% = 0.5)", true),
+                                SlashCommandOption.createWithChoices(SlashCommandOptionType.DECIMAL, "type_of_majority", "What type of a majority is necessary", true,
                                         Arrays.asList(
                                             SlashCommandOptionChoice.create("majority_vote", 0),
                                             SlashCommandOptionChoice.create("majority_of_the_entire_membership", 1),
@@ -56,7 +56,7 @@ public class SlashCommandManager {
                                 )
                         )),
                         SlashCommandOption.createWithOptions(SlashCommandOptionType.SUB_COMMAND, "motion_timeout", "How long it takes until a motion ends", Arrays.asList(
-                            SlashCommandOption.create(SlashCommandOptionType.DECIMAL, "timeout_length", "How many hours it takes until a motion ends", false)
+                            SlashCommandOption.create(SlashCommandOptionType.DECIMAL, "timeout_length", "How many hours it takes until a motion ends", true)
                         ))
                 ))
                         .setDefaultEnabledForPermissions(PermissionType.MANAGE_CHANNELS, PermissionType.ADMINISTRATOR)

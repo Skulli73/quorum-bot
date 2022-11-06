@@ -1,5 +1,8 @@
 package io.github.Skulli73.Main.objects;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import io.github.Skulli73.Main.Main;
 import io.github.Skulli73.Main.listeners.SlashCommandListener;
 import org.javacord.api.DiscordApi;
 import org.javacord.api.entity.channel.TextChannel;
@@ -9,8 +12,15 @@ import org.javacord.api.entity.message.embed.EmbedBuilder;
 import org.javacord.api.interaction.SlashCommandInteraction;
 
 import java.awt.*;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.concurrent.ExecutionException;
+
+import static io.github.Skulli73.Main.Main.councils;
+import static io.github.Skulli73.Main.Main.councilsPath;
 
 public class Motion {
 
@@ -28,6 +38,10 @@ public class Motion {
     public int                          typeOfMajority;
 
     public boolean                      isMoved = false;
+
+    public TimerTask                    timerTask;
+
+
 
     public Motion(String pTitle, String pText, long pIntroducerId, long pAgendaMessageId, double pNeededMajority, int pTypeOfMajority, int pId) {
         title           = pTitle;
@@ -55,8 +69,21 @@ public class Motion {
     public void     setTitle(String pTitle) { title = pTitle; }
     public void     setText(String pText)   { text = pText; }
 
-    public void endMotion(DiscordApi pApi, Council pCouncil, SlashCommandInteraction pInteraction, Object[] pCouncillors, EmbedBuilder pEmbed) {
+    public void endMotionVote(DiscordApi pApi, Council pCouncil, SlashCommandInteraction pInteraction, Object[] pCouncillors) {
         if(!this.completed) {
+            Main.timers.get((int)pCouncil.getId()).cancel();
+            EmbedBuilder embed = null;
+            try {
+                embed = new EmbedBuilder()
+                        .setTitle(getTitle())
+                        .setDescription(getText())
+                        .setColor(Color.GREEN)
+                        .setAuthor(pApi.getUserById(introducerId).get().getName(), "", pApi.getUserById(introducerId).get().getAvatar());
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            } catch (ExecutionException e) {
+                throw new RuntimeException(e);
+            }
             final int ayeVotesAmount = ayeVotes.size();
             final int nayVotesAmount = nayVotes.size();
             final int abstainVotesAmount = abstainVotes.size();
@@ -127,13 +154,13 @@ public class Motion {
                 lPassed = !(nayVotesAmount>=lTotalCouncillors*neededMajority);
             String lQuorumFailed = "";
             if(pCouncil.absentionsCountToQuorum) {
-                if(ayeVotesAmount + nayVotesAmount + abstainVotesAmount >= pCouncil.quorum * lTotalCouncillors) {
+                if(ayeVotesAmount + nayVotesAmount + abstainVotesAmount <= pCouncil.quorum * lTotalCouncillors) {
                     lPassed = false;
                     lQuorumFailed = " due to the Quorum not being reached";
                 }
             }
             else {
-                if(ayeVotesAmount + nayVotesAmount >= pCouncil.quorum * lTotalCouncillors) {
+                if(ayeVotesAmount + nayVotesAmount <= pCouncil.quorum * lTotalCouncillors) {
                     lPassed = false;
                     lQuorumFailed = " due to the Quorum not being reached";
                 }
@@ -153,10 +180,10 @@ public class Motion {
                     .append(lResultString)
                     .setEmbed(
 
-                            pEmbed.addField("Aye", ayeVotes + " (" + ayeVotesMembers.toString() + ")")
-                                    .addField("Nay", nayVotes + " (" + nayVotesMembers.toString() + ")")
-                                    .addField("Abstain", abstainVotes + " (" + abstainVotesMembers.toString() + ")")
-                                    .addField("Did not Vote", notVoted + " (" + notVotedMembers.toString() + ")")
+                            embed.addField("Aye", ayeVotesAmount + " (" + ayeVotesMembers.toString() + ")")
+                                    .addField("Nay", nayVotesAmount + " (" + nayVotesMembers.toString() + ")")
+                                    .addField("Abstain", abstainVotesAmount + " (" + abstainVotesMembers.toString() + ")")
+                                    .addField("Did not Vote", notVotedAmount + " (" + notVotedMembers.toString() + ")")
                                     .setColor(lColour)
                     ).send(pCouncil.getResultChannel(pApi));
 
@@ -190,4 +217,39 @@ public class Motion {
         }
     }
 
+    public void startMotionVote(DiscordApi pApi, Council pCouncil, SlashCommandInteraction pInteraction, Object[] pCouncillors) {
+        timerTask = new java.util.TimerTask() {
+
+            @Override
+            public void run() {
+                Council lResultCouncil = councils.get((int)pCouncil.getId());
+                Motion lResultMotion = lResultCouncil.motionArrayList.get(lResultCouncil.currentMotion);
+                lResultMotion.endMotionVote(pApi, pCouncil, pInteraction, pCouncillors);
+            }
+
+            private void saveMotion(Council lCouncil, Motion lMotion) {
+                lCouncil.motionArrayList.set(lMotion.id, lMotion);
+                this.saveCouncil(lCouncil);
+            }
+
+            public void saveCouncil(Council pCouncil) {
+                GsonBuilder builder = new GsonBuilder();
+                Gson gson = builder.create();
+                String fileName = councilsPath +(pCouncil.getId()) + "council.json";
+                FileWriter myWriter = null;
+                try {
+                    myWriter = new FileWriter(fileName);
+                    myWriter.write(gson.toJson(pCouncil));
+                    myWriter.close();
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        };
+        Main.timers.set((int)pCouncil.getId(), new Timer());
+        Main.timers.get((int)pCouncil.getId()).schedule(
+                timerTask,
+                (int)(pCouncil.timeOutTime* 3600000)
+        );
+    }
 }

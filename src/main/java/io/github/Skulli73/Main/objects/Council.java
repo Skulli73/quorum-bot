@@ -1,6 +1,7 @@
 package io.github.Skulli73.Main.objects;
 
 import com.google.gson.Gson;
+import io.github.Skulli73.Main.Main;
 import org.javacord.api.DiscordApi;
 import org.javacord.api.entity.channel.TextChannel;
 import org.javacord.api.entity.permission.Role;
@@ -46,6 +47,7 @@ public class Council {
         currentMotion = 0;
         quorum = 0.5;
         absentionsCountToQuorum = true;
+        Main.timers.add(id, null);
     }
 
 

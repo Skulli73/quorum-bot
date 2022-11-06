@@ -13,10 +13,13 @@ import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Scanner;
+import java.util.Timer;
 
 public class Main {
 
     public static ArrayList<Council>  councils             = new ArrayList<>();
+
+    public static ArrayList<Timer>    timers               = new ArrayList<>();
 
     public static String              path                 = System.getProperty("user.dir") + "\\src\\main\\java\\io\\github\\Skulli73\\Main\\";
 
