@@ -111,8 +111,10 @@ public class Main {
     private void setAllMotionsToNotMoved() {
         for(int i = 0; i<councils.size(); i++) {
             Council lCouncil = councils.get(i);
-            lCouncil.motionArrayList.get(lCouncil.currentMotion).isMoved = false;
-            SlashCommandListener.saveCouncil(lCouncil);
+            if(lCouncil.motionArrayList.size() > lCouncil.currentMotion) {
+                lCouncil.motionArrayList.get(lCouncil.currentMotion).isMoved = false;
+                SlashCommandListener.saveCouncil(lCouncil);
+            }
         }
     }
 }

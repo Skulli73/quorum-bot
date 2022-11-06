@@ -7,7 +7,6 @@ import io.github.Skulli73.Main.objects.Council;
 import io.github.Skulli73.Main.objects.Motion;
 import org.javacord.api.DiscordApi;
 import org.javacord.api.entity.channel.PrivateChannel;
-import org.javacord.api.entity.message.Message;
 import org.javacord.api.entity.message.MessageBuilder;
 import org.javacord.api.entity.message.component.ActionRow;
 import org.javacord.api.entity.message.component.Button;
@@ -106,137 +105,7 @@ public class MoveCommand {
                                     public void run() {
                                         Council lResultCouncil = councils.get((int)lCouncil.getId());
                                         Motion lResultMotion = lResultCouncil.motionArrayList.get(lResultCouncil.currentMotion);
-                                        final int ayeVotes = lResultMotion.ayeVotes.size();
-                                        final int nayVotes = lResultMotion.nayVotes.size();
-                                        final int abstainVotes = lResultMotion.abstainVotes.size();
-                                        final int notVoted = lResultMotion.notVoted.size();
 
-                                        StringBuilder ayeVotesMembers = new StringBuilder();
-                                        for(int i = 0; i < ayeVotes; i++) {
-                                            try {
-                                                String lComma = "";
-                                                if(i != 0)
-                                                    lComma = ", ";
-                                                ayeVotesMembers.append(lComma).append(lApi.getUserById(lResultMotion.ayeVotes.get(i)).get().getDisplayName(interaction.getServer().get()));
-                                            }
-                                            catch (InterruptedException | ExecutionException e) {
-                                                throw new RuntimeException(e);
-                                            }
-                                        }
-
-                                        StringBuilder notVotedMembers = new StringBuilder();
-                                        for(int i = 0; i < notVoted; i++) {
-                                            try {
-                                                String lComma = "";
-                                                if(i != 0)
-                                                    lComma = ", ";
-                                                notVotedMembers.append(lComma).append(lApi.getUserById(lResultMotion.notVoted.get(i)).get().getDisplayName(interaction.getServer().get()));
-                                            }
-                                            catch (InterruptedException | ExecutionException e) {
-                                                throw new RuntimeException(e);
-                                            }
-                                        }
-
-                                        StringBuilder nayVotesMembers = new StringBuilder();
-                                        for(int i = 0; i < nayVotes; i++) {
-                                            try {
-                                                String lComma = "";
-                                                if(i != 0)
-                                                    lComma = ", ";
-                                                nayVotesMembers.append(lComma).append(lApi.getUserById(lResultMotion.nayVotes.get(i)).get().getDisplayName(interaction.getServer().get()));
-                                            }
-                                            catch (InterruptedException | ExecutionException e) {
-                                                throw new RuntimeException(e);
-                                            }
-                                        }
-
-                                        StringBuilder abstainVotesMembers = new StringBuilder();
-                                        for(int i = 0; i < abstainVotes; i++) {
-                                            try {
-                                                String lComma = "";
-                                                if(i != 0)
-                                                    lComma = ", ";
-                                                abstainVotesMembers.append(lComma).append(lApi.getUserById(lResultMotion.abstainVotes.get(i)).get().getDisplayName(interaction.getServer().get()));
-                                            }
-                                            catch (InterruptedException | ExecutionException e) {
-                                                throw new RuntimeException(e);
-                                            }
-                                        }
-
-                                        boolean lPassed = false;
-                                        int lTotalCouncillors;
-                                        if(lResultMotion.typeOfMajority == 0)
-                                            lTotalCouncillors = ayeVotes+nayVotes;
-                                        else
-                                            lTotalCouncillors = lCouncillors.length;
-
-                                        if(lResultMotion.typeOfMajority != 3)
-                                            lPassed = ayeVotes>=lTotalCouncillors*lResultMotion.neededMajority;
-                                        else
-                                            lPassed = !(nayVotes>=lTotalCouncillors*lResultMotion.neededMajority);
-                                        String lQuorumFailed = "";
-                                        if(lResultCouncil.absentionsCountToQuorum) {
-                                            if(ayeVotes + nayVotes + abstainVotes >= lResultCouncil.quorum * lTotalCouncillors) {
-                                                lPassed = false;
-                                                lQuorumFailed = " due to the Quorum not being reached";
-                                            }
-                                        }
-                                        else {
-                                            if(ayeVotes + nayVotes >= lResultCouncil.quorum * lTotalCouncillors) {
-                                                lPassed = false;
-                                                lQuorumFailed = " due to the Quorum not being reached";
-                                            }
-                                        }
-                                        Color lColour;
-                                        if(lPassed)
-                                            lColour = Color.GREEN;
-                                        else
-                                            lColour = Color.RED;
-
-                                        String lResultString = "";
-                                        if(lPassed)
-                                            lResultString = "The following motion passed";
-                                        else
-                                            lResultString = "The following motion was denied" + lQuorumFailed;
-                                        new MessageBuilder()
-                                                .append(lResultString)
-                                                .setEmbed(
-
-                                                        finalLEmbed.addField("Aye", ayeVotes + " (" + ayeVotesMembers.toString() + ")")
-                                                                .addField("Nay", nayVotes + " (" + nayVotesMembers.toString() + ")")
-                                                                .addField("Abstain", abstainVotes + " (" + abstainVotesMembers.toString() + ")")
-                                                                .addField("Did not Vote", notVoted + " (" + notVotedMembers.toString() + ")")
-                                                                .setColor(lColour)
-                                                ).send(lResultCouncil.getResultChannel(lApi));
-
-                                        Message lAgendaMessage = null;
-                                        try {
-                                            lAgendaMessage = lResultMotion.getMessage(lApi, lResultCouncil.getAgendaChannel(lApi));
-                                        } catch (ExecutionException | InterruptedException e) {
-                                            e.printStackTrace();
-                                        }
-
-                                        assert lAgendaMessage != null;
-                                        lAgendaMessage.edit(lAgendaMessage.getEmbeds().get(0).toBuilder().setColor(Color.GREEN));
-
-                                        lResultMotion.completed = true;
-
-
-                                        int lNextMotionOld = lResultCouncil.nextMotion;
-                                        lResultCouncil.currentMotion = lResultCouncil.nextMotion;
-                                        lResultCouncil.nextMotion = lNextMotionOld +1;
-
-                                        this.saveMotion(lResultCouncil, lResultMotion);
-
-                                        for(int i = 0; i<lResultMotion.dmMessages.size(); i++) {
-                                            try {
-                                                pApi.getMessageById(lResultMotion.dmMessages.get(i), pApi.getUserById(lResultMotion.dmMessagesCouncillors.get(i)).get().openPrivateChannel().get()).get().delete();
-                                            } catch (InterruptedException e) {
-                                                throw new RuntimeException(e);
-                                            } catch (ExecutionException e) {
-                                                throw new RuntimeException(e);
-                                            }
-                                        }
                                     }
 
                                     private void saveMotion(Council lCouncil, Motion lMotion) {
