@@ -29,6 +29,12 @@ public class Council {
 
     public boolean              absentionsCountToQuorum;
 
+    public double               firstReadingMajority;
+    public int                  firstReadingTypeOfMajority;
+
+    public double               amendmentMajority;
+    public int               amendmentTypeOfMajority;
+
 
     public Council(String pName, TextChannel pFloorChannel, TextChannel pAgendaChannel, TextChannel pResultChannel,  long pCouncillorRoleId, long pServer, int pId) {
         name                = pName;
@@ -48,6 +54,10 @@ public class Council {
         quorum = 0.5;
         absentionsCountToQuorum = true;
         Main.timers.add(id, null);
+        firstReadingMajority = 0.501;
+        firstReadingTypeOfMajority = 2;
+        amendmentMajority = 0.501;
+        amendmentTypeOfMajority = 0;
     }
 
 

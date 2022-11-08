@@ -57,8 +57,26 @@ public class SlashCommandManager {
                         )),
                         SlashCommandOption.createWithOptions(SlashCommandOptionType.SUB_COMMAND, "motion_timeout", "How long it takes until a motion ends", Arrays.asList(
                             SlashCommandOption.create(SlashCommandOptionType.DECIMAL, "timeout_length", "How many hours it takes until a motion ends", true)
-                        ))
-                ))
+                        )),
+                        SlashCommandOption.createWithOptions(SlashCommandOptionType.SUB_COMMAND_GROUP, "bills", "How long it takes until a motion ends", Arrays.asList(
+                               SlashCommandOption.createWithOptions(SlashCommandOptionType.SUB_COMMAND, "first_reading_majority", "The majority needed in the first reading", Arrays.asList(
+                                       SlashCommandOption.create(SlashCommandOptionType.DECIMAL, "majority", "Needed majority", true),
+                                       SlashCommandOption.createWithChoices(SlashCommandOptionType.DECIMAL, "type_of_majority", "Type of majority", true, Arrays.asList(
+                                                SlashCommandOptionChoice.create("majority_vote", 0),
+                                                SlashCommandOptionChoice.create("majority_of_the_entire_membership", 1),
+                                                SlashCommandOptionChoice.create("majority_in_the_negative", 2)
+                                        ))
+                                )),
+                                SlashCommandOption.createWithOptions(SlashCommandOptionType.SUB_COMMAND, "amendment_majority", "The majority needed in the first reading", Arrays.asList(
+                                        SlashCommandOption.create(SlashCommandOptionType.DECIMAL, "majority", "Needed majority", true),
+                                        SlashCommandOption.createWithChoices(SlashCommandOptionType.DECIMAL, "type_of_majority", "Type of majority", true, Arrays.asList(
+                                                SlashCommandOptionChoice.create("majority_vote", 0),
+                                                SlashCommandOptionChoice.create("majority_of_the_entire_membership", 1),
+                                                SlashCommandOptionChoice.create("majority_in_the_negative", 2)
+                                        ))
+                                ))
+                        )
+                )))
                         .setDefaultEnabledForPermissions(PermissionType.MANAGE_CHANNELS, PermissionType.ADMINISTRATOR)
                         .setEnabledInDms(false)
                         .createGlobal(api)

@@ -7,6 +7,8 @@ import io.github.Skulli73.Main.objects.Council;
 import io.github.Skulli73.Main.objects.Motion;
 import org.javacord.api.entity.message.MessageBuilder;
 import org.javacord.api.entity.message.embed.EmbedBuilder;
+import org.javacord.api.entity.server.Server;
+import org.javacord.api.entity.user.User;
 import org.javacord.api.event.interaction.SlashCommandCreateEvent;
 import org.javacord.api.interaction.SlashCommandInteraction;
 import org.javacord.api.listener.interaction.SlashCommandCreateListener;
@@ -70,21 +72,25 @@ public class SlashCommandListener implements SlashCommandCreateListener {
             else if(pInteraction.getArguments().size()>3)if(pInteraction.getArguments().get(3).getName().equals("type_of_majority"))
             {lTypeOfMajority = pInteraction.getArguments().get(3).getDecimalValue().get().intValue();}
             String lMotionDesc = pInteraction.getArguments().get(0).getStringValue().get();
-            Motion lMotion = new Motion(lMotionName, lMotionDesc, pInteraction.getUser().getId(),
-                    new MessageBuilder().setEmbed(
-                            new EmbedBuilder()
-                                    .setTitle(lMotionName)
-                                    .setDescription(lMotionDesc)
-                                    .setColor(Color.RED)
-                                    .setAuthor(pInteraction.getUser().getDisplayName(pInteraction.getServer().get()), pInteraction.getUser().getAvatar().getUrl().toString(), pInteraction.getUser().getAvatar())
-                                    .setFooter(lTypeOfMajorityArray[lTypeOfMajority] + ", " +  lMajority*100 + "%")
-                    ).send(lCouncil.getAgendaChannel(lApi)).get().getId(), lMajority, lTypeOfMajority, lCouncil.motionArrayList.size());
-            lCouncil.motionArrayList.add(lMotion);
-            saveCouncil(lCouncil);
+            createMotionEnd(pInteraction.getUser(), lCouncil, lMotionName, lMajority, lTypeOfMajority, lMotionDesc, pInteraction.getServer().get());
         }
 
+    public static void createMotionEnd(User pUser, Council pCouncil, String pMotionName, double pMajority, int pTypeOfMajority, String pMotionDesc, Server pServer) throws InterruptedException, ExecutionException {
+        Motion lMotion = new Motion(pMotionName, pMotionDesc, pUser.getId(),
+                new MessageBuilder().setEmbed(
+                        new EmbedBuilder()
+                                .setTitle(pMotionName)
+                                .setDescription(pMotionDesc)
+                                .setColor(Color.RED)
+                                .setAuthor(pUser.getDisplayName(pServer), pUser.getAvatar().getUrl().toString(), pUser.getAvatar())
+                                .setFooter(lTypeOfMajorityArray[pTypeOfMajority] + ", " +  pMajority *100 + "%")
+                ).send(pCouncil.getAgendaChannel(lApi)).get().getId(), pMajority, pTypeOfMajority, pCouncil.motionArrayList.size());
+        pCouncil.motionArrayList.add(lMotion);
+        saveCouncil(pCouncil);
+    }
 
-        public static void saveCouncil(Council pCouncil) {
+
+    public static void saveCouncil(Council pCouncil) {
             councils.set((int)pCouncil.getId(), pCouncil);
             GsonBuilder builder = new GsonBuilder();
             Gson gson = builder.create();
