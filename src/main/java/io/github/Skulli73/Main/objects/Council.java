@@ -1,15 +1,13 @@
 package io.github.Skulli73.Main.objects;
 
-import com.google.gson.Gson;
-import io.github.Skulli73.Main.Main;
+import io.github.Skulli73.Main.MainQuorum;
 import org.javacord.api.DiscordApi;
 import org.javacord.api.entity.channel.TextChannel;
 import org.javacord.api.entity.permission.Role;
+import org.jetbrains.annotations.NotNull;
 
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.util.ArrayList;
-import java.util.Scanner;
+import java.util.concurrent.ExecutionException;
 
 public class Council {
     private                    String name;
@@ -33,31 +31,12 @@ public class Council {
     public int                  firstReadingTypeOfMajority;
 
     public double               amendmentMajority;
-    public int               amendmentTypeOfMajority;
+    public int                  amendmentTypeOfMajority;
 
 
-    public Council(String pName, TextChannel pFloorChannel, TextChannel pAgendaChannel, TextChannel pResultChannel,  long pCouncillorRoleId, long pServer, int pId) {
-        name                = pName;
-        floorChannel        = pFloorChannel.getId();
-        agendaChannel       = pAgendaChannel.getId();
-        resultChannel       = pResultChannel.getId();
-        id                  = pId;
-        serverId            = pServer;
-        councillorRoleId    = pCouncillorRoleId;
-        proposeRoleId       = councillorRoleId;
-        motionArrayList     = new ArrayList<>();
-        standardMajority = 0.501;
-        standardMajorityType = 0;
-        timeOutTime = 24;
-        nextMotion = 1;
-        currentMotion = 0;
-        quorum = 0.5;
-        absentionsCountToQuorum = true;
-        Main.timers.add(id, null);
-        firstReadingMajority = 0.501;
-        firstReadingTypeOfMajority = 2;
-        amendmentMajority = 0.501;
-        amendmentTypeOfMajority = 0;
+
+    public Council(String pName, @NotNull TextChannel pFloorChannel, @NotNull TextChannel pAgendaChannel, @NotNull TextChannel pResultChannel, long pCouncillorRoleId, long pServer, int pId) {
+        this(pName, pFloorChannel.getId(), pAgendaChannel.getId(), pResultChannel.getId(), pCouncillorRoleId, pServer, pId);
     }
 
 
@@ -80,35 +59,18 @@ public class Council {
     public void setRoleChannel(long pCouncillorRoleId) {councillorRoleId = pCouncillorRoleId;}
 
 
-    public boolean isChannelFloor(TextChannel pChannel, DiscordApi pApi, ArrayList<Council> pCouncils, String path) {
-        boolean lResult = false;
-        for(int i = 0; i < pCouncils.size() && !lResult; i++) {
+    public static boolean isChannelFloor(TextChannel pChannel, ArrayList<Council> pCouncils) {
+        System.out.println(pCouncils.size());
+        return pCouncils.stream().anyMatch(lCouncil -> {
             try {
-                StringBuilder lStringBuilder = new StringBuilder();
-                File myObj = new File(path + i + "council.json");
-
-                if(myObj.exists()) {
-                    Scanner myReader = new Scanner(myObj);
-
-                    while (myReader.hasNextLine()) {
-                        String data = myReader.nextLine();
-                        lStringBuilder.append(data);
-                    }
-
-                    myReader.close();
-
-                    String lJson = lStringBuilder.toString();
-                    Gson lGson = new Gson();
-
-                    if(lGson.fromJson(lJson, Council.class).getFloorChannel(pApi).equals(pChannel)) lResult = true;
-                }
-
-            } catch (FileNotFoundException e) {
-                System.out.println("An error occurred.");
-                e.printStackTrace();
+                System.out.println(lCouncil.getServerId() + " - " + pChannel.getMessages(1).get().getNewestMessage().get().getServer().get().getId());
+                System.out.println(lCouncil.floorChannel + " - " + pChannel.getId());
+                return lCouncil.getServerId() == pChannel.getMessages(1).get().getNewestMessage().get().getServer().get().getId() && lCouncil.floorChannel == pChannel.getId();
+            } catch (InterruptedException | ExecutionException e) {
+                System.err.println("Failed to pull server id");
+                return false;
             }
-        }
-        return lResult;
+        });
     }
 
 

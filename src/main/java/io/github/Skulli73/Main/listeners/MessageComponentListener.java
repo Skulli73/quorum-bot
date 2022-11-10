@@ -2,6 +2,9 @@ package io.github.Skulli73.Main.listeners;
 
 import io.github.Skulli73.Main.objects.Council;
 import io.github.Skulli73.Main.objects.Motion;
+import org.javacord.api.entity.message.component.ActionRow;
+import org.javacord.api.entity.message.component.TextInput;
+import org.javacord.api.entity.message.component.TextInputStyle;
 import org.javacord.api.event.interaction.MessageComponentCreateEvent;
 import org.javacord.api.interaction.Interaction;
 import org.javacord.api.interaction.MessageComponentInteraction;
@@ -11,7 +14,8 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Scanner;
 
-import static io.github.Skulli73.Main.Main.*;
+import static io.github.Skulli73.Main.MainQuorum.councils;
+import static io.github.Skulli73.Main.MainQuorum.councilsPath;
 
 public class MessageComponentListener implements MessageComponentCreateListener {
     @Override
@@ -20,81 +24,109 @@ public class MessageComponentListener implements MessageComponentCreateListener 
         String                      customId                    = messageComponentInteraction.getCustomId();
         Interaction                 lInteraction                = lEvent.getInteraction();
 
-        messageComponentInteraction.createImmediateResponder()
-                .setContent("Your Vote has been registered")
-                .respond();
+        boolean isAVote = false;
+        for(int i = 0; i<councils.size(); i++) {
+            Council lCouncil = councils.get(i);
+            if(lCouncil.motionArrayList.size() > lCouncil.currentMotion)
+                if(lCouncil.motionArrayList.get(lCouncil.currentMotion).dmMessages.contains(messageComponentInteraction.getMessage().getIdAsString()))
+                    isAVote = true;
+        }
+        if(isAVote) {
+            messageComponentInteraction.createImmediateResponder()
+                    .setContent("Your Vote has been registered")
+                    .respond();
 
-        String lUserId = lInteraction.getUser().getIdAsString();
-        Motion lMotion   = null;
-        boolean lEnd     = false;
-        Council lCouncil = null;
+            String lUserId = lInteraction.getUser().getIdAsString();
+            Motion lMotion   = null;
+            boolean lEnd     = true;
+            Council lCouncil = councils.stream()
+                                        .filter(c -> c.motionArrayList.size()-1<=c.currentMotion)
+                                        .filter(c -> c.motionArrayList.get(c.currentMotion).dmMessages.contains(messageComponentInteraction.getMessage().getIdAsString()))
+                                        .findFirst()
+                                        .orElse(null);
 
-        int j = 0;
+            if (lCouncil == null) {
+                System.err.println("Failed to find motion");
+                messageComponentInteraction.createImmediateResponder().append("An error has occurred! :frowning: :eggplant: :flushed:").respond();
+                return;
+            }
+            lMotion = lCouncil.motionArrayList.get(lCouncil.currentMotion);
+            int j = 0;
 
-        while(!lEnd) {
-            StringBuilder lJsonBuilder = new StringBuilder();
-            try {
-                File myObj = new File( councilsPath + j + "council.json");
-                if(myObj.exists()){
-                    Scanner myReader = new Scanner(myObj);
-                    while (myReader.hasNextLine()) {
-                        String data = myReader.nextLine();
-                        lJsonBuilder.append(data);
-                    }
-                    myReader.close();
-                    String lJson = lJsonBuilder.toString();
-                    councils.set(j, gson.fromJson(lJson, Council.class));
-                    System.out.println(councils.get(j).motionArrayList.size()-1);
-                    System.out.println(councils.get(j).currentMotion);
-                    if(councils.get(j).motionArrayList.size()-1 >= councils.get(j).currentMotion ) {
-                        System.out.println(lEvent.getMessageComponentInteraction().getMessage().getIdAsString() + "\n" + councils.get(j).motionArrayList.get(councils.get(j).currentMotion).dmMessages);
-                        if(councils.get(j).motionArrayList.get(councils.get(j).currentMotion).dmMessages.contains(lEvent.getMessageComponentInteraction().getMessage().getIdAsString())) {
-                            lMotion = councils.get(j).motionArrayList.get(councils.get(j).currentMotion);
-                            lCouncil = councils.get(j);
+            while(!lEnd) {
+                StringBuilder lJsonBuilder = new StringBuilder();
+                try {
+                    File myObj = new File( councilsPath + j + "council.json");
+                    if(myObj.exists()){
+                        Scanner myReader = new Scanner(myObj);
+                        while (myReader.hasNextLine()) {
+                            String data = myReader.nextLine();
+                            lJsonBuilder.append(data);
                         }
-                    }
-                } else
+                        myReader.close();
+                        String lJson = lJsonBuilder.toString();
+                        System.out.println(councils.get(j).motionArrayList.size()-1);
+                        System.out.println(councils.get(j).currentMotion);
+                        if(councils.get(j).motionArrayList.size()-1 >= councils.get(j).currentMotion ) {
+                            System.out.println(lEvent.getMessageComponentInteraction().getMessage().getIdAsString() + "\n" + councils.get(j).motionArrayList.get(councils.get(j).currentMotion).dmMessages);
+                            if(councils.get(j).motionArrayList.get(councils.get(j).currentMotion).dmMessages.contains(lEvent.getMessageComponentInteraction().getMessage().getIdAsString())) {
+                                lMotion = councils.get(j).motionArrayList.get(councils.get(j).currentMotion);
+                                lCouncil = councils.get(j);
+                            }
+                        }
+                    } else
+                        lEnd = true;
+                } catch (FileNotFoundException e) {
+                    System.out.println("An error occurred.");
+                    e.printStackTrace();
                     lEnd = true;
-            } catch (FileNotFoundException e) {
-                System.out.println("An error occurred.");
-                e.printStackTrace();
-                lEnd = true;
+                }
+
+                j++;
             }
 
-            j++;
+            switch (customId) {
+                case "aye":
+                    assert lMotion != null;
+                    lMotion.ayeVotes.remove(lUserId);
+                    lMotion.nayVotes.remove(lUserId);
+                    lMotion.abstainVotes.remove(lUserId);
+                    lMotion.notVoted.remove(lUserId);
+
+                    lMotion.ayeVotes.add(lUserId);
+                    break;
+                case "nay":
+                    assert lMotion != null;
+                    lMotion.ayeVotes.remove(lUserId);
+                    lMotion.nayVotes.remove(lUserId);
+                    lMotion.abstainVotes.remove(lUserId);
+                    lMotion.notVoted.remove(lUserId);
+
+                    lMotion.nayVotes.add(lUserId);
+                    break;
+                case "abstain":
+                    assert lMotion != null;
+                    lMotion.ayeVotes.remove(lUserId);
+                    lMotion.nayVotes.remove(lUserId);
+                    lMotion.abstainVotes.remove(lUserId);
+                    lMotion.notVoted.remove(lUserId);
+
+
+                    lMotion.abstainVotes.add(lUserId);
+                    break;
+            }
+            assert lCouncil != null;
+            SlashCommandListener.saveMotion(lCouncil, lMotion);
         }
-
-        switch (customId) {
-            case "aye":
-                assert lMotion != null;
-                lMotion.ayeVotes.remove(lUserId);
-                lMotion.nayVotes.remove(lUserId);
-                lMotion.abstainVotes.remove(lUserId);
-                lMotion.notVoted.remove(lUserId);
-
-                lMotion.ayeVotes.add(lUserId);
-                break;
-            case "nay":
-                assert lMotion != null;
-                lMotion.ayeVotes.remove(lUserId);
-                lMotion.nayVotes.remove(lUserId);
-                lMotion.abstainVotes.remove(lUserId);
-                lMotion.notVoted.remove(lUserId);
-
-                lMotion.nayVotes.add(lUserId);
-                break;
-            case "abstain":
-                assert lMotion != null;
-                lMotion.ayeVotes.remove(lUserId);
-                lMotion.nayVotes.remove(lUserId);
-                lMotion.abstainVotes.remove(lUserId);
-                lMotion.notVoted.remove(lUserId);
-
-
-                lMotion.abstainVotes.add(lUserId);
-                break;
+        else {
+                switch (customId) {
+                    case "add_part":
+                        messageComponentInteraction.respondWithModal("add_part_modal" + messageComponentInteraction.getMessage().getId(), "New Part",
+                                ActionRow.of(TextInput.create(TextInputStyle.SHORT, "add_part_modal_text_input", "Title of the Part"))
+                        );
+                        break;
+                        //bills.get(messageComponentInteraction.getMessage().getId()).partArrayList.add();
+                }
         }
-        assert lCouncil != null;
-        SlashCommandListener.saveMotion(lCouncil, lMotion);
     }
 }

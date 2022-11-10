@@ -102,5 +102,39 @@ public class SlashCommandManager {
                         .setEnabledInDms(false)
                         .createGlobal(api)
                         .join();
+        SlashCommand billCommand =
+                SlashCommand.with("bill", "Create a Bill", Arrays.asList(
+                                SlashCommandOption.create(SlashCommandOptionType.STRING, "title", "Title of the Bill", true)
+                        ))
+                        .setEnabledInDms(false)
+                        .createGlobal(api)
+                        .join();
+        SlashCommand billCommandDms =
+                SlashCommand.with("write_bill", "Write your Bills - Only Usable after /bill was done", Arrays.asList(
+                                SlashCommandOption.createWithOptions(SlashCommandOptionType.SUB_COMMAND, "add_part", "Add a Part", Arrays.asList(
+                                        SlashCommandOption.create(SlashCommandOptionType.STRING, "title", "Title of the Part", true),
+                                        SlashCommandOption.create(SlashCommandOptionType.STRING, "bill_message_id", "Id of the Message of the Bill", true)
+                                )),
+                                SlashCommandOption.createWithOptions(SlashCommandOptionType.SUB_COMMAND, "add_division", "Add a Division", Arrays.asList(
+                                        SlashCommandOption.create(SlashCommandOptionType.STRING, "title", "Title of the Division", true),
+                                        SlashCommandOption.create(SlashCommandOptionType.STRING, "bill_message_id", "Id of the Message of the Bill", true)
+                                )),
+                                SlashCommandOption.createWithOptions(SlashCommandOptionType.SUB_COMMAND, "add_section", "Add a Section", Arrays.asList(
+                                        SlashCommandOption.create(SlashCommandOptionType.STRING, "section_title", "Title of the Section", true),
+                                        SlashCommandOption.create(SlashCommandOptionType.STRING, "section_text", "Text of the Section", true),
+                                        SlashCommandOption.create(SlashCommandOptionType.STRING, "bill_message_id", "Id of the Message of the Bill", true)
+                                )),
+                                SlashCommandOption.createWithOptions(SlashCommandOptionType.SUB_COMMAND, "add_subsection", "Add a Sub-Section", Arrays.asList(
+                                        SlashCommandOption.create(SlashCommandOptionType.STRING, "text", "Text of the Sub-Section", true),
+                                        SlashCommandOption.create(SlashCommandOptionType.STRING, "bill_message_id", "Id of the Message of the Bill", true)
+                                )),
+                                SlashCommandOption.createWithOptions(SlashCommandOptionType.SUB_COMMAND, "add_lower_subsection", "Adds a Sub-Section below the current sub-section", Arrays.asList(
+                                        SlashCommandOption.create(SlashCommandOptionType.STRING, "text", "Text of the new Sub-Section", true),
+                                        SlashCommandOption.create(SlashCommandOptionType.STRING, "bill_message_id", "Id of the Message of the Bill", true)
+                                ))
+                        ))
+                        .setEnabledInDms(true)
+                        .createGlobal(api)
+                        .join();
     }
 }

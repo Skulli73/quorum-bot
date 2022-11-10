@@ -1,7 +1,7 @@
 package io.github.Skulli73.Main.commands;
 
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
+import io.github.Skulli73.Main.listeners.SlashCommandListener;
 import io.github.Skulli73.Main.objects.Council;
 import org.javacord.api.DiscordApi;
 import org.javacord.api.entity.channel.TextChannel;
@@ -10,13 +10,11 @@ import org.javacord.api.interaction.SlashCommandInteraction;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.util.Arrays;
 import java.util.Scanner;
 
-import static io.github.Skulli73.Main.Main.councils;
-import static io.github.Skulli73.Main.Main.councilsPath;
+import static io.github.Skulli73.Main.MainQuorum.councils;
+import static io.github.Skulli73.Main.MainQuorum.councilsPath;
 
 public class CreateCouncilCommand {
 
@@ -75,30 +73,9 @@ public class CreateCouncilCommand {
 
         if(!lFail) {
             System.out.println(pApi);
-            councils.add(new Council(lCouncilName,lFloorChannel, lAgendaChannel, lResultChannel,  lCouncillorRole.getId(), interaction.getServer().get().getId(), councils.size()));
-
-            GsonBuilder builder = new GsonBuilder();
-            Gson gson = builder.create();
-            String fileName = councilsPath +(councils.size()-1) + "council.json";
-            try {
-                File file = new File(fileName);
-                if (file.createNewFile()) {
-                    System.out.println("File created: " + file.getName());
-                } else {
-                    System.out.println("File already exists.");
-                }
-            } catch (IOException e) {
-                System.out.println("An error occurred.");
-                e.printStackTrace();
-            }
-            FileWriter myWriter;
-            try {
-                myWriter = new FileWriter(fileName);
-                myWriter.write(gson.toJson(councils.get(councils.size()-1)));
-                myWriter.close();
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
+            Council lCouncil = new Council(lCouncilName,lFloorChannel, lAgendaChannel, lResultChannel,  lCouncillorRole.getId(), interaction.getServer().get().getId(), councils.size());
+            councils.add(lCouncil);
+            SlashCommandListener.saveCouncil(lCouncil);
             interaction.createImmediateResponder().setContent("Your council was successfully created.").respond();
             System.out.println("The following Councils exist as of right now:");
             System.out.println(Arrays.toString(councils.toArray()));

@@ -44,3 +44,4 @@ bin/
 TOKEN
 
 **/councils/*.json
+**/bills/*.json

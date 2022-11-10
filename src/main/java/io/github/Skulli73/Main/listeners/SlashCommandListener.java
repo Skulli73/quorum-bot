@@ -18,25 +18,34 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.concurrent.ExecutionException;
 
-import static io.github.Skulli73.Main.Main.*;
+import static io.github.Skulli73.Main.MainQuorum.*;
 
 public class SlashCommandListener implements SlashCommandCreateListener {
         public static final String[] lTypeOfMajorityArray = new String[]
                 {"Majority Vote", "Majority of the entire Membership", "Majority in the Negative"};
 
-        @Override
-        public void onSlashCommandCreate(SlashCommandCreateEvent event) {
-            SlashCommandInteraction interaction = event.getSlashCommandInteraction();
-            if(interaction.getCommandName().equals("createcouncil"))                        new CreateCouncilCommand(interaction, lApi);
-            if(interaction.getCommandName().equals("motion"))                               new MotionCommand(interaction, lApi);
-            if(interaction.getCommandName().equals("move"))                                 new MoveCommand(interaction, lApi);
-            if(interaction.getCommandName().equals("end_vote"))                             new EndVoteCommand(interaction, lApi);
-            if(interaction.getCommandName().equals("withdraw"))                             new WithdrawCommand(interaction, lApi);
-            if(interaction.getCommandName().equals("kill_motion"))                          new KillCommand(interaction, lApi);
-            if(interaction.getFullCommandName().equals("config default_majority"))          new ConfigDefaultMajorityCommand(interaction, lApi);
-            if(interaction.getFullCommandName().equals("config motion_timeout"))            new ConfigMotionTimeout(interaction, lApi);
-            if(interaction.getFullCommandName().equals("config quorum"))                    new ConfigQuorum(interaction, lApi);
-        }
+    @Override
+    public void onSlashCommandCreate(SlashCommandCreateEvent event) {
+        SlashCommandInteraction interaction = event.getSlashCommandInteraction();
+        if (interaction.getCommandName().equals("createcouncil")) new CreateCouncilCommand(interaction, lApi);
+        if (interaction.getCommandName().equals("motion")) new MotionCommand(interaction, lApi);
+        if (interaction.getCommandName().equals("move")) new MoveCommand(interaction, lApi);
+        if (interaction.getCommandName().equals("end_vote")) new EndVoteCommand(interaction, lApi);
+        if (interaction.getCommandName().equals("withdraw")) new WithdrawCommand(interaction, lApi);
+        if (interaction.getCommandName().equals("kill_motion")) new KillCommand(interaction, lApi);
+        if (interaction.getCommandName().equals("bill")) new BillCommand(interaction, lApi);
+        if (interaction.getFullCommandName().equals("config default_majority"))
+            new ConfigDefaultMajorityCommand(interaction, lApi);
+        if (interaction.getFullCommandName().equals("config motion_timeout"))
+            new ConfigMotionTimeout(interaction, lApi);
+        if (interaction.getFullCommandName().equals("config quorum")) new ConfigQuorum(interaction, lApi);
+        if (interaction.getFullCommandName().equals("write_bill add_part"))
+            new WriteBillAddPartCommand(interaction, lApi);
+        if (interaction.getFullCommandName().equals("write_bill add_division"))
+            new WriteBillAddDivsionCommand(interaction, lApi);
+        if (interaction.getFullCommandName().equals("write_bill add_section"))
+            new WriteBillAddSectionCommand(interaction, lApi);
+    }
 
         public static void saveMotion(Council lCouncil, Motion lMotion) {
             lCouncil.motionArrayList.set(lMotion.id, lMotion);
@@ -91,19 +100,16 @@ public class SlashCommandListener implements SlashCommandCreateListener {
 
 
     public static void saveCouncil(Council pCouncil) {
-            councils.set((int)pCouncil.getId(), pCouncil);
-            GsonBuilder builder = new GsonBuilder();
-            Gson gson = builder.create();
-            for(int i = 0; i<councils.size(); i++) {
-                String fileName = councilsPath + i + "council.json";
-                FileWriter myWriter;
-                try {
-                    myWriter = new FileWriter(fileName);
-                    myWriter.write(gson.toJson(councils.get(i)));
-                    myWriter.close();
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
-            }
+        councils.set((int) pCouncil.getId(), pCouncil);
+        GsonBuilder builder = new GsonBuilder();
+        Gson gson = builder.setPrettyPrinting().create();
+        String fileName = councilsPath + "council.json";
+        FileWriter myWriter;
+        try {
+            myWriter = new FileWriter(fileName);
+            myWriter.write(gson.toJson(councils));
+            myWriter.close();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
     }

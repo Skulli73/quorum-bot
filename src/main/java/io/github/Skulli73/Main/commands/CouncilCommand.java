@@ -4,22 +4,14 @@ import io.github.Skulli73.Main.objects.Council;
 import org.javacord.api.DiscordApi;
 import org.javacord.api.interaction.SlashCommandInteraction;
 
-import static io.github.Skulli73.Main.Main.councils;
-import static io.github.Skulli73.Main.Main.councilsPath;
+import static io.github.Skulli73.Main.MainQuorum.councils;
 
 public abstract class CouncilCommand {
     Council council;
     public CouncilCommand (SlashCommandInteraction pInteraction, DiscordApi pApi) {
-        if(councils.size() != 0) {
-            if(councils.get(0).isChannelFloor(pInteraction.getChannel().get(), pApi, councils, councilsPath)) {
-                council = councils.get(0).councilByFloorChannel(pInteraction.getChannel().get(), pApi, councils, councilsPath);
-                this.executeCommand(pInteraction, pApi);
-            }
-            else
-                pInteraction
-                        .createImmediateResponder()
-                        .setContent("This is not a floor channel.")
-                        .respond();
+        if(Council.isChannelFloor(pInteraction.getChannel().get(), councils)) {
+            council = Council.councilByFloorChannel(pInteraction.getChannel().get(), councils);
+            this.executeCommand(pInteraction, pApi);
         }
         else
             pInteraction

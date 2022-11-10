@@ -2,7 +2,7 @@ package io.github.Skulli73.Main.objects;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import io.github.Skulli73.Main.Main;
+import io.github.Skulli73.Main.MainQuorum;
 import io.github.Skulli73.Main.listeners.SlashCommandListener;
 import org.javacord.api.DiscordApi;
 import org.javacord.api.entity.channel.TextChannel;
@@ -19,8 +19,8 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.ExecutionException;
 
-import static io.github.Skulli73.Main.Main.councils;
-import static io.github.Skulli73.Main.Main.councilsPath;
+import static io.github.Skulli73.Main.MainQuorum.councils;
+import static io.github.Skulli73.Main.MainQuorum.councilsPath;
 import static io.github.Skulli73.Main.listeners.SlashCommandListener.lTypeOfMajorityArray;
 
 public class Motion {
@@ -72,7 +72,7 @@ public class Motion {
 
     public void endMotionVote(DiscordApi pApi, Council pCouncil, SlashCommandInteraction pInteraction, Object[] pCouncillors) {
         if(!this.completed) {
-            Main.timers.get((int)pCouncil.getId()).cancel();
+            MainQuorum.timers.get((int)pCouncil.getId()).cancel();
             EmbedBuilder embed = null;
             try {
                 embed = new EmbedBuilder()
@@ -249,8 +249,8 @@ public class Motion {
                 }
             }
         };
-        Main.timers.set((int)pCouncil.getId(), new Timer());
-        Main.timers.get((int)pCouncil.getId()).schedule(
+        MainQuorum.timers.set((int)pCouncil.getId(), new Timer());
+        MainQuorum.timers.get((int)pCouncil.getId()).schedule(
                 timerTask,
                 (int)(pCouncil.timeOutTime* 3600000)
         );

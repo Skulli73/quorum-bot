@@ -10,7 +10,7 @@ import org.javacord.api.interaction.SlashCommandInteraction;
 import java.awt.*;
 import java.util.concurrent.ExecutionException;
 
-import static io.github.Skulli73.Main.Main.timers;
+import static io.github.Skulli73.Main.MainQuorum.timers;
 
 public class WithdrawCommand extends CouncilCommand{
     public WithdrawCommand (SlashCommandInteraction pInteraction, DiscordApi pApi) {

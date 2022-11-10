@@ -15,8 +15,7 @@ import org.javacord.api.interaction.SlashCommandInteraction;
 import java.awt.*;
 import java.util.concurrent.ExecutionException;
 
-import static io.github.Skulli73.Main.Main.councils;
-import static io.github.Skulli73.Main.Main.councilsPath;
+import static io.github.Skulli73.Main.MainQuorum.councils;
 import static io.github.Skulli73.Main.listeners.SlashCommandListener.lTypeOfMajorityArray;
 
 public class MoveCommand {
@@ -27,8 +26,8 @@ public class MoveCommand {
         lApi = pApi;
 
         if(councils.size()!=0) {
-            if(councils.get(0).isChannelFloor(interaction.getChannel().get(), lApi, councils, councilsPath)) {
-                Council lCouncil = councils.get(0).councilByFloorChannel(interaction.getChannel().get(), lApi, councils, councilsPath);
+            if(councils.get(0).isChannelFloor(interaction.getChannel().get(), councils)) {
+                Council lCouncil = councils.get(0).councilByFloorChannel(interaction.getChannel().get(), councils);
                 Motion lMotion = lCouncil.motionArrayList.get(lCouncil.currentMotion);
                 if(!lMotion.isMoved) {
                     if(lApi.getRoleById(lCouncil.getProposeRoleId()).get().hasUser(interaction.getUser())) {
