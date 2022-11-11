@@ -40,7 +40,8 @@ public class Motion {
 
     public boolean                      isMoved = false;
 
-    public TimerTask                    timerTask;
+
+   // public TimerTask                    timerTask;
 
 
 
@@ -221,7 +222,7 @@ public class Motion {
     }
 
     public void startMotionVote(DiscordApi pApi, Council pCouncil, SlashCommandInteraction pInteraction, Object[] pCouncillors) {
-        timerTask = new java.util.TimerTask() {
+        TimerTask timerTask = new java.util.TimerTask() {
 
             @Override
             public void run() {
