@@ -21,8 +21,8 @@ import java.util.concurrent.ExecutionException;
 import static io.github.Skulli73.Main.MainQuorum.*;
 
 public class SlashCommandListener implements SlashCommandCreateListener {
-        public static final String[] lTypeOfMajorityArray = new String[]
-                {"Majority Vote", "Majority of the entire Membership", "Majority in the Negative"};
+    public static final String[] lTypeOfMajorityArray = new String[]
+            {"Majority Vote", "Majority of the entire Membership", "Majority in the Negative"};
 
     @Override
     public void onSlashCommandCreate(SlashCommandCreateEvent event) {
@@ -47,42 +47,50 @@ public class SlashCommandListener implements SlashCommandCreateListener {
             new WriteBillAddSectionCommand(interaction, lApi);
     }
 
-        public static void saveMotion(Council lCouncil, Motion lMotion) {
-            lCouncil.motionArrayList.set(lMotion.id, lMotion);
-            saveCouncil(lCouncil);
-        }
+    public static void saveMotion(Council lCouncil, Motion lMotion) {
+        lCouncil.motionArrayList.set(lMotion.id, lMotion);
+        saveCouncil(lCouncil);
+    }
 
-        public static void createMotion(SlashCommandInteraction pInteraction) throws ExecutionException, InterruptedException {
-            Council lCouncil = councils.get(0).councilByFloorChannel(pInteraction.getChannel().get(), lApi, councils, councilsPath);
+    public static void createMotion(SlashCommandInteraction pInteraction) throws ExecutionException, InterruptedException {
+        Council lCouncil = councils.get(0).councilByFloorChannel(pInteraction.getChannel().get(), councils);
 
-            String lMotionName;
-            double lMajority = lCouncil.standardMajority;
-            int lTypeOfMajority = lCouncil.standardMajorityType;
-            if(pInteraction.getArguments().size() > 1 && pInteraction.getArguments().get(1).getName().equals("title"))
-            {lMotionName = "Motion #" + (lCouncil.motionArrayList.size()+1) + ": " +  pInteraction.getArguments().get(1).getStringValue().get();}
-            else if(pInteraction.getArguments().size() > 2 && pInteraction.getArguments().get(2).getName().equals("title"))
-            {lMotionName = "Motion #" + (lCouncil.motionArrayList.size()+1) + ": " +  pInteraction.getArguments().get(2).getStringValue().get();}
-            else if(pInteraction.getArguments().size() > 3 && pInteraction.getArguments().get(3).getName().equals("title"))
-            {lMotionName = "Motion #" + (lCouncil.motionArrayList.size()+1) + ": " +  pInteraction.getArguments().get(3).getStringValue().get();}
-            else
-                lMotionName = "Motion #" + (lCouncil.motionArrayList.size()+1);
+        String lMotionName;
+        double lMajority = lCouncil.standardMajority;
+        int lTypeOfMajority = lCouncil.standardMajorityType;
+        if (pInteraction.getArguments().size() > 1 && pInteraction.getArguments().get(1).getName().equals("title")) {
+            lMotionName = "Motion #" + (lCouncil.motionArrayList.size() + 1) + ": " + pInteraction.getArguments().get(1).getStringValue().get();
+        } else if (pInteraction.getArguments().size() > 2 && pInteraction.getArguments().get(2).getName().equals("title")) {
+            lMotionName = "Motion #" + (lCouncil.motionArrayList.size() + 1) + ": " + pInteraction.getArguments().get(2).getStringValue().get();
+        } else if (pInteraction.getArguments().size() > 3 && pInteraction.getArguments().get(3).getName().equals("title")) {
+            lMotionName = "Motion #" + (lCouncil.motionArrayList.size() + 1) + ": " + pInteraction.getArguments().get(3).getStringValue().get();
+        } else
+            lMotionName = "Motion #" + (lCouncil.motionArrayList.size() + 1);
 
-            if(pInteraction.getArguments().size()>1)if(pInteraction.getArguments().get(1).getName().equals("majority"))
-            {lMajority = pInteraction.getArguments().get(1).getDecimalValue().get();}
-            else if(pInteraction.getArguments().size()>2)if(pInteraction.getArguments().get(2).getName().equals("majority"))
-            {lMajority = pInteraction.getArguments().get(2).getDecimalValue().get();}
-            else if(pInteraction.getArguments().size()>3)if(pInteraction.getArguments().get(3).getName().equals("majority"))
-            {lMajority = pInteraction.getArguments().get(3).getDecimalValue().get();}
+        if (pInteraction.getArguments().size() > 1)
+            if (pInteraction.getArguments().get(1).getName().equals("majority")) {
+                lMajority = pInteraction.getArguments().get(1).getDecimalValue().get();
+            } else if (pInteraction.getArguments().size() > 2)
+                if (pInteraction.getArguments().get(2).getName().equals("majority")) {
+                    lMajority = pInteraction.getArguments().get(2).getDecimalValue().get();
+                } else if (pInteraction.getArguments().size() > 3)
+                    if (pInteraction.getArguments().get(3).getName().equals("majority")) {
+                        lMajority = pInteraction.getArguments().get(3).getDecimalValue().get();
+                    }
 
-            if(pInteraction.getArguments().size()>1)if(pInteraction.getArguments().get(1).getName().equals("type_of_majority"))
-            {lTypeOfMajority = pInteraction.getArguments().get(1).getDecimalValue().get().intValue();}
-            else if(pInteraction.getArguments().size()>2)if(pInteraction.getArguments().get(2).getName().equals("type_of_majority"))
-            {lTypeOfMajority = pInteraction.getArguments().get(2).getDecimalValue().get().intValue();}
-            else if(pInteraction.getArguments().size()>3)if(pInteraction.getArguments().get(3).getName().equals("type_of_majority"))
-            {lTypeOfMajority = pInteraction.getArguments().get(3).getDecimalValue().get().intValue();}
-            String lMotionDesc = pInteraction.getArguments().get(0).getStringValue().get();
-            createMotionEnd(pInteraction.getUser(), lCouncil, lMotionName, lMajority, lTypeOfMajority, lMotionDesc, pInteraction.getServer().get());
-        }
+        if (pInteraction.getArguments().size() > 1)
+            if (pInteraction.getArguments().get(1).getName().equals("type_of_majority")) {
+                lTypeOfMajority = pInteraction.getArguments().get(1).getDecimalValue().get().intValue();
+            } else if (pInteraction.getArguments().size() > 2)
+                if (pInteraction.getArguments().get(2).getName().equals("type_of_majority")) {
+                    lTypeOfMajority = pInteraction.getArguments().get(2).getDecimalValue().get().intValue();
+                } else if (pInteraction.getArguments().size() > 3)
+                    if (pInteraction.getArguments().get(3).getName().equals("type_of_majority")) {
+                        lTypeOfMajority = pInteraction.getArguments().get(3).getDecimalValue().get().intValue();
+                    }
+        String lMotionDesc = pInteraction.getArguments().get(0).getStringValue().get();
+        createMotionEnd(pInteraction.getUser(), lCouncil, lMotionName, lMajority, lTypeOfMajority, lMotionDesc, pInteraction.getServer().get());
+    }
 
     public static void createMotionEnd(User pUser, Council pCouncil, String pMotionName, double pMajority, int pTypeOfMajority, String pMotionDesc, Server pServer) throws InterruptedException, ExecutionException {
         Motion lMotion = new Motion(pMotionName, pMotionDesc, pUser.getId(),
@@ -92,7 +100,7 @@ public class SlashCommandListener implements SlashCommandCreateListener {
                                 .setDescription(pMotionDesc)
                                 .setColor(Color.RED)
                                 .setAuthor(pUser.getDisplayName(pServer), pUser.getAvatar().getUrl().toString(), pUser.getAvatar())
-                                .setFooter(lTypeOfMajorityArray[pTypeOfMajority] + ", " +  pMajority *100 + "%")
+                                .setFooter(lTypeOfMajorityArray[pTypeOfMajority] + ", " + pMajority * 100 + "%")
                 ).send(pCouncil.getAgendaChannel(lApi)).get().getId(), pMajority, pTypeOfMajority, pCouncil.motionArrayList.size());
         pCouncil.motionArrayList.add(lMotion);
         saveCouncil(pCouncil);
@@ -113,3 +121,4 @@ public class SlashCommandListener implements SlashCommandCreateListener {
             throw new RuntimeException(e);
         }
     }
+}

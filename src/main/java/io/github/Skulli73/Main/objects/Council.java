@@ -39,6 +39,30 @@ public class Council {
         this(pName, pFloorChannel.getId(), pAgendaChannel.getId(), pResultChannel.getId(), pCouncillorRoleId, pServer, pId);
     }
 
+    public Council(String pName, long pFloorChannel, long pAgendaChannel, long pResultChannel, long pCouncillorRoleId, long pServer, int pId) {
+        name                = pName;
+        floorChannel        = pFloorChannel;
+        agendaChannel       = pAgendaChannel;
+        resultChannel       = pResultChannel;
+        id                  = pId;
+        serverId            = pServer;
+        councillorRoleId    = pCouncillorRoleId;
+        proposeRoleId       = councillorRoleId;
+        motionArrayList     = new ArrayList<>();
+        standardMajority = 0.501;
+        standardMajorityType = 0;
+        timeOutTime = 24;
+        nextMotion = 1;
+        currentMotion = 0;
+        quorum = 0.5;
+        absentionsCountToQuorum = true;
+        MainQuorum.timers.add(id, null);
+        firstReadingMajority = 0.501;
+        firstReadingTypeOfMajority = 2;
+        amendmentMajority = 0.501;
+        amendmentTypeOfMajority = 0;
+    }
+
 
     // Getters & Setters
 
@@ -74,36 +98,15 @@ public class Council {
     }
 
 
-    public Council councilByFloorChannel(TextChannel pChannel, DiscordApi pApi, ArrayList<Council> pCouncils, String path) {
-        Council lResult = null;
-        for(int i = 0; i < pCouncils.size(); i++) {
+    public static Council councilByFloorChannel(TextChannel pChannel, ArrayList<Council> pCouncils) {
+        return pCouncils.stream().filter(lCouncil -> {
             try {
-                StringBuilder lStringBuilder = new StringBuilder();
-                File myObj = new File(path + i + "council.json");
-
-                if(myObj.exists()){
-                    Scanner myReader = new Scanner(myObj);
-
-                    while (myReader.hasNextLine()) {
-                        String data = myReader.nextLine();
-                        lStringBuilder.append(data);
-                    }
-
-                    myReader.close();
-
-                    String lJson = lStringBuilder.toString();
-                    Gson lGson = new Gson();
-
-                    if(lGson.fromJson(lJson, Council.class).getFloorChannel(pApi).equals(pChannel)) lResult = lGson.fromJson(lJson, Council.class);
-                }
-
-            } catch (FileNotFoundException e) {
-                System.out.println("An error occurred.");
-                e.printStackTrace();
+                return lCouncil.getServerId() == pChannel.getMessages(1).get().getNewestMessage().get().getServer().get().getId() && lCouncil.floorChannel == pChannel.getId();
+            } catch (InterruptedException | ExecutionException e) {
+                System.err.println("Failed to pull server id");
+                return false;
             }
-        }
-
-        return lResult;
+        }).findFirst().orElse(null);
     }
 
     public void toNextMotion () {

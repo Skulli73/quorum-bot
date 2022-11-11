@@ -7,6 +7,7 @@ import io.github.Skulli73.Main.managers.SlashCommandManager;
 import io.github.Skulli73.Main.objects.*;
 import org.javacord.api.DiscordApi;
 import org.javacord.api.DiscordApiBuilder;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -28,7 +29,7 @@ public class MainQuorum {
 
     public static Gson                gson                 = new Gson();
 
-    public static DiscordApi    lApi;
+    public static @Nullable DiscordApi    lApi;
 
     public static void main(String[] args) {
         new MainQuorum();
@@ -82,6 +83,18 @@ public class MainQuorum {
                 for (JsonElement lJsonElement : JsonParser.parseString(lJsonBuilder.toString()).getAsJsonArray()) {
                     JsonObject lJsonObject = lJsonElement.getAsJsonObject();
                     Council lCouncil = new Council(lJsonObject.get("name").getAsString(), lJsonObject.get("floorChannel").getAsLong(), lJsonObject.get("agendaChannel").getAsLong(), lJsonObject.get("resultChannel").getAsLong(), lJsonObject.get("councillorRoleId").getAsLong(), lJsonObject.get("serverId").getAsLong(), lJsonObject.get("id").getAsInt());
+                    lCouncil.currentMotion = lJsonObject.get("currentMotion").getAsInt();
+                    lCouncil.nextMotion = lJsonObject.get("nextMotion").getAsInt();
+                    lCouncil.standardMajorityType = lJsonObject.get("standardMajorityType").getAsInt();
+                    lCouncil.quorum = lJsonObject.get("quorum").getAsDouble();
+                    lCouncil.standardMajority = lJsonObject.get("standardMajority").getAsDouble();
+                    lCouncil.firstReadingMajority = lJsonObject.get("firstReadingMajority").getAsDouble();
+                    lCouncil.firstReadingTypeOfMajority = lJsonObject.get("firstReadingTypeOfMajority").getAsInt();
+                    lCouncil.amendmentMajority = lJsonObject.get("amendmentMajority").getAsDouble();
+                    lCouncil.amendmentTypeOfMajority = lJsonObject.get("amendmentTypeOfMajority").getAsInt();
+                    lCouncil.absentionsCountToQuorum = lJsonObject.get("absentionsCountToQuorum").getAsBoolean();
+                    lCouncil.timeOutTime = lJsonObject.get("timeOutTime").getAsDouble();
+
                     councils.add(lCouncil);
                     for (JsonElement lJsonElement2 : lJsonObject.get("motionArrayList").getAsJsonArray()) {
                         final JsonObject lJsonObject2 = lJsonElement2.getAsJsonObject();
