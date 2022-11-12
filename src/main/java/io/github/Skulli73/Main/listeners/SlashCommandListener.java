@@ -45,6 +45,8 @@ public class SlashCommandListener implements SlashCommandCreateListener {
             new WriteBillAddDivsionCommand(interaction, lApi);
         if (interaction.getFullCommandName().equals("write_bill add_section"))
             new WriteBillAddSectionCommand(interaction, lApi);
+        if (interaction.getFullCommandName().equals("write_bill add_subsection"))
+            new WriteBillAddSubSectionCommand(interaction, lApi);
     }
 
     public static void saveMotion(Council lCouncil, Motion lMotion) {

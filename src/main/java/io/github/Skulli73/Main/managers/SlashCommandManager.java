@@ -126,11 +126,8 @@ public class SlashCommandManager {
                                 )),
                                 SlashCommandOption.createWithOptions(SlashCommandOptionType.SUB_COMMAND, "add_subsection", "Add a Sub-Section", Arrays.asList(
                                         SlashCommandOption.create(SlashCommandOptionType.STRING, "text", "Text of the Sub-Section", true),
-                                        SlashCommandOption.create(SlashCommandOptionType.STRING, "bill_message_id", "Id of the Message of the Bill", true)
-                                )),
-                                SlashCommandOption.createWithOptions(SlashCommandOptionType.SUB_COMMAND, "add_lower_subsection", "Adds a Sub-Section below the current sub-section", Arrays.asList(
-                                        SlashCommandOption.create(SlashCommandOptionType.STRING, "text", "Text of the new Sub-Section", true),
-                                        SlashCommandOption.create(SlashCommandOptionType.STRING, "bill_message_id", "Id of the Message of the Bill", true)
+                                        SlashCommandOption.create(SlashCommandOptionType.STRING, "bill_message_id", "Id of the Message of the Bill", true),
+                                        SlashCommandOption.create(SlashCommandOptionType.LONG, "level_of_subsection", "How far down this sub section is, e.g 1 means a sub-subsection and 3 a sub-sub-sub-subsection", true)
                                 ))
                         ))
                         .setEnabledInDms(true)

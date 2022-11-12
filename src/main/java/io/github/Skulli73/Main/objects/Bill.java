@@ -1,6 +1,7 @@
 package io.github.Skulli73.Main.objects;
 
 import com.google.gson.annotations.Expose;
+import io.github.Skulli73.Main.MainQuorum;
 import org.javacord.api.entity.message.MessageBuilder;
 import org.javacord.api.entity.message.embed.EmbedBuilder;
 
@@ -46,20 +47,23 @@ public class Bill {
             for(int j = 0; j<lPart.divisionArrayList.size(); j++) {
                 Division lDivision = lPart.divisionArrayList.get(j);
                 if(j!=0) {
-                    lStringBuilder.append("\n   **").append(lDivision.title).append("**");
+                    lStringBuilder.append("\n**").append(lDivision.title).append("**");
                 }
                 for(int k = 0; k<lDivision.sectionArrayList.size(); k++) {
                     Section lSection = lDivision.sectionArrayList.get(k);
-                    lStringBuilder.append("\n      **").append(k + 1).append(" ").append(lSection.title).append("**").append("\n      ").append(lSection.desc);
+                    if(k!=0) {
+                        lStringBuilder.append("\n**").append(k).append(" ").append(lSection.title).append("**").append("\n").append(lSection.desc);
+                    }
                     for(int l = 0; l<lSection.subSectionArrayList.size(); l++) {
                         SubSection lSubSection = lSection.subSectionArrayList.get(l);
-                        lStringBuilder.append("\n         (").append(l+1).append(")").append(" ").append(lSubSection.desc);
-                        lStringBuilder = lSubSection.getSubSubSectionsStringBuilder(lStringBuilder, 0);
+                        lStringBuilder.append("\n(").append(l+1).append(")").append(" ").append(lSubSection.desc);
+                        lStringBuilder = lSubSection.getSubSubSectionsStringBuilder(lStringBuilder, 1);
                     }
                 }
             }
         }
         lEmbedBuilder.setDescription(lStringBuilder.toString());
+        System.out.println("Current bill:" + lStringBuilder.toString());
         lEmbedBuilder.setFooter("Message id: " + messageId);
         return lEmbedBuilder;
     }
@@ -67,9 +71,14 @@ public class Bill {
     public void update() {
         try {
             lApi.getMessageById(messageId, lApi.getUserById(initiatorId).get().openPrivateChannel().get()).get().edit(toEmbed());
+            MainQuorum.saveBills();
         } catch (InterruptedException | ExecutionException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public static Object getLastObject(ArrayList pArrayList) {
+        return pArrayList.get(pArrayList.size()-1);
     }
 
     //public MessageBuilder updateMessage(boolean isSubSection) {

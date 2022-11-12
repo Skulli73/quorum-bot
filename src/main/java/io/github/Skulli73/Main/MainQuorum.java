@@ -194,7 +194,7 @@ public class MainQuorum {
                         Section lSection = new Section(lJsonObject4.get("title").getAsString(), lJsonObject4.get("desc").getAsString());
                         lDivision.sectionArrayList.add(lSection);
                         lSection.subSectionArrayList = new ArrayList<>();
-                        for (JsonElement pJsonElement4 : lJsonObject2.get("subSectionArrayList").getAsJsonArray()) {
+                        for (JsonElement pJsonElement4 : lJsonObject4.get("subSectionArrayList").getAsJsonArray()) {
                             JsonObject lJsonObject5 = pJsonElement4.getAsJsonObject();
                             SubSection lSubSection = new SubSection(lJsonObject5.get("desc").getAsString());
                             lSection.subSectionArrayList.add(lSubSection);
