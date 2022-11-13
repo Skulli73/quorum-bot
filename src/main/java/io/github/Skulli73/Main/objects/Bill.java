@@ -27,12 +27,34 @@ public class Bill {
     @Expose()
     public ArrayList<Part>  partArrayList;
 
+    @Expose
+    public boolean          draftFinished;
+
+    @Expose
+    public boolean          firstReadingFinished;
+
+    @Expose
+    public boolean          amendmentsFinished;
+
+    @Expose
+    public boolean          thirdReadingFinished;
+
+    @Expose
+    public double          majority;
+
+    @Expose
+    public int          typeOfMajority;
+
     public Bill(String pTitle, int pCouncilId, long pInitiatorId) {
         title           =pTitle;
         councilId       =pCouncilId;
         partArrayList = new ArrayList<Part>();
         partArrayList.add(new Part(""));
         initiatorId = pInitiatorId;
+        draftFinished = false;
+        firstReadingFinished = false;
+        amendmentsFinished = true;
+        thirdReadingFinished = true;
     }
 
     public EmbedBuilder toEmbed(String pDesc) {
@@ -46,7 +68,7 @@ public class Bill {
         if(pEditor)
             return toEmbed(toString());
         else
-            return toEmbed(toString().replace("0." , ""));
+            return toEmbed(toString().replaceAll("0." , ""));
     }
     public String toString() {
         StringBuilder lStringBuilder = new StringBuilder();

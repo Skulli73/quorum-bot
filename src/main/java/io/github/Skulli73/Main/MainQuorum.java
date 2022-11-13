@@ -178,6 +178,12 @@ public class MainQuorum {
             Bill lBill = new Bill(lJsonObject.get("title").getAsString(), lJsonObject.get("councilId").getAsInt(), lJsonObject.get("initiatorId").getAsLong());
             lHashmap.put(entry.getKey(), lBill);
             lBill.messageId = lJsonObject.get("messageId").getAsLong();
+            lBill.draftFinished = lJsonObject.get("draftFinished").getAsBoolean();
+            lBill.firstReadingFinished = lJsonObject.get("firstReadingFinished").getAsBoolean();
+            lBill.thirdReadingFinished = lJsonObject.get("thirdReadingFinished").getAsBoolean();
+            lBill.amendmentsFinished = lJsonObject.get("amendmentsFinished").getAsBoolean();
+            lBill.majority = lJsonObject.get("majority").getAsDouble();
+            lBill.typeOfMajority = lJsonObject.get("typeOfMajority").getAsInt();
             lBill.partArrayList = new ArrayList<Part>();
             for (JsonElement pJsonElement : lJsonObject.get("partArrayList").getAsJsonArray()) {
                 JsonObject lJsonObject2 = pJsonElement.getAsJsonObject();

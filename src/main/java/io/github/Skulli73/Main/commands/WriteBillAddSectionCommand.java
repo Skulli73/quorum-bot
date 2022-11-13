@@ -9,11 +9,16 @@ import org.javacord.api.interaction.SlashCommandInteraction;
 
 import static io.github.Skulli73.Main.MainQuorum.bills;
 
-public class WriteBillAddSectionCommand {
+public class WriteBillAddSectionCommand extends WriteBillCommand{
     public WriteBillAddSectionCommand(SlashCommandInteraction pInteraction, DiscordApi pApi) {
+        super(pInteraction, pApi);
+    }
+
+    @Override
+    public void executeCommand(SlashCommandInteraction pInteraction, DiscordApi pApi) {
         String lMessageId = pInteraction.getOptionByName("add_section").get().getOptionStringValueByName("bill_message_id").get();
         ((Division)Bill.getLastObject(((Part)Bill.getLastObject(bills.get(lMessageId).partArrayList)).divisionArrayList))
-        .sectionArrayList
+                .sectionArrayList
                 .add(new Section(pInteraction.getOptionByName("add_section").get().getOptionStringValueByName("section_title").get(), pInteraction.getOptionByName("add_section").get().getOptionStringValueByName("section_text").get()));
         bills.get(lMessageId).update();
     }
