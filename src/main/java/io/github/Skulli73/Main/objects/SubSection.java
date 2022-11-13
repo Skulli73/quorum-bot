@@ -19,11 +19,12 @@ public class SubSection {
             return subSectionArrayList.size()>0;
         } else return false;
     }
-    public StringBuilder getSubSubSectionsStringBuilder(StringBuilder pStringBuilder, int pLevel) {
+    public StringBuilder getSubSubSectionsStringBuilder(StringBuilder pStringBuilder, int pLevel, String pPrefix) {
         for(int i = 0; i<subSectionArrayList.size(); i++) {
-            pStringBuilder.append("\n").append("   ".repeat(Math.max(0, pLevel))).append("(").append(i+1).append(")").append(" ").append(subSectionArrayList.get(i).desc);
+            String lPrefix = pPrefix + "." + (i+1);
+            pStringBuilder.append("\n").append("   ".repeat(Math.max(0, pLevel))).append("(").append(lPrefix).append(")").append(" ").append(subSectionArrayList.get(i).desc);
             if(subSectionArrayList.get(i).hasSubSections()) {
-                pStringBuilder = subSectionArrayList.get(i).getSubSubSectionsStringBuilder(pStringBuilder, pLevel+1);
+                pStringBuilder = subSectionArrayList.get(i).getSubSubSectionsStringBuilder(pStringBuilder, pLevel+1, lPrefix);
             }
         }
         return pStringBuilder;
