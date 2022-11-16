@@ -6,6 +6,8 @@ import org.javacord.api.DiscordApi;
 import org.javacord.api.interaction.SlashCommandInteraction;
 import org.javacord.api.interaction.SlashCommandInteractionOption;
 
+import java.util.Arrays;
+
 import static io.github.Skulli73.Main.MainQuorum.bills;
 
 public class WriteAmendmentOmit extends WriteAmendmentCommand{
@@ -18,22 +20,25 @@ public class WriteAmendmentOmit extends WriteAmendmentCommand{
         SlashCommandInteractionOption lSlashCommandInteractionOption = pInteraction.getOptions().get(0);
         int lPartId = Math.toIntExact(lSlashCommandInteractionOption.getOptionLongValueByName("part_id").get());
         if(lPartId < bill.partArrayList.size()) {
+            System.out.println("Part Id: " + lPartId);
             if(lSlashCommandInteractionOption.getOptionLongValueByName("division_id").isPresent()) {
-                int lDivisionId = Math.toIntExact(lSlashCommandInteractionOption.getOptionLongValueByName("part_id").get());
-
+                int lDivisionId = Math.toIntExact(lSlashCommandInteractionOption.getOptionLongValueByName("division_id").get());
+                System.out.println("Division Id: " + lDivisionId);
                     if(lDivisionId < bill.partArrayList.get(lPartId).divisionArrayList.size()) {
                         if(lSlashCommandInteractionOption.getOptionLongValueByName("section_id").isPresent()) {
                             int lSectionId = Math.toIntExact(lSlashCommandInteractionOption.getOptionLongValueByName("section_id").get());
-
+                            System.out.println("Section Id: " + lSectionId);
                             if(lDivisionId < bill.partArrayList.get(lPartId).divisionArrayList.get(lDivisionId).sectionArrayList.size()) {
-                                if(lSlashCommandInteractionOption.getOptionLongValueByName("sub_section_id").isPresent()) {
-                                    String lSubSectionIdString = lSlashCommandInteractionOption.getOptionStringValueByName("section_id").get();
+                                if(lSlashCommandInteractionOption.getOptionStringValueByName("sub_section_id").isPresent()) {
+                                    String lSubSectionIdString = lSlashCommandInteractionOption.getOptionStringValueByName("sub_section_id").get();
+                                    System.out.println("Sub-Section Id as String: " + lSubSectionIdString);
                                     String[] lSubSectionIdStringArray = lSubSectionIdString.split("\\.");
+                                    System.out.println("Sub-Section Id as Array: " + Arrays.toString(lSubSectionIdStringArray));
                                     int[] lSubSectionIdIntArray = new int[lSubSectionIdStringArray.length];
                                     boolean lValid = true;
-                                    for(int i = 0; i<lSubSectionIdString.length(); i++) {
+                                    for(int i = 0; i<lSubSectionIdStringArray.length; i++) {
                                         try {
-                                            lSubSectionIdIntArray[i] = Integer.parseInt(lSubSectionIdStringArray[i]);
+                                            lSubSectionIdIntArray[i] = Integer.parseInt(lSubSectionIdStringArray[i])-1;
                                         }
                                         catch (NumberFormatException | NullPointerException e) {
                                             lValid = false;
@@ -45,7 +50,7 @@ public class WriteAmendmentOmit extends WriteAmendmentCommand{
                                             boolean lValid2 = true;
                                             for (int i = 1; i < lSubSectionIdIntArray.length &&lValid2; i++) {
                                                 if (lSubSection.subSectionArrayList.size() <= lSubSectionIdIntArray[i]) {
-                                                    pInteraction.createImmediateResponder().append("Not a valid Sub-Section.").respond();
+                                                    pInteraction.createImmediateResponder().append("Not a valid Sub-Section.\nError Code: 02").respond();
                                                     lValid2 = false;
                                                 } else
                                                     lSubSection = lSubSection.subSectionArrayList.get(lSubSectionIdIntArray[i]);
@@ -54,10 +59,10 @@ public class WriteAmendmentOmit extends WriteAmendmentCommand{
                                             if(lValid2) {
                                                  amendment.omittings.add(lPartId + "." + lDivisionId + "." + lSectionId + "." + lSubSectionIdString);
                                             }
-                                        } else pInteraction.createImmediateResponder().append("Not a valid Sub-Section.").respond();
+                                        } else pInteraction.createImmediateResponder().append("Not a valid Sub-Section.\nError Code: 01").respond();
                                     }
                                 } else
-                                    amendment.omittings.add(lPartId + "." + lDivisionId + "." + lSectionId + ".");
+                                    amendment.omittings.add(lPartId + "." + lDivisionId + "." + lSectionId);
                             }
                         } else
                             amendment.omittings.add(lPartId + "." + lDivisionId);
