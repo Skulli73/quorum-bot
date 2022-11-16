@@ -45,6 +45,11 @@ public class Bill {
     @Expose
     public int          typeOfMajority;
 
+    @Expose
+    public ArrayList<Amendment>     amendments;
+    @Expose
+    public ArrayList<Amendment>     amendmentDrafts;
+
     public Bill(String pTitle, int pCouncilId, long pInitiatorId) {
         title           =pTitle;
         councilId       =pCouncilId;
@@ -53,8 +58,10 @@ public class Bill {
         initiatorId = pInitiatorId;
         draftFinished = false;
         firstReadingFinished = false;
-        amendmentsFinished = true;
-        thirdReadingFinished = true;
+        amendmentsFinished = false;
+        thirdReadingFinished = false;
+        amendments = new ArrayList<>();
+        amendmentDrafts = new ArrayList<>();
     }
 
     public EmbedBuilder toEmbed(String pDesc) {

@@ -10,6 +10,7 @@ import org.javacord.api.entity.message.Message;
 import org.javacord.api.entity.message.MessageBuilder;
 import org.javacord.api.entity.message.embed.EmbedBuilder;
 import org.javacord.api.interaction.SlashCommandInteraction;
+import org.jetbrains.annotations.Nullable;
 
 import java.awt.*;
 import java.io.FileWriter;
@@ -26,7 +27,7 @@ import static io.github.Skulli73.Main.listeners.SlashCommandListener.lTypeOfMajo
 public class Motion {
 
    private String                      text, title;
-    private final boolean               isBill;
+    public final boolean               isBill;
     private final long                  agendaMessageId;
     public boolean                      completed = false;
 
@@ -42,8 +43,10 @@ public class Motion {
 
 
    // public TimerTask                    timerTask;
-
-
+    @Nullable
+    public Long                         billId;
+    @Nullable
+    public Long                         amendmentId;
 
     public Motion(String pTitle, String pText, long pIntroducerId, long pAgendaMessageId, double pNeededMajority, int pTypeOfMajority, int pId) {
         title           = pTitle;
@@ -61,11 +64,16 @@ public class Motion {
         dmMessagesCouncillors = new ArrayList<>();
         id              = pId;
     }
+    public Motion(String pTitle, String pText, long pIntroducerId, long pAgendaMessageId, double pNeededMajority, int pTypeOfMajority, int pId, @Nullable Long pBillId, @Nullable Long pAmendmentId) {
+        this(pTitle, pText, pIntroducerId, pAgendaMessageId, pNeededMajority, pTypeOfMajority, pId);
+        billId = pBillId;
+        amendmentId = pAmendmentId;
+    }
 
     // Getters & Setters
     public String   getTitle()  { return title; }
     public String   getText()   { return text; }
-    public boolean  isBill()    { return isBill; }
+    public boolean  isBill()    { return billId!=null&&amendmentId==null; }
     public Message  getMessage(DiscordApi pApi, TextChannel pChannel) throws ExecutionException, InterruptedException { return pApi.getMessageById(agendaMessageId, pChannel).get(); }
 
     public void     setTitle(String pTitle) { title = pTitle; }

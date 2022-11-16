@@ -10,7 +10,7 @@ public class Division {
     @Expose
     public ArrayList<Section> sectionArrayList;
     public Division(String pTitle) {
-        title = "   " + pTitle;
+        title =pTitle;
         sectionArrayList = new ArrayList<Section>();
         sectionArrayList.add(new Section("", ""));
     }
