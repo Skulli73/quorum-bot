@@ -29,13 +29,12 @@ public class Amendment {
     public String toString() {
         StringBuilder lString = new StringBuilder();
         for (String lOmitting : omittings) {
-            String typeOfDivision = "";
-            lString.append("Omit ").append(typeOfDivision).append(lOmitting).append("\n");
+            lString.append("Omit (").append(lOmitting).append(")\n");
         }
         for (String[] lAmendments : amendments)
-            lString.append("Amend ").append(lAmendments[0]).append(" to\n\"").append(lAmendments[1]).append("\"").append("\n");
+            lString.append("Amend (").append(lAmendments[0]).append(") to become\n\"").append(lAmendments[1]).append("\"").append("\n");
         for (String[] lAddition : additions)
-            lString.append("Add ").append(lAddition[1]).append(" at ").append(lAddition[0]).append("\n");
+            lString.append("Add ").append(lAddition[1]).append(" to (").append(lAddition[0]).append(")\n");
 
 
         return lString.toString();

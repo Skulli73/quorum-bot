@@ -53,6 +53,10 @@ public class SlashCommandListener implements SlashCommandCreateListener {
             new WriteBillFinish(interaction, lApi);
         if (interaction.getFullCommandName().equals("write_amendment omit"))
             new WriteAmendmentOmit(interaction, lApi);
+        if (interaction.getFullCommandName().equals("write_amendment amend"))
+            new WriteAmendmentAmend(interaction, lApi);
+        if (interaction.getFullCommandName().equals("write_amendment add"))
+            new WriteAmendmentAdd(interaction, lApi);
     }
 
     public static void saveMotion(Council lCouncil, Motion lMotion) {
