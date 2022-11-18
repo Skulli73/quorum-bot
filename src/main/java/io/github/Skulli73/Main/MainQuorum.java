@@ -107,6 +107,14 @@ public class MainQuorum {
                         lMotion.dmMessages = StreamSupport.stream(lJsonObject2.get("dmMessages").getAsJsonArray().spliterator(), false).map(JsonElement::getAsString).collect(ArrayList::new, List::add, List::addAll);
                         lMotion.dmMessagesCouncillors = StreamSupport.stream(lJsonObject2.get("dmMessagesCouncillors").getAsJsonArray().spliterator(), false).map(JsonElement::getAsString).collect(ArrayList::new, List::add, List::addAll);
                         lMotion.completed = lJsonObject2.get("completed").getAsBoolean();
+                        if(lJsonObject2.get("billId") != null)
+                            lMotion.billId = lJsonObject2.get("billId").getAsLong();
+                        else
+                            lMotion.billId = null;
+                        if(lJsonObject2.get("amendmentId") != null)
+                            lMotion.amendmentId = lJsonObject2.get("amendmentId").getAsLong();
+                        else
+                            lMotion.amendmentId = null;
                         lMotion.isMoved = false;
                     }
                     SlashCommandListener.saveCouncil(lCouncil);
@@ -185,6 +193,73 @@ public class MainQuorum {
             lBill.majority = lJsonObject.get("majority").getAsDouble();
             lBill.typeOfMajority = lJsonObject.get("typeOfMajority").getAsInt();
             lBill.partArrayList = new ArrayList<Part>();
+            lBill.amendments = new ArrayList<>();
+            for (JsonElement pJsonElement : lJsonObject.get("amendments").getAsJsonArray()) {
+                JsonObject lJsonObject2 = pJsonElement.getAsJsonObject();
+                Amendment lAmendment = new Amendment();
+                for (JsonElement pJsonElement2 : lJsonObject2.get("omittings").getAsJsonArray()) {
+                    JsonArray lJsonObject3 = pJsonElement2.getAsJsonArray();
+                    for(int i = 0; i<lJsonObject3.size(); i++)
+                        lAmendment.omittings.add(pJsonElement2.getAsJsonArray().get(i).getAsString());
+                }
+                for (JsonElement pJsonElement2 : lJsonObject2.get("additions").getAsJsonArray()) {
+                    JsonArray lJsonObject3 = pJsonElement2.getAsJsonArray();
+                    for(int i = 0; i<lJsonObject3.size(); i++) {
+                        JsonArray lArray = pJsonElement2.getAsJsonArray().get(i).getAsJsonArray();
+                        String[] lStringArray = new String[lArray.size()];
+                        for(int j = 0; j<lArray.size(); j++)
+                            lStringArray[j] = lArray.get(j).getAsString();
+                        lAmendment.additions.add(lStringArray);
+                    };
+                }
+                for (JsonElement pJsonElement2 : lJsonObject2.get("amendments").getAsJsonArray()) {
+                    JsonArray lJsonObject3 = pJsonElement2.getAsJsonArray();
+                    for(int i = 0; i<lJsonObject3.size(); i++) {
+                        JsonArray lArray = pJsonElement2.getAsJsonArray().get(i).getAsJsonArray();
+                        String[] lStringArray = new String[lArray.size()];
+                        for(int j = 0; j<lArray.size(); j++)
+                            lStringArray[j] = lArray.get(j).getAsString();
+                        lAmendment.amendments.add(lStringArray);
+                    };
+                }
+                lBill.amendments.add(
+                        lAmendment
+                );
+
+            }
+            for (JsonElement pJsonElement : lJsonObject.get("amendmentDrafts").getAsJsonArray()) {
+                JsonObject lJsonObject2 = pJsonElement.getAsJsonObject();
+                Amendment lAmendment = new Amendment();
+                if(lJsonObject2.get("messageId" )!= null)
+                    lAmendment.messageId = lJsonObject2.get("messageId").getAsLong();
+                if(lJsonObject2.get("introducerId" )!= null)
+                    lAmendment.introducerId = lJsonObject2.get("introducerId").getAsLong();
+                for (JsonElement pJsonElement2 : lJsonObject2.get("omittings").getAsJsonArray()) {
+                    lAmendment.omittings.add(pJsonElement2.getAsString());
+                }
+                for (JsonElement pJsonElement2 : lJsonObject2.get("additions").getAsJsonArray()) {
+                    JsonArray lJsonObject3 = pJsonElement2.getAsJsonArray();
+                    for(int i = 0; i<lJsonObject3.size(); i++) {
+                        String[] lStringArray = new String[lJsonObject3.size()];
+                        for(int j = 0; j<lJsonObject3.size(); j++)
+                            lStringArray[j] = lJsonObject3.get(j).getAsString();
+                        lAmendment.additions.add(lStringArray);
+                    };
+                }
+                for (JsonElement pJsonElement2 : lJsonObject2.get("amendments").getAsJsonArray()) {
+                    JsonArray lJsonObject3 = pJsonElement2.getAsJsonArray();
+                    for(int i = 0; i<lJsonObject3.size(); i++) {
+                        String[] lStringArray = new String[lJsonObject3.size()];
+                        for(int j = 0; j<lJsonObject3.size(); j++)
+                            lStringArray[j] = lJsonObject3.get(j).getAsString();
+                        lAmendment.amendments.add(lStringArray);
+                    };
+                }
+                lBill.amendmentDrafts.add(
+                        lAmendment
+                );
+
+            }
             for (JsonElement pJsonElement : lJsonObject.get("partArrayList").getAsJsonArray()) {
                 JsonObject lJsonObject2 = pJsonElement.getAsJsonObject();
                 Part lPart = new Part(lJsonObject2.get("title").getAsString());
@@ -228,7 +303,8 @@ public class MainQuorum {
     public static void saveBills() {
         GsonBuilder builder = new GsonBuilder();
         builder.excludeFieldsWithoutExposeAnnotation()
-                .setPrettyPrinting();
+                .setPrettyPrinting()
+                .serializeNulls();
         Gson gson2 = builder.create();
         String fileName = billsPath;
         FileWriter myWriter;

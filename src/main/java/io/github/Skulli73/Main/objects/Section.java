@@ -12,8 +12,8 @@ public class Section {
     @Expose
     public ArrayList<SubSection> subSectionArrayList;
     public Section(String pTitle, String pDesc) {
-        title = "       " + pTitle;
-        desc = "            " + pDesc;
+        title = pTitle;
+        desc = pDesc;
         subSectionArrayList = new ArrayList<SubSection>();
     }
 }

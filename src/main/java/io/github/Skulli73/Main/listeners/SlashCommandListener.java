@@ -12,6 +12,7 @@ import org.javacord.api.entity.user.User;
 import org.javacord.api.event.interaction.SlashCommandCreateEvent;
 import org.javacord.api.interaction.SlashCommandInteraction;
 import org.javacord.api.listener.interaction.SlashCommandCreateListener;
+import org.jetbrains.annotations.Nullable;
 
 import java.awt.*;
 import java.io.FileWriter;
@@ -34,6 +35,7 @@ public class SlashCommandListener implements SlashCommandCreateListener {
         if (interaction.getCommandName().equals("withdraw")) new WithdrawCommand(interaction, lApi);
         if (interaction.getCommandName().equals("kill_motion")) new KillCommand(interaction, lApi);
         if (interaction.getCommandName().equals("bill")) new BillCommand(interaction, lApi);
+        if (interaction.getCommandName().equals("amend")) new AmendCommand(interaction, lApi);
         if (interaction.getFullCommandName().equals("config default_majority"))
             new ConfigDefaultMajorityCommand(interaction, lApi);
         if (interaction.getFullCommandName().equals("config motion_timeout"))
@@ -47,6 +49,14 @@ public class SlashCommandListener implements SlashCommandCreateListener {
             new WriteBillAddSectionCommand(interaction, lApi);
         if (interaction.getFullCommandName().equals("write_bill add_subsection"))
             new WriteBillAddSubSectionCommand(interaction, lApi);
+        if (interaction.getFullCommandName().equals("write_bill finish"))
+            new WriteBillFinish(interaction, lApi);
+        if (interaction.getFullCommandName().equals("write_amendment omit"))
+            new WriteAmendmentOmit(interaction, lApi);
+        if (interaction.getFullCommandName().equals("write_amendment amend"))
+            new WriteAmendmentAmend(interaction, lApi);
+        if (interaction.getFullCommandName().equals("write_amendment add"))
+            new WriteAmendmentAdd(interaction, lApi);
     }
 
     public static void saveMotion(Council lCouncil, Motion lMotion) {
@@ -91,10 +101,10 @@ public class SlashCommandListener implements SlashCommandCreateListener {
                         lTypeOfMajority = pInteraction.getArguments().get(3).getDecimalValue().get().intValue();
                     }
         String lMotionDesc = pInteraction.getArguments().get(0).getStringValue().get();
-        createMotionEnd(pInteraction.getUser(), lCouncil, lMotionName, lMajority, lTypeOfMajority, lMotionDesc, pInteraction.getServer().get());
+        createMotionEnd(pInteraction.getUser(), lCouncil, lMotionName, lMajority, lTypeOfMajority, lMotionDesc, pInteraction.getServer().get(), null, null);
     }
 
-    public static void createMotionEnd(User pUser, Council pCouncil, String pMotionName, double pMajority, int pTypeOfMajority, String pMotionDesc, Server pServer) throws InterruptedException, ExecutionException {
+    public static Motion createMotionEnd(User pUser, Council pCouncil, String pMotionName, double pMajority, int pTypeOfMajority, String pMotionDesc, Server pServer, @Nullable Long billId, @Nullable Long pAmendmentId) throws InterruptedException, ExecutionException {
         Motion lMotion = new Motion(pMotionName, pMotionDesc, pUser.getId(),
                 new MessageBuilder().setEmbed(
                         new EmbedBuilder()
@@ -102,10 +112,12 @@ public class SlashCommandListener implements SlashCommandCreateListener {
                                 .setDescription(pMotionDesc)
                                 .setColor(Color.RED)
                                 .setAuthor(pUser.getDisplayName(pServer), pUser.getAvatar().getUrl().toString(), pUser.getAvatar())
-                                .setFooter(lTypeOfMajorityArray[pTypeOfMajority] + ", " + pMajority * 100 + "%")
-                ).send(pCouncil.getAgendaChannel(lApi)).get().getId(), pMajority, pTypeOfMajority, pCouncil.motionArrayList.size());
+                                .setFooter(lTypeOfMajorityArray[pTypeOfMajority] + ", " + pMajority * 100 + "%"
+                                )
+                ).send(pCouncil.getAgendaChannel(lApi)).get().getId(), pMajority, pTypeOfMajority, pCouncil.motionArrayList.size(), billId, pAmendmentId);
         pCouncil.motionArrayList.add(lMotion);
         saveCouncil(pCouncil);
+        return lMotion;
     }
 
 

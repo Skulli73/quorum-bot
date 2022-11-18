@@ -19,14 +19,16 @@ public class BillCommand extends CouncilCommand{
     @Override
     public void executeCommand(SlashCommandInteraction pInteraction, DiscordApi pApi) {
         try {
-            PrivateChannel lChannel = pInteraction.getUser().openPrivateChannel().get();
-            MessageBuilder lMessageBuilder = new MessageBuilder();
-            Bill lBill = new Bill(pInteraction.getArguments().get(0).getStringValue().get(), (int)council.getId(), pInteraction.getUser().getId());
-            String lMessageId = pInteraction.getUser().openPrivateChannel().get().sendMessage("Your bill:").get().getIdAsString();
-            lBill.messageId = Long.parseLong(lMessageId);
-            bills.put(lMessageId, lBill);
-            MainQuorum.saveBills();
-            lBill.update();
+            if(council.getCouncillorRole(pApi).hasUser(pInteraction.getUser())) {
+                PrivateChannel lChannel = pInteraction.getUser().openPrivateChannel().get();
+                MessageBuilder lMessageBuilder = new MessageBuilder();
+                Bill lBill = new Bill(pInteraction.getArguments().get(0).getStringValue().get(), (int)council.getId(), pInteraction.getUser().getId());
+                String lMessageId = pInteraction.getUser().openPrivateChannel().get().sendMessage("Your bill:").get().getIdAsString();
+                lBill.messageId = Long.parseLong(lMessageId);
+                bills.put(lMessageId, lBill);
+                MainQuorum.saveBills();
+                lBill.update();
+            }
 
 
         } catch (InterruptedException | ExecutionException e) {
