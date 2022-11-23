@@ -219,7 +219,7 @@ public class Motion {
             if((isAmendment() && amendmentId+1 == bills.get(Long.toString(billId)).amendments.size()) || (isBill() && bills.get(Long.toString(billId)).amendments.size() == 0)) {
                 Bill lBill = bills.get(Long.toString(billId));
                 try {
-                    SlashCommandListener.createMotionEnd(discordApi.getUserById(lBill.initiatorId).get(), pCouncil, lBill.title, lBill.majority, lBill.typeOfMajority, lBill.toString(), discordApi.getServerById(pCouncil.getServerId()).get(), lBill.messageId, null);
+                    SlashCommandListener.createMotionEnd(discordApi.getUserById(lBill.initiatorId).get(), pCouncil, "Motion #" + pCouncil.motionArrayList.size() + ": " + lBill.title, lBill.majority, lBill.typeOfMajority, lBill.toString(), discordApi.getServerById(pCouncil.getServerId()).get(), lBill.messageId, null);
                 } catch (InterruptedException | ExecutionException e) {
                     throw new RuntimeException(e);
                 }
