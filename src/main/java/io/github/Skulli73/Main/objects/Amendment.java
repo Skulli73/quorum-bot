@@ -91,12 +91,15 @@ public class Amendment {
                             lStack.push(lSubSection);
                             if(lLength == 4) {
                                 lSubSection.desc = "*repealed*";
+                                lSubSection.subSectionArrayList = new ArrayList<>();
                             } else {
                                 int i = 4;
                                 while(i < lLength) {
                                     lSubSection = lSubSection.subSectionArrayList.get(Integer.parseInt(lOmittingArray[i])-1);
-                                    if(i+1 == lLength)
+                                    if(i+1 == lLength) {
                                         lSubSection.desc = "*repealed*";
+                                        lSubSection.subSectionArrayList = new ArrayList<>();
+                                    }
                                     lStack.push(lSubSection);
                                     i++;
                                 }
@@ -115,6 +118,55 @@ public class Amendment {
                         }
                         lDivision.sectionArrayList.set(lSectionId, lSection);
                     }
+                }
+                pBill.partArrayList.set(lPartId, lPart);
+            }
+        }
+        for (String[] lOmitting : amendments) {
+            String[] lOmittingArray = lOmitting[0].split("\\.");
+            String lText = lOmitting[1];
+            int lLength = lOmittingArray.length;
+            if( lLength > 2) {
+                int lPartId = Integer.parseInt(lOmittingArray[0]);
+                Part lPart = pBill.partArrayList.get(lPartId);
+                int lDivisionId = Integer.parseInt(lOmittingArray[1]);
+                Division lDivision = lPart.divisionArrayList.get(lDivisionId);
+                int lSectionId = Integer.parseInt(lOmittingArray[2]);
+                Section lSection = lDivision.sectionArrayList.get(lSectionId);
+                if(lLength == 3) {
+                    lSection.desc = lText;
+                    lSection.subSectionArrayList = new ArrayList<>();
+                } else {
+                    Stack<SubSection> lStack = new Stack();
+                    int lSubSectionId = Integer.parseInt(lOmittingArray[3]);
+                    SubSection lSubSection = lSection.subSectionArrayList.get(lSubSectionId-1);
+                    lStack.push(lSubSection);
+                    if(lLength == 4) {
+                        lSubSection.desc = lText;
+                    } else {
+                        int i = 4;
+                        while(i < lLength) {
+                            lSubSection = lSubSection.subSectionArrayList.get(Integer.parseInt(lOmittingArray[i])-1);
+                            if(i+1 == lLength)
+                                lSubSection.desc = lText;
+                            lStack.push(lSubSection);
+                            i++;
+                        }
+
+                        SubSection lCurrentSubSection = null;
+                        SubSection lPreviousSubSection = lStack.pop();
+                        for(int j = lLength-2; !lStack.isEmpty();j--) {
+                            if(lCurrentSubSection != null)
+                                lPreviousSubSection = lCurrentSubSection;
+                            lCurrentSubSection = lStack.pop();
+                            lCurrentSubSection.subSectionArrayList.set(Integer.parseInt(lOmittingArray[j])-1, lPreviousSubSection);
+                        }
+                        lSubSection = lCurrentSubSection;
+                    }
+                    lSection.subSectionArrayList.set(lSubSectionId-1, lSubSection);
+
+                    lDivision.sectionArrayList.set(lSectionId, lSection);
+
                 }
                 pBill.partArrayList.set(lPartId, lPart);
             }
