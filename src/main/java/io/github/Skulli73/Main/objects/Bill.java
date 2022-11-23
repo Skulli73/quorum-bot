@@ -2,13 +2,15 @@ package io.github.Skulli73.Main.objects;
 
 import com.google.gson.annotations.Expose;
 import io.github.Skulli73.Main.MainQuorum;
+import io.github.Skulli73.Main.listeners.SlashCommandListener;
 import org.javacord.api.entity.message.MessageBuilder;
 import org.javacord.api.entity.message.embed.EmbedBuilder;
 
 import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 
-import static io.github.Skulli73.Main.MainQuorum.lApi;
+import static io.github.Skulli73.Main.MainQuorum.councils;
+import static io.github.Skulli73.Main.MainQuorum.discordApi;
 
 public class Bill {
     @Expose()
@@ -108,7 +110,7 @@ public class Bill {
     }
     public void update() {
         try {
-            lApi.getMessageById(messageId, lApi.getUserById(initiatorId).get().openPrivateChannel().get()).get().edit(toEmbed(true));
+            discordApi.getMessageById(messageId, discordApi.getUserById(initiatorId).get().openPrivateChannel().get()).get().edit(toEmbed(true));
             MainQuorum.saveBills();
         } catch (InterruptedException | ExecutionException e) {
             throw new RuntimeException(e);
@@ -117,6 +119,20 @@ public class Bill {
 
     public static Object getLastObject(ArrayList pArrayList) {
         return pArrayList.get(pArrayList.size()-1);
+    }
+
+    public void endIntroduction() {
+        firstReadingFinished = true;
+        Council lCouncil = councils.get(councilId);
+        int i = 1;
+        for (Amendment lAmendment: amendments) {
+            try {
+                SlashCommandListener.createMotionEnd(discordApi.getUserById(initiatorId).get(), lCouncil, "Amendment " + i + " to Motion #" + title, lCouncil.amendmentMajority, lCouncil.amendmentTypeOfMajority, lAmendment.toString(), discordApi.getServerById(lCouncil.getServerId()).get(), messageId, (long) (i-1));
+            } catch (InterruptedException | ExecutionException e) {
+                throw new RuntimeException(e);
+            }
+            i++;
+        }
     }
 
     //public MessageBuilder updateMessage(boolean isSubSection) {

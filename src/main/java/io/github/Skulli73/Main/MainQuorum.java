@@ -29,7 +29,7 @@ public class MainQuorum {
 
     public static Gson                gson                 = new Gson();
 
-    public static @Nullable DiscordApi    lApi;
+    public static @Nullable DiscordApi discordApi;
 
     public static void main(String[] args) {
         new MainQuorum();
@@ -49,23 +49,23 @@ public class MainQuorum {
 
 
     private void loadBot() {
-        lApi = new DiscordApiBuilder()
+        discordApi = new DiscordApiBuilder()
                 .setToken(getToken())
                 .setAllIntents()
                 .login()
                 .join();
 
-        new SlashCommandManager(lApi);
+        new SlashCommandManager(discordApi);
 
         slashCommandListener           = new SlashCommandListener();
         messageComponentCreateListener = new MessageComponentListener();
 
-        lApi.addSlashCommandCreateListener(slashCommandListener);
-        lApi.addMessageComponentCreateListener(messageComponentCreateListener);
+        discordApi.addSlashCommandCreateListener(slashCommandListener);
+        discordApi.addMessageComponentCreateListener(messageComponentCreateListener);
 
         System.out.println("The following Councils exist as of right now:");
         System.out.println(Arrays.toString(councils.toArray()));
-        System.out.println("Invite Link: " + lApi.createBotInvite());
+        System.out.println("Invite Link: " + discordApi.createBotInvite());
     }
 
     private void loadCouncils() {
@@ -198,9 +198,8 @@ public class MainQuorum {
                 JsonObject lJsonObject2 = pJsonElement.getAsJsonObject();
                 Amendment lAmendment = new Amendment();
                 for (JsonElement pJsonElement2 : lJsonObject2.get("omittings").getAsJsonArray()) {
-                    JsonArray lJsonObject3 = pJsonElement2.getAsJsonArray();
-                    for(int i = 0; i<lJsonObject3.size(); i++)
-                        lAmendment.omittings.add(pJsonElement2.getAsJsonArray().get(i).getAsString());
+                    String lString = pJsonElement2.getAsString();
+                    lAmendment.omittings.add(lString);
                 }
                 for (JsonElement pJsonElement2 : lJsonObject2.get("additions").getAsJsonArray()) {
                     JsonArray lJsonObject3 = pJsonElement2.getAsJsonArray();
@@ -227,38 +226,40 @@ public class MainQuorum {
                 );
 
             }
-            for (JsonElement pJsonElement : lJsonObject.get("amendmentDrafts").getAsJsonArray()) {
-                JsonObject lJsonObject2 = pJsonElement.getAsJsonObject();
-                Amendment lAmendment = new Amendment();
-                if(lJsonObject2.get("messageId" )!= null)
-                    lAmendment.messageId = lJsonObject2.get("messageId").getAsLong();
-                if(lJsonObject2.get("introducerId" )!= null)
-                    lAmendment.introducerId = lJsonObject2.get("introducerId").getAsLong();
-                for (JsonElement pJsonElement2 : lJsonObject2.get("omittings").getAsJsonArray()) {
-                    lAmendment.omittings.add(pJsonElement2.getAsString());
-                }
-                for (JsonElement pJsonElement2 : lJsonObject2.get("additions").getAsJsonArray()) {
-                    JsonArray lJsonObject3 = pJsonElement2.getAsJsonArray();
-                    for(int i = 0; i<lJsonObject3.size(); i++) {
-                        String[] lStringArray = new String[lJsonObject3.size()];
-                        for(int j = 0; j<lJsonObject3.size(); j++)
-                            lStringArray[j] = lJsonObject3.get(j).getAsString();
-                        lAmendment.additions.add(lStringArray);
-                    };
-                }
-                for (JsonElement pJsonElement2 : lJsonObject2.get("amendments").getAsJsonArray()) {
-                    JsonArray lJsonObject3 = pJsonElement2.getAsJsonArray();
-                    for(int i = 0; i<lJsonObject3.size(); i++) {
-                        String[] lStringArray = new String[lJsonObject3.size()];
-                        for(int j = 0; j<lJsonObject3.size(); j++)
-                            lStringArray[j] = lJsonObject3.get(j).getAsString();
-                        lAmendment.amendments.add(lStringArray);
-                    };
-                }
-                lBill.amendmentDrafts.add(
-                        lAmendment
-                );
+            if(false) {
+                for (JsonElement pJsonElement : lJsonObject.get("amendmentDrafts").getAsJsonArray()) {
+                    JsonObject lJsonObject2 = pJsonElement.getAsJsonObject();
+                    Amendment lAmendment = new Amendment();
+                    if(lJsonObject2.get("messageId" )!= null)
+                        lAmendment.messageId = lJsonObject2.get("messageId").getAsLong();
+                    if(lJsonObject2.get("introducerId" )!= null)
+                        lAmendment.introducerId = lJsonObject2.get("introducerId").getAsLong();
+                    for (JsonElement pJsonElement2 : lJsonObject2.get("omittings").getAsJsonArray()) {
+                        lAmendment.omittings.add(pJsonElement2.getAsString());
+                    }
+                    for (JsonElement pJsonElement2 : lJsonObject2.get("additions").getAsJsonArray()) {
+                        JsonArray lJsonObject3 = pJsonElement2.getAsJsonArray();
+                        for(int i = 0; i<lJsonObject3.size(); i++) {
+                            String[] lStringArray = new String[lJsonObject3.size()];
+                            for(int j = 0; j<lJsonObject3.size(); j++)
+                                lStringArray[j] = lJsonObject3.get(j).getAsString();
+                            lAmendment.additions.add(lStringArray);
+                        };
+                    }
+                    for (JsonElement pJsonElement2 : lJsonObject2.get("amendments").getAsJsonArray()) {
+                        JsonArray lJsonObject3 = pJsonElement2.getAsJsonArray();
+                        for(int i = 0; i<lJsonObject3.size(); i++) {
+                            String[] lStringArray = new String[lJsonObject3.size()];
+                            for(int j = 0; j<lJsonObject3.size(); j++)
+                                lStringArray[j] = lJsonObject3.get(j).getAsString();
+                            lAmendment.amendments.add(lStringArray);
+                        };
+                    }
+                    lBill.amendmentDrafts.add(
+                            lAmendment
+                    );
 
+                }
             }
             for (JsonElement pJsonElement : lJsonObject.get("partArrayList").getAsJsonArray()) {
                 JsonObject lJsonObject2 = pJsonElement.getAsJsonObject();

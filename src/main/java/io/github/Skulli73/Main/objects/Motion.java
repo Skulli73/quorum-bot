@@ -20,8 +20,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.ExecutionException;
 
-import static io.github.Skulli73.Main.MainQuorum.councils;
-import static io.github.Skulli73.Main.MainQuorum.councilsPath;
+import static io.github.Skulli73.Main.MainQuorum.*;
 import static io.github.Skulli73.Main.listeners.SlashCommandListener.lTypeOfMajorityArray;
 
 public class Motion {
@@ -74,6 +73,7 @@ public class Motion {
     public String   getTitle()  { return title; }
     public String   getText()   { return text; }
     public boolean  isBill()    { return billId!=null&&amendmentId==null; }
+    public boolean  isAmendment()    { return billId!=null&&amendmentId!=null; }
     public Message  getMessage(DiscordApi pApi, TextChannel pChannel) throws ExecutionException, InterruptedException { return pApi.getMessageById(agendaMessageId, pChannel).get(); }
 
     public void     setTitle(String pTitle) { title = pTitle; }
@@ -180,8 +180,10 @@ public class Motion {
                 lColour = Color.RED;
 
             String lResultString = "";
-            if(lPassed)
+            if(lPassed) {
                 lResultString = "The following motion passed";
+                onPassed();
+            }
             else
                 lResultString = "The following motion was denied" + lQuorumFailed;
             new MessageBuilder()
@@ -214,6 +216,14 @@ public class Motion {
             SlashCommandListener.saveMotion(pCouncil, this);
 
             deleteMessages(pApi);
+            if((isAmendment() && amendmentId+1 == bills.get(Long.toString(billId)).amendments.size()) || (isBill() && bills.get(Long.toString(billId)).amendments.size() == 0)) {
+                Bill lBill = bills.get(Long.toString(billId));
+                try {
+                    SlashCommandListener.createMotionEnd(discordApi.getUserById(lBill.initiatorId).get(), pCouncil, lBill.title, lBill.majority, lBill.typeOfMajority, lBill.toString(), discordApi.getServerById(pCouncil.getServerId()).get(), lBill.messageId, null);
+                } catch (InterruptedException | ExecutionException e) {
+                    throw new RuntimeException(e);
+                }
+            }
         }
     }
 
@@ -263,5 +273,23 @@ public class Motion {
                 timerTask,
                 (int)(pCouncil.timeOutTime* 3600000)
         );
+    }
+
+    private void onPassed() {
+        if(isBill()) {
+            Bill lBill = bills.get(Long.toString(billId));
+            if(!lBill.firstReadingFinished) {
+                lBill.endIntroduction();
+            }
+            bills.put(Long.toString(billId), lBill);
+            saveBills();
+        } else if (isAmendment()) {
+            Bill lBill = bills.get(Long.toString(billId));
+            Amendment lAmendment = lBill.amendments.get(Math.toIntExact(amendmentId));
+            lAmendment.onAccepted(lBill);
+            if(amendmentId+1 == lBill.amendments.size()) {
+
+            }
+        }
     }
 }

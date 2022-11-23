@@ -28,35 +28,37 @@ public class SlashCommandListener implements SlashCommandCreateListener {
     @Override
     public void onSlashCommandCreate(SlashCommandCreateEvent event) {
         SlashCommandInteraction interaction = event.getSlashCommandInteraction();
-        if (interaction.getCommandName().equals("createcouncil")) new CreateCouncilCommand(interaction, lApi);
-        if (interaction.getCommandName().equals("motion")) new MotionCommand(interaction, lApi);
-        if (interaction.getCommandName().equals("move")) new MoveCommand(interaction, lApi);
-        if (interaction.getCommandName().equals("end_vote")) new EndVoteCommand(interaction, lApi);
-        if (interaction.getCommandName().equals("withdraw")) new WithdrawCommand(interaction, lApi);
-        if (interaction.getCommandName().equals("kill_motion")) new KillCommand(interaction, lApi);
-        if (interaction.getCommandName().equals("bill")) new BillCommand(interaction, lApi);
-        if (interaction.getCommandName().equals("amend")) new AmendCommand(interaction, lApi);
+        if (interaction.getCommandName().equals("createcouncil")) new CreateCouncilCommand(interaction, discordApi);
+        if (interaction.getCommandName().equals("motion")) new MotionCommand(interaction, discordApi);
+        if (interaction.getCommandName().equals("move")) new MoveCommand(interaction, discordApi);
+        if (interaction.getCommandName().equals("end_vote")) new EndVoteCommand(interaction, discordApi);
+        if (interaction.getCommandName().equals("withdraw")) new WithdrawCommand(interaction, discordApi);
+        if (interaction.getCommandName().equals("kill_motion")) new KillCommand(interaction, discordApi);
+        if (interaction.getCommandName().equals("bill")) new BillCommand(interaction, discordApi);
+        if (interaction.getCommandName().equals("amend")) new AmendCommand(interaction, discordApi);
         if (interaction.getFullCommandName().equals("config default_majority"))
-            new ConfigDefaultMajorityCommand(interaction, lApi);
+            new ConfigDefaultMajorityCommand(interaction, discordApi);
         if (interaction.getFullCommandName().equals("config motion_timeout"))
-            new ConfigMotionTimeout(interaction, lApi);
-        if (interaction.getFullCommandName().equals("config quorum")) new ConfigQuorum(interaction, lApi);
+            new ConfigMotionTimeout(interaction, discordApi);
+        if (interaction.getFullCommandName().equals("config quorum")) new ConfigQuorum(interaction, discordApi);
         if (interaction.getFullCommandName().equals("write_bill add_part"))
-            new WriteBillAddPartCommand(interaction, lApi);
+            new WriteBillAddPartCommand(interaction, discordApi);
         if (interaction.getFullCommandName().equals("write_bill add_division"))
-            new WriteBillAddDivsionCommand(interaction, lApi);
+            new WriteBillAddDivsionCommand(interaction, discordApi);
         if (interaction.getFullCommandName().equals("write_bill add_section"))
-            new WriteBillAddSectionCommand(interaction, lApi);
+            new WriteBillAddSectionCommand(interaction, discordApi);
         if (interaction.getFullCommandName().equals("write_bill add_subsection"))
-            new WriteBillAddSubSectionCommand(interaction, lApi);
+            new WriteBillAddSubSectionCommand(interaction, discordApi);
         if (interaction.getFullCommandName().equals("write_bill finish"))
-            new WriteBillFinish(interaction, lApi);
+            new WriteBillFinish(interaction, discordApi);
         if (interaction.getFullCommandName().equals("write_amendment omit"))
-            new WriteAmendmentOmit(interaction, lApi);
+            new WriteAmendmentOmit(interaction, discordApi);
         if (interaction.getFullCommandName().equals("write_amendment amend"))
-            new WriteAmendmentAmend(interaction, lApi);
+            new WriteAmendmentAmend(interaction, discordApi);
         if (interaction.getFullCommandName().equals("write_amendment add"))
-            new WriteAmendmentAdd(interaction, lApi);
+            new WriteAmendmentAdd(interaction, discordApi);
+        if (interaction.getFullCommandName().equals("write_amendment finish"))
+            new WriteAmendmentFinish(interaction, discordApi);
     }
 
     public static void saveMotion(Council lCouncil, Motion lMotion) {
@@ -114,7 +116,7 @@ public class SlashCommandListener implements SlashCommandCreateListener {
                                 .setAuthor(pUser.getDisplayName(pServer), pUser.getAvatar().getUrl().toString(), pUser.getAvatar())
                                 .setFooter(lTypeOfMajorityArray[pTypeOfMajority] + ", " + pMajority * 100 + "%"
                                 )
-                ).send(pCouncil.getAgendaChannel(lApi)).get().getId(), pMajority, pTypeOfMajority, pCouncil.motionArrayList.size(), billId, pAmendmentId);
+                ).send(pCouncil.getAgendaChannel(discordApi)).get().getId(), pMajority, pTypeOfMajority, pCouncil.motionArrayList.size(), billId, pAmendmentId);
         pCouncil.motionArrayList.add(lMotion);
         saveCouncil(pCouncil);
         return lMotion;

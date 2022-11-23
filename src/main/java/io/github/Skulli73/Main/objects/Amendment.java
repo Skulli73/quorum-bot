@@ -6,7 +6,8 @@ import org.javacord.api.entity.message.embed.EmbedBuilder;
 import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 
-import static io.github.Skulli73.Main.MainQuorum.lApi;
+import static io.github.Skulli73.Main.MainQuorum.bills;
+import static io.github.Skulli73.Main.MainQuorum.discordApi;
 
 public class Amendment {
     @Expose
@@ -52,12 +53,32 @@ public class Amendment {
 
     public void updateMessage(String pFinalNumber, Integer pCurrentNumber, Bill pBill) {
         try {
-            assert lApi != null;
-            lApi.getMessageById(messageId, lApi.getUserById(introducerId).get().openPrivateChannel().get()).get().edit(
+            assert discordApi != null;
+            discordApi.getMessageById(messageId, discordApi.getUserById(introducerId).get().openPrivateChannel().get()).get().edit(
                     toEmbed(pFinalNumber, pCurrentNumber, pBill)
             );
         } catch (InterruptedException | ExecutionException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public void onAccepted(Bill pBill) {
+        for (String lOmitting : omittings) {
+            String[] lOmittingArray = lOmitting.split("\\.");
+            int lLength = lOmittingArray.length;
+            if( lLength > 0) {
+                int lPartId = Integer.parseInt(lOmittingArray[0]);
+                Part lPart = pBill.partArrayList.get(lPartId);
+                if(lLength == 1) {
+                    lPart = new Part("");
+                    lPart.divisionArrayList.get(0).sectionArrayList.get(0).desc = "*repealed*";
+                    pBill.partArrayList.set(lPartId, lPart);
+
+                } else {
+
+                }
+            }
+        }
+        bills.put(String.valueOf(pBill.messageId), pBill);
     }
 }

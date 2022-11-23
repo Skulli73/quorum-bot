@@ -151,14 +151,14 @@ public class SlashCommandManager {
         SlashCommand writeAmendmentCommand =
                 SlashCommand.with("write_amendment", "Write your amendment - DM only", Arrays.asList(
                                 SlashCommandOption.createWithOptions(SlashCommandOptionType.SUB_COMMAND, "omit", "Omit something", Arrays.asList(
-                                        SlashCommandOption.create(SlashCommandOptionType.STRING, "amendment_id", "Id of the Message of the Bill", true),
+                                        SlashCommandOption.create(SlashCommandOptionType.STRING, "amendment_id", "Id of the Message of the amendment", true),
                                         SlashCommandOption.create(SlashCommandOptionType.LONG, "part_id", "Id of the Part you wish to Omit", true),
                                         SlashCommandOption.create(SlashCommandOptionType.LONG, "division_id", "Id of the Part you wish to Omit", false),
                                         SlashCommandOption.create(SlashCommandOptionType.LONG, "section_id", "Id of the Part you wish to Omit", false),
                                         SlashCommandOption.create(SlashCommandOptionType.STRING, "sub_section_id", "Id of the Part you wish to Omit", false)
                                 )),
                                 SlashCommandOption.createWithOptions(SlashCommandOptionType.SUB_COMMAND, "amend", "Amend something", Arrays.asList(
-                                        SlashCommandOption.create(SlashCommandOptionType.STRING, "amendment_id", "Id of the Message of the Bill", true),
+                                        SlashCommandOption.create(SlashCommandOptionType.STRING, "amendment_id", "Id of the Message of the amendment", true),
                                         SlashCommandOption.create(SlashCommandOptionType.STRING, "text", "New Text of the amended section/subsection", true),
                                         SlashCommandOption.create(SlashCommandOptionType.LONG, "part_id", "Id of the Part you wish to Omit", true),
                                         SlashCommandOption.create(SlashCommandOptionType.LONG, "division_id", "Id of the Part you wish to Omit", true),
@@ -166,13 +166,16 @@ public class SlashCommandManager {
                                         SlashCommandOption.create(SlashCommandOptionType.STRING, "sub_section_id", "Id of the Part you wish to Omit", false)
                                 )),
                                 SlashCommandOption.createWithOptions(SlashCommandOptionType.SUB_COMMAND, "add", "Add a another (sub-)section.", Arrays.asList(
-                                        SlashCommandOption.create(SlashCommandOptionType.STRING, "amendment_id", "Id of the Message of the Bill", true),
+                                        SlashCommandOption.create(SlashCommandOptionType.STRING, "amendment_id", "Id of the Message of the amendment", true),
                                         SlashCommandOption.create(SlashCommandOptionType.STRING, "text", "New Text of the amended section/subsection", true),
                                         SlashCommandOption.create(SlashCommandOptionType.STRING, "title", "New Title of the amended section", true),
                                         SlashCommandOption.create(SlashCommandOptionType.LONG, "part_id", "Id of the Part you wish to Omit", true),
                                         SlashCommandOption.create(SlashCommandOptionType.LONG, "division_id", "Id of the Part you wish to Omit", false),
                                         SlashCommandOption.create(SlashCommandOptionType.LONG, "section_id", "Id of the Part you wish to Omit", false),
                                         SlashCommandOption.create(SlashCommandOptionType.STRING, "sub_section_id", "Id of the Part you wish to Omit", false)
+                                )),
+                                SlashCommandOption.createWithOptions(SlashCommandOptionType.SUB_COMMAND, "finish", "Finish the Amendment", Arrays.asList(
+                                        SlashCommandOption.create(SlashCommandOptionType.STRING, "amendment_id", "Id of the Message of the amendment", true)
                                 ))
                         ))
                         .setEnabledInDms(true)
