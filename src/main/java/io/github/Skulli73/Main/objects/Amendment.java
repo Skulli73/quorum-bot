@@ -121,24 +121,39 @@ public class Amendment {
                 }
                 pBill.partArrayList.set(lPartId, lPart);
             }
+
+            for(Amendment lAmendment : pBill.amendments) {
+                int i = 0;
+                for(String[] lAmendmentStringArray: lAmendment.amendments) {
+                    if(lAmendmentStringArray[0].startsWith(lOmitting))
+                        lAmendment.amendments.remove(i);
+                    i++;
+                }
+                i = 0;
+                for(String[] lAdditionsStringArray: lAmendment.additions) {
+                    if(lAdditionsStringArray[0].startsWith(lOmitting))
+                        lAmendment.additions.remove(i);
+                    i++;
+                }
+            }
         }
-        for (String[] lOmitting : amendments) {
-            String[] lOmittingArray = lOmitting[0].split("\\.");
-            String lText = lOmitting[1];
-            int lLength = lOmittingArray.length;
+        for (String[] lAmendments : amendments) {
+            String[] lAmendmentsArray = lAmendments[0].split("\\.");
+            String lText = lAmendments[1];
+            int lLength = lAmendmentsArray.length;
             if( lLength > 2) {
-                int lPartId = Integer.parseInt(lOmittingArray[0]);
+                int lPartId = Integer.parseInt(lAmendmentsArray[0]);
                 Part lPart = pBill.partArrayList.get(lPartId);
-                int lDivisionId = Integer.parseInt(lOmittingArray[1]);
+                int lDivisionId = Integer.parseInt(lAmendmentsArray[1]);
                 Division lDivision = lPart.divisionArrayList.get(lDivisionId);
-                int lSectionId = Integer.parseInt(lOmittingArray[2]);
+                int lSectionId = Integer.parseInt(lAmendmentsArray[2]);
                 Section lSection = lDivision.sectionArrayList.get(lSectionId);
                 if(lLength == 3) {
                     lSection.desc = lText;
                     lSection.subSectionArrayList = new ArrayList<>();
                 } else {
                     Stack<SubSection> lStack = new Stack();
-                    int lSubSectionId = Integer.parseInt(lOmittingArray[3]);
+                    int lSubSectionId = Integer.parseInt(lAmendmentsArray[3]);
                     SubSection lSubSection = lSection.subSectionArrayList.get(lSubSectionId-1);
                     lStack.push(lSubSection);
                     if(lLength == 4) {
@@ -146,7 +161,7 @@ public class Amendment {
                     } else {
                         int i = 4;
                         while(i < lLength) {
-                            lSubSection = lSubSection.subSectionArrayList.get(Integer.parseInt(lOmittingArray[i])-1);
+                            lSubSection = lSubSection.subSectionArrayList.get(Integer.parseInt(lAmendmentsArray[i])-1);
                             if(i+1 == lLength)
                                 lSubSection.desc = lText;
                             lStack.push(lSubSection);
@@ -159,7 +174,7 @@ public class Amendment {
                             if(lCurrentSubSection != null)
                                 lPreviousSubSection = lCurrentSubSection;
                             lCurrentSubSection = lStack.pop();
-                            lCurrentSubSection.subSectionArrayList.set(Integer.parseInt(lOmittingArray[j])-1, lPreviousSubSection);
+                            lCurrentSubSection.subSectionArrayList.set(Integer.parseInt(lAmendmentsArray[j])-1, lPreviousSubSection);
                         }
                         lSubSection = lCurrentSubSection;
                     }
@@ -167,6 +182,62 @@ public class Amendment {
 
                     lDivision.sectionArrayList.set(lSectionId, lSection);
 
+                }
+                pBill.partArrayList.set(lPartId, lPart);
+            }
+        }
+        for (String[] lAdditions : additions) {
+            String[] lOmittingArray = lAdditions[0].split("\\.");
+            String lText = lAdditions[1];
+            String lTitle = lAdditions[2];
+            int lLength = lOmittingArray.length;
+            if( lLength > 0) {
+                int lPartId = Integer.parseInt(lOmittingArray[0]);
+                Part lPart = pBill.partArrayList.get(lPartId);
+                if(lLength == 1) {
+                    lPart.divisionArrayList.get(0).sectionArrayList.add(new Section(lTitle, lText));
+                } else {
+                    int lDivisionId = Integer.parseInt(lOmittingArray[1]);
+                    Division lDivision = lPart.divisionArrayList.get(lDivisionId);
+                    if(lLength == 2) {
+                        lDivision.sectionArrayList.add(new Section(lTitle, lText));
+                    } else {
+                        int lSectionId = Integer.parseInt(lOmittingArray[2]);
+                        Section lSection = lDivision.sectionArrayList.get(lSectionId);
+                        if(lLength == 3) {
+                            lSection.subSectionArrayList.add(new SubSection(lText));
+                        } else {
+                            Stack<SubSection> lStack = new Stack();
+                            int lSubSectionId = Integer.parseInt(lOmittingArray[3]);
+                            SubSection lSubSection = lSection.subSectionArrayList.get(lSubSectionId-1);
+                            lStack.push(lSubSection);
+                            if(lLength == 4) {
+                                lSection.subSectionArrayList.add(new SubSection(lText));
+                            } else {
+                                int i = 4;
+                                while(i < lLength) {
+                                    lSubSection = lSubSection.subSectionArrayList.get(Integer.parseInt(lOmittingArray[i])-1);
+                                    if(i+1 == lLength) {
+                                        lSection.subSectionArrayList.add(new SubSection(lText));
+                                    }
+                                    lStack.push(lSubSection);
+                                    i++;
+                                }
+
+                                SubSection lCurrentSubSection = null;
+                                SubSection lPreviousSubSection = lStack.pop();
+                                for(int j = lLength-2; !lStack.isEmpty();j--) {
+                                    if(lCurrentSubSection != null)
+                                        lPreviousSubSection = lCurrentSubSection;
+                                    lCurrentSubSection = lStack.pop();
+                                    lCurrentSubSection.subSectionArrayList.set(Integer.parseInt(lOmittingArray[j])-1, lPreviousSubSection);
+                                }
+                                lSubSection = lCurrentSubSection;
+                            }
+                            lSection.subSectionArrayList.set(lSubSectionId-1, lSubSection);
+                        }
+                        lDivision.sectionArrayList.set(lSectionId, lSection);
+                    }
                 }
                 pBill.partArrayList.set(lPartId, lPart);
             }

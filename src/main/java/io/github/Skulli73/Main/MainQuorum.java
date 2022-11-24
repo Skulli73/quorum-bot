@@ -203,23 +203,17 @@ public class MainQuorum {
                 }
                 for (JsonElement pJsonElement2 : lJsonObject2.get("additions").getAsJsonArray()) {
                     JsonArray lJsonObject3 = pJsonElement2.getAsJsonArray();
-                    for(int i = 0; i<lJsonObject3.size(); i++) {
-                        JsonArray lArray = pJsonElement2.getAsJsonArray().get(i).getAsJsonArray();
-                        String[] lStringArray = new String[lArray.size()];
-                        for(int j = 0; j<lArray.size(); j++)
-                            lStringArray[j] = lArray.get(j).getAsString();
-                        lAmendment.additions.add(lStringArray);
-                    };
+                    String[] lStringArray = new String[lJsonObject3.size()];
+                    for(int j = 0; j<lJsonObject3.size(); j++)
+                        lStringArray[j] = lJsonObject3.get(j).getAsString();
+                    lAmendment.additions.add(lStringArray);
                 }
                 for (JsonElement pJsonElement2 : lJsonObject2.get("amendments").getAsJsonArray()) {
                     JsonArray lJsonObject3 = pJsonElement2.getAsJsonArray();
-                    for(int i = 0; i<lJsonObject3.size(); i++) {
-                        JsonArray lArray = pJsonElement2.getAsJsonArray().get(i).getAsJsonArray();
-                        String[] lStringArray = new String[lArray.size()];
-                        for(int j = 0; j<lArray.size(); j++)
-                            lStringArray[j] = lArray.get(j).getAsString();
+                        String[] lStringArray = new String[lJsonObject3.size()];
+                        for(int j = 0; j<lJsonObject3.size(); j++)
+                            lStringArray[j] = lJsonObject3.get(j).getAsString();
                         lAmendment.amendments.add(lStringArray);
-                    };
                 }
                 lBill.amendments.add(
                         lAmendment
