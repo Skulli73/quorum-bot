@@ -94,6 +94,7 @@ public class MainQuorum {
                     lCouncil.amendmentTypeOfMajority = lJsonObject.get("amendmentTypeOfMajority").getAsInt();
                     lCouncil.absentionsCountToQuorum = lJsonObject.get("absentionsCountToQuorum").getAsBoolean();
                     lCouncil.timeOutTime = lJsonObject.get("timeOutTime").getAsDouble();
+                    lCouncil.legislationChannel = lJsonObject.get("legislationChannel").getAsLong();
 
                     councils.add(lCouncil);
                     for (JsonElement lJsonElement2 : lJsonObject.get("motionArrayList").getAsJsonArray()) {

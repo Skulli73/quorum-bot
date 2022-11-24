@@ -71,18 +71,18 @@ public class Amendment {
                 Part lPart = pBill.partArrayList.get(lPartId);
                 if(lLength == 1) {
                     lPart = new Part("");
-                    lPart.divisionArrayList.get(0).sectionArrayList.add(new Section("", "*Part repealed*"));
+                    lPart.divisionArrayList.get(0).sectionArrayList.add(new Section("", "*repealed*"));
                 } else {
                     int lDivisionId = Integer.parseInt(lOmittingArray[1]);
                     Division lDivision = lPart.divisionArrayList.get(lDivisionId);
                     if(lLength == 2) {
                         lDivision = new Division("");
-                        lDivision.sectionArrayList.add(new Section("", "*Division repealed*"));
+                        lDivision.sectionArrayList.add(new Section("", "*repealed*"));
                     } else {
                         int lSectionId = Integer.parseInt(lOmittingArray[2]);
                         Section lSection = lDivision.sectionArrayList.get(lSectionId);
                         if(lLength == 3) {
-                            lSection.desc = "*Section repealed*";
+                            lSection.desc = "*repealed*";
                             lSection.subSectionArrayList = new ArrayList<>();
                         } else {
                             Stack<SubSection> lStack = new Stack();

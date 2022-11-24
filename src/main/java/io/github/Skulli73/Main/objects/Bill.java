@@ -69,44 +69,74 @@ public class Bill {
     public EmbedBuilder toEmbed(String pDesc) {
         EmbedBuilder lEmbedBuilder = new EmbedBuilder();
         lEmbedBuilder.setTitle(title);
-        lEmbedBuilder.setDescription(toString());
+        lEmbedBuilder.setDescription(pDesc);
         lEmbedBuilder.setFooter("Message id: " + messageId);
         return lEmbedBuilder;
     }
     public EmbedBuilder toEmbed(boolean pEditor) {
-        if(pEditor)
-            return toEmbed(toString());
-        else
-            return toEmbed(toString().replaceAll("0." , ""));
+            return toEmbed(toString(pEditor));
     }
-    public String toString() {
+    public String toString(boolean pEditorMode) {
         StringBuilder lStringBuilder = new StringBuilder();
 
-        for(int i = 0; i < partArrayList.size(); i++) {
-            Part lPart = partArrayList.get(i);
-            if(i!=0) {
-                lStringBuilder.append("\n__** Part " + i + " ").append(lPart.title).append("**__");
-            }
-            for(int j = 0; j<lPart.divisionArrayList.size(); j++) {
-                Division lDivision = lPart.divisionArrayList.get(j);
-                if(j!=0) {
-                    lStringBuilder.append("\n** Division " + i + "." + j + " ").append(lDivision.title).append("**");
+        if(pEditorMode) {
+            for(int i = 0; i < partArrayList.size(); i++) {
+                Part lPart = partArrayList.get(i);
+                if(i!=0) {
+                    lStringBuilder.append("\n__** Part " + i + " ").append(lPart.title).append("**__");
                 }
-                for(int k = 0; k<lDivision.sectionArrayList.size(); k++) {
-                    Section lSection = lDivision.sectionArrayList.get(k);
-                    if(k!=0) {
-                        lStringBuilder.append("\n**").append(i + "." + j + "." + k).append(" ").append(lSection.title).append("**").append("\n").append(lSection.desc);
+                for(int j = 0; j<lPart.divisionArrayList.size(); j++) {
+                    Division lDivision = lPart.divisionArrayList.get(j);
+                    if(j!=0) {
+                        lStringBuilder.append("\n** Division " + i + "." + j + " ").append(lDivision.title).append("**");
                     }
-                    for(int l = 0; l<lSection.subSectionArrayList.size(); l++) {
-                        SubSection lSubSection = lSection.subSectionArrayList.get(l);
-                        lStringBuilder.append("\n(").append(i + "." + j + "." + k + "." + (l+1)).append(")").append(" ").append(lSubSection.desc);
-                        lStringBuilder = lSubSection.getSubSubSectionsStringBuilder(lStringBuilder, 1, i + "." + j + "." + k + "." + (l+1));
+                    for(int k = 0; k<lDivision.sectionArrayList.size(); k++) {
+                        Section lSection = lDivision.sectionArrayList.get(k);
+                        if(k!=0) {
+                            lStringBuilder.append("\n**").append(i + "." + j + "." + k).append(" ").append(lSection.title).append("**").append("\n").append(lSection.desc);
+                        }
+                        for(int l = 0; l<lSection.subSectionArrayList.size(); l++) {
+                            SubSection lSubSection = lSection.subSectionArrayList.get(l);
+                            lStringBuilder.append("\n(").append(i + "." + j + "." + k + "." + (l+1)).append(")").append(" ").append(lSubSection.desc);
+                            lStringBuilder = lSubSection.getSubSubSectionsStringBuilder(lStringBuilder, 1, i + "." + j + "." + k + "." + (l+1));
+                        }
+                    }
+                }
+            }
+        } else {
+            int lSectionCounter = 1;
+            for(int i = 0; i < partArrayList.size(); i++) {
+
+                Part lPart = partArrayList.get(i);
+                if(i!=0) {
+                    lStringBuilder.append("\n__** Part " + i + " ").append(lPart.title).append("**__");
+                }
+                for(int j = 0; j<lPart.divisionArrayList.size(); j++) {
+                    Division lDivision = lPart.divisionArrayList.get(j);
+                    if(j!=0) {
+                        lStringBuilder.append("\n** Division " + j + " ").append(lDivision.title).append("**");
+                    }
+                    for(int k = 0; k<lDivision.sectionArrayList.size(); k++) {
+                        Section lSection = lDivision.sectionArrayList.get(k);
+                        if(k!=0) {
+                            lStringBuilder.append("\n**").append(lSectionCounter).append(" ").append(lSection.title).append("**").append("\n").append(lSection.desc);
+                            lSectionCounter++;
+                        }
+                        for(int l = 0; l<lSection.subSectionArrayList.size(); l++) {
+                            SubSection lSubSection = lSection.subSectionArrayList.get(l);
+                            lStringBuilder.append("\n(").append((l+1)).append(")").append(" ").append(lSubSection.desc);
+                            lStringBuilder = lSubSection.getSubSubSectionsStringBuilder(lStringBuilder, 1, String.valueOf((l+1)));
+                        }
+
                     }
                 }
             }
         }
         System.out.println("Current bill:" + lStringBuilder.toString());
         return lStringBuilder.toString();
+    }
+    public String toString() {
+        return toString(true);
     }
     public void update() {
         try {
@@ -127,7 +157,7 @@ public class Bill {
         int i = 1;
         for (Amendment lAmendment: amendments) {
             try {
-                SlashCommandListener.createMotionEnd(discordApi.getUserById(initiatorId).get(), lCouncil, "Motion #" + lCouncil.motionArrayList.size() + ": Amendment " + i + " to Motion #" + title, lCouncil.amendmentMajority, lCouncil.amendmentTypeOfMajority, lAmendment.toString(), discordApi.getServerById(lCouncil.getServerId()).get(), messageId, (long) (i-1));
+                SlashCommandListener.createMotionEnd(discordApi.getUserById(initiatorId).get(), lCouncil, "Motion #" + (lCouncil.motionArrayList.size()+1) + ": Amendment " + i + " to " + title, lCouncil.amendmentMajority, lCouncil.amendmentTypeOfMajority, lAmendment.toString(), discordApi.getServerById(lCouncil.getServerId()).get(), messageId, (long) (i-1));
             } catch (InterruptedException | ExecutionException e) {
                 throw new RuntimeException(e);
             }

@@ -9,9 +9,11 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 
+import static io.github.Skulli73.Main.MainQuorum.discordApi;
+
 public class Council {
     private                    String name;
-    private long               floorChannel, agendaChannel, resultChannel, councillorRoleId, proposeRoleId;
+    public long               floorChannel, agendaChannel, resultChannel, legislationChannel, councillorRoleId, proposeRoleId;
     private final int          id;
     private final long         serverId;
     public ArrayList<Motion>   motionArrayList;
@@ -48,6 +50,7 @@ public class Council {
         serverId            = pServer;
         councillorRoleId    = pCouncillorRoleId;
         proposeRoleId       = councillorRoleId;
+        legislationChannel = resultChannel;
         motionArrayList     = new ArrayList<>();
         standardMajority = 0.501;
         standardMajorityType = 0;
@@ -123,5 +126,9 @@ public class Council {
             }
         }
         nextMotion = currentMotion + 1;
+    }
+
+    public TextChannel getLegislationChannel() {
+        return discordApi.getChannelById(legislationChannel).get().asTextChannel().get();
     }
 }

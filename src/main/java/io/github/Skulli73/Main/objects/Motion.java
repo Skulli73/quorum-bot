@@ -216,13 +216,15 @@ public class Motion {
             SlashCommandListener.saveMotion(pCouncil, this);
 
             deleteMessages(pApi);
-            if((isAmendment() && amendmentId+1 == bills.get(Long.toString(billId)).amendments.size()) || (isBill() && bills.get(Long.toString(billId)).amendments.size() == 0)) {
+            if((isAmendment() && amendmentId+1 == bills.get(Long.toString(billId)).amendments.size())  || (isBill() && bills.get(Long.toString(billId)).amendments.size() == 0&& !bills.get(Long.toString(billId)).thirdReadingFinished)) {
                 Bill lBill = bills.get(Long.toString(billId));
+                lBill.amendmentsFinished = true;
                 try {
-                    SlashCommandListener.createMotionEnd(discordApi.getUserById(lBill.initiatorId).get(), pCouncil, "Motion #" + pCouncil.motionArrayList.size() + ": " + lBill.title, lBill.majority, lBill.typeOfMajority, lBill.toString(), discordApi.getServerById(pCouncil.getServerId()).get(), lBill.messageId, null);
+                    SlashCommandListener.createMotionEnd(discordApi.getUserById(lBill.initiatorId).get(), pCouncil, "Motion #" + pCouncil.motionArrayList.size() + ": " + lBill.title, lBill.majority, lBill.typeOfMajority, lBill.toString(false), discordApi.getServerById(pCouncil.getServerId()).get(), lBill.messageId, null);
                 } catch (InterruptedException | ExecutionException e) {
                     throw new RuntimeException(e);
                 }
+                bills.put(String.valueOf(lBill.messageId), lBill);
             }
         }
     }
@@ -231,9 +233,7 @@ public class Motion {
         for(int i = 0; i<dmMessages.size(); i++) {
             try {
                 pApi.getMessageById(dmMessages.get(i), pApi.getUserById(dmMessagesCouncillors.get(i)).get().openPrivateChannel().get()).get().delete();
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            } catch (ExecutionException e) {
+            } catch (InterruptedException | ExecutionException e) {
                 throw new RuntimeException(e);
             }
         }
@@ -278,8 +278,12 @@ public class Motion {
     private void onPassed() {
         if(isBill()) {
             Bill lBill = bills.get(Long.toString(billId));
-            if(!lBill.firstReadingFinished) {
+            if(!lBill.firstReadingFinished)
                 lBill.endIntroduction();
+            else {
+                lBill.thirdReadingFinished = true;
+                Council lCouncil = councils.get(lBill.councilId);
+                lCouncil.getLegislationChannel().sendMessage("Bill passed", lBill.toEmbed(false).setColor(Color.green));
             }
             bills.put(Long.toString(billId), lBill);
             saveBills();
