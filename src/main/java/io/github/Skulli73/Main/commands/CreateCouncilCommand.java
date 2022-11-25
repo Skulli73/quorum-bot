@@ -29,10 +29,10 @@ public class CreateCouncilCommand {
         Role lCouncillorRole = null;
 
         try {
-            lCouncilName    =               interaction.getArguments().get(0).getStringValue().get();
-            lFloorChannel   = (TextChannel) interaction.getArguments().get(1).getChannelValue().get();
-            lAgendaChannel  = (TextChannel) interaction.getArguments().get(2).getChannelValue().get();//api.getServerTextChannelById(event.getSlashCommandInteraction().getArguments().get(2).getStringValue().toString().replace("Optional[","").replace("]","")).get();
-            lResultChannel  = (TextChannel) interaction.getArguments().get(3).getChannelValue().get();//api.getServerTextChannelById(event.getSlashCommandInteraction().getArguments().get(3).getStringValue().toString().replace("Optional[","").replace("]","")).get();
+            lCouncilName    =               interaction.getOptionStringValueByName("name").get();
+            lFloorChannel   = (TextChannel) interaction.getOptionChannelValueByName("floorchannel").get();
+            lAgendaChannel  = (TextChannel) interaction.getOptionChannelValueByName("agendachannel").get();//api.getServerTextChannelById(event.getSlashCommandInteraction().getArguments().get(2).getStringValue().toString().replace("Optional[","").replace("]","")).get();
+            lResultChannel  = (TextChannel) interaction.getOptionChannelValueByName("resultchannel").get();//api.getServerTextChannelById(event.getSlashCommandInteraction().getArguments().get(3).getStringValue().toString().replace("Optional[","").replace("]","")).get();
             lCouncillorRole =               interaction.getArguments().get(4).getRoleValue().get();
             System.out.println(lCouncilName+" | "+lFloorChannel+" | "+lAgendaChannel+" | "+lResultChannel);
 

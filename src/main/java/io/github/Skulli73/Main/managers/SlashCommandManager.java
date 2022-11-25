@@ -75,8 +75,14 @@ public class SlashCommandManager {
                                                 SlashCommandOptionChoice.create("majority_in_the_negative", 2)
                                         ))
                                 ))
-                        )
-                )))
+                        )),
+                        SlashCommandOption.createWithOptions(SlashCommandOptionType.SUB_COMMAND, "channels", "The different channels such as the floor channel", Arrays.asList(
+                                SlashCommandOption.create(SlashCommandOptionType.CHANNEL, "floorchannel", "Channel used for debating motions and bills.", false),
+                                SlashCommandOption.create(SlashCommandOptionType.CHANNEL, "agendachannel", "Channel used for displaying all motions.", false),
+                                SlashCommandOption.create(SlashCommandOptionType.CHANNEL, "resultchannel", "Channel into which all votes are put into.", false),
+                                SlashCommandOption.create(SlashCommandOptionType.CHANNEL, "legislationchannel", "Channel into which all passed bills are put.", false)
+                        ))
+                ))
                         .setDefaultEnabledForPermissions(PermissionType.MANAGE_CHANNELS, PermissionType.ADMINISTRATOR)
                         .setEnabledInDms(false)
                         .createGlobal(api)

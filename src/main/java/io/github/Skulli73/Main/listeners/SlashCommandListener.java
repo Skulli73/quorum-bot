@@ -40,6 +40,8 @@ public class SlashCommandListener implements SlashCommandCreateListener {
             new ConfigDefaultMajorityCommand(interaction, discordApi);
         if (interaction.getFullCommandName().equals("config motion_timeout"))
             new ConfigMotionTimeout(interaction, discordApi);
+        if (interaction.getFullCommandName().equals("config channels"))
+            new ConfigChannelCommand(interaction, discordApi);
         if (interaction.getFullCommandName().equals("config quorum")) new ConfigQuorum(interaction, discordApi);
         if (interaction.getFullCommandName().equals("write_bill add_part"))
             new WriteBillAddPartCommand(interaction, discordApi);
