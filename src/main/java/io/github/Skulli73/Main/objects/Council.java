@@ -35,6 +35,8 @@ public class Council {
     public double               amendmentMajority;
     public int                  amendmentTypeOfMajority;
 
+    public ArrayList<VoteWeight> voteWeightArrayList;
+
 
 
     public Council(String pName, @NotNull TextChannel pFloorChannel, @NotNull TextChannel pAgendaChannel, @NotNull TextChannel pResultChannel, long pCouncillorRoleId, long pServer, int pId) {
@@ -64,6 +66,7 @@ public class Council {
         firstReadingTypeOfMajority = 2;
         amendmentMajority = 0.501;
         amendmentTypeOfMajority = 0;
+        voteWeightArrayList = new ArrayList<>();
     }
 
 

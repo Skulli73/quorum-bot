@@ -65,10 +65,11 @@ public class WriteAmendmentAdd extends WriteAmendmentCommand{
                                     }
                                 } else
                                     amendment.additions.add(new String[]{lPartId + "." + lDivisionId + "." + lSectionId, lAmendmentText, lAmendmentTitle});
-                            }
-                            amendment.additions.add(new String[]{lPartId + "." + lDivisionId + "." + lSectionId, lAmendmentText, lAmendmentTitle});
+                            } else
+                                amendment.additions.add(new String[]{lPartId + "." + lDivisionId + "." + lSectionId, lAmendmentText, lAmendmentTitle});
                         }
                     }
+                    else
                 amendment.additions.add(new String[]{lPartId + "." + lDivisionId, lAmendmentText, lAmendmentTitle});
             }
             else amendment.additions.add(new String[]{String.valueOf(lPartId), lAmendmentText, lAmendmentTitle});

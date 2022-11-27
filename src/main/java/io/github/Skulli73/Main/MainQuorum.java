@@ -118,6 +118,11 @@ public class MainQuorum {
                             lMotion.amendmentId = null;
                         lMotion.isMoved = false;
                     }
+                    if(lJsonObject.get("voteWeightArrayList") != null)
+                        for(JsonElement lJsonElement2 : lJsonObject.get("voteWeightArrayList").getAsJsonArray()) {
+                           final JsonObject lJsonObject2 = lJsonElement2.getAsJsonObject();
+                           VoteWeight lVoteWeight = new VoteWeight(lJsonObject2.get("roleId").getAsLong(), lJsonObject2.get("votes").getAsDouble());
+                        }
                     SlashCommandListener.saveCouncil(lCouncil);
                 }
                 timers.add(null);

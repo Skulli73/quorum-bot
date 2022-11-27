@@ -156,7 +156,7 @@ public class Motion {
             else
                 lTotalCouncillors = pCouncillors.length;
 
-            if(typeOfMajority != 3)
+            if(typeOfMajority != 2)
                 lPassed = ayeVotesAmount>=lTotalCouncillors*neededMajority;
             else
                 lPassed = !(nayVotesAmount>=lTotalCouncillors*neededMajority);
@@ -216,11 +216,11 @@ public class Motion {
             SlashCommandListener.saveMotion(pCouncil, this);
 
             deleteMessages(pApi);
-            if((isAmendment() && amendmentId+1 == bills.get(Long.toString(billId)).amendments.size())  || (isBill() && bills.get(Long.toString(billId)).amendments.size() == 0&& !bills.get(Long.toString(billId)).thirdReadingFinished)) {
+            if((isAmendment() && amendmentId+1 == bills.get(Long.toString(billId)).amendments.size())  || (isBill() && bills.get(Long.toString(billId)).amendments.size() == 0&& !bills.get(Long.toString(billId)).thirdReadingFinished) && lPassed) {
                 Bill lBill = bills.get(Long.toString(billId));
                 lBill.amendmentsFinished = true;
                 try {
-                    SlashCommandListener.createMotionEnd(discordApi.getUserById(lBill.initiatorId).get(), pCouncil, "Motion #" + pCouncil.motionArrayList.size() + ": " + lBill.title, lBill.majority, lBill.typeOfMajority, lBill.toString(false), discordApi.getServerById(pCouncil.getServerId()).get(), lBill.messageId, null);
+                    SlashCommandListener.createMotionEnd(discordApi.getUserById(lBill.initiatorId).get(), pCouncil, "Motion #" + (pCouncil.motionArrayList.size()+1) + ": " + lBill.title, lBill.majority, lBill.typeOfMajority, lBill.toString(false), discordApi.getServerById(pCouncil.getServerId()).get(), lBill.messageId, null);
                 } catch (InterruptedException | ExecutionException e) {
                     throw new RuntimeException(e);
                 }

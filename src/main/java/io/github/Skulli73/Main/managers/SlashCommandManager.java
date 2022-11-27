@@ -81,6 +81,10 @@ public class SlashCommandManager {
                                 SlashCommandOption.create(SlashCommandOptionType.CHANNEL, "agendachannel", "Channel used for displaying all motions.", false),
                                 SlashCommandOption.create(SlashCommandOptionType.CHANNEL, "resultchannel", "Channel into which all votes are put into.", false),
                                 SlashCommandOption.create(SlashCommandOptionType.CHANNEL, "legislationchannel", "Channel into which all passed bills are put.", false)
+                        )),
+                        SlashCommandOption.createWithOptions(SlashCommandOptionType.SUB_COMMAND, "vote_weights", "Give a role a specific vote weight.", Arrays.asList(
+                                SlashCommandOption.create(SlashCommandOptionType.ROLE, "role", "The role to be given a vote weight.", true),
+                                SlashCommandOption.create(SlashCommandOptionType.DECIMAL, "vote_weight", "The vote weight for the aforementioned role.", true)
                         ))
                 ))
                         .setDefaultEnabledForPermissions(PermissionType.MANAGE_CHANNELS, PermissionType.ADMINISTRATOR)
