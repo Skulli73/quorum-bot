@@ -1,7 +1,6 @@
 package io.github.Skulli73.Main.objects;
 
 import io.github.Skulli73.Main.MainQuorum;
-import org.javacord.api.DiscordApi;
 import org.javacord.api.entity.channel.TextChannel;
 import org.javacord.api.entity.permission.Role;
 import org.jetbrains.annotations.NotNull;
@@ -13,7 +12,7 @@ import static io.github.Skulli73.Main.MainQuorum.discordApi;
 
 public class Council {
     private                    String name;
-    public long               floorChannel, agendaChannel, resultChannel, legislationChannel, councillorRoleId, proposeRoleId;
+    public long               floorChannel, agendaChannel, minuteChannel, legislationChannel, councillorRoleId, proposeRoleId;
     private final int          id;
     private final long         serverId;
     public ArrayList<Motion>   motionArrayList;
@@ -43,16 +42,16 @@ public class Council {
         this(pName, pFloorChannel.getId(), pAgendaChannel.getId(), pResultChannel.getId(), pCouncillorRoleId, pServer, pId);
     }
 
-    public Council(String pName, long pFloorChannel, long pAgendaChannel, long pResultChannel, long pCouncillorRoleId, long pServer, int pId) {
+    public Council(String pName, long pFloorChannel, long pAgendaChannel, long pMinuteChannel, long pCouncillorRoleId, long pServer, int pId) {
         name                = pName;
         floorChannel        = pFloorChannel;
         agendaChannel       = pAgendaChannel;
-        resultChannel       = pResultChannel;
+        minuteChannel       = pMinuteChannel;
         id                  = pId;
         serverId            = pServer;
         councillorRoleId    = pCouncillorRoleId;
         proposeRoleId       = councillorRoleId;
-        legislationChannel = resultChannel;
+        legislationChannel = minuteChannel;
         motionArrayList     = new ArrayList<>();
         standardMajority = 0.501;
         standardMajorityType = 0;
@@ -72,10 +71,10 @@ public class Council {
 
     // Getters & Setters
 
-    public TextChannel  getAgendaChannel(DiscordApi pApi) { return pApi.getServerById(serverId).flatMap(serverById -> serverById.getTextChannelById(agendaChannel)).get(); }
-    public TextChannel  getFloorChannel(DiscordApi pApi)  { return pApi.getServerById(serverId).flatMap(serverById -> serverById.getTextChannelById(floorChannel)).get();  }
-    public TextChannel  getResultChannel(DiscordApi pApi) { return pApi.getServerById(serverId).flatMap(serverById -> serverById.getTextChannelById(resultChannel)).get(); }
-    public Role         getCouncillorRole(DiscordApi pApi)       { return pApi.getRoleById(councillorRoleId).get(); }
+    public TextChannel  getAgendaChannel() { return discordApi.getServerById(serverId).flatMap(serverById -> serverById.getTextChannelById(agendaChannel)).get(); }
+    public TextChannel  getFloorChannel()  { return discordApi.getServerById(serverId).flatMap(serverById -> serverById.getTextChannelById(floorChannel)).get();  }
+    public TextChannel  getResultChannel() { return discordApi.getServerById(serverId).flatMap(serverById -> serverById.getTextChannelById(minuteChannel)).get(); }
+    public Role         getCouncillorRole()       { return discordApi.getRoleById(councillorRoleId).get(); }
     public String       getName() { return name; }
     public long         getId() { return id; }
     public long         getServerId() { return serverId; }
@@ -83,7 +82,7 @@ public class Council {
 
     public void setAgendaChannel(TextChannel pNewTextChannel) { agendaChannel = pNewTextChannel.getId(); }
     public void setFloorChannel(TextChannel pNewTextChannel)  { floorChannel = pNewTextChannel.getId();  }
-    public void setResultChannel(TextChannel pNewTextChannel) { resultChannel = pNewTextChannel.getId(); }
+    public void setMinuteChannel(TextChannel pNewTextChannel) { minuteChannel = pNewTextChannel.getId(); }
     public void setName(String pName) { name = pName; }
     public void setProposeRole(Role pProposeRole){proposeRoleId = pProposeRole.getId();}
     public void setRoleChannel(long pCouncillorRoleId) {councillorRoleId = pCouncillorRoleId;}

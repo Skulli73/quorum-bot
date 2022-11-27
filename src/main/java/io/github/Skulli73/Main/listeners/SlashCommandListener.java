@@ -120,7 +120,7 @@ public class SlashCommandListener implements SlashCommandCreateListener {
                                 .setAuthor(pUser.getDisplayName(pServer), pUser.getAvatar().getUrl().toString(), pUser.getAvatar())
                                 .setFooter(lTypeOfMajorityArray[pTypeOfMajority] + ", " + pMajority * 100 + "%"
                                 )
-                ).send(pCouncil.getAgendaChannel(discordApi)).get().getId(), pMajority, pTypeOfMajority, pCouncil.motionArrayList.size(), billId, pAmendmentId);
+                ).send(pCouncil.getAgendaChannel()).get().getId(), pMajority, pTypeOfMajority, pCouncil.motionArrayList.size(), billId, pAmendmentId);
         pCouncil.motionArrayList.add(lMotion);
         saveCouncil(pCouncil);
         return lMotion;

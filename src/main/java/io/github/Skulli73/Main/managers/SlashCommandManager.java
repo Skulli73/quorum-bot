@@ -16,7 +16,7 @@ public class SlashCommandManager {
                                 SlashCommandOption.create(SlashCommandOptionType.STRING, "name", "Name of the Council", true),
                                 SlashCommandOption.create(SlashCommandOptionType.CHANNEL, "floorchannel", "Channel that is used for debating motions and bills", true),
                                 SlashCommandOption.create(SlashCommandOptionType.CHANNEL, "agendachannel", "Channel in which all proposed bills are noted and in which voting takes place", true),
-                                SlashCommandOption.create(SlashCommandOptionType.CHANNEL, "resultchannel", "Channel that in which all results are sent", true),
+                                SlashCommandOption.create(SlashCommandOptionType.CHANNEL, "minutechannel", "Channel that in which all actions are sent", true),
                                 SlashCommandOption.create(SlashCommandOptionType.ROLE, "councillorrole", "Role for Councillors", true)
                         ))
                         .setDefaultEnabledForPermissions(PermissionType.MANAGE_CHANNELS, PermissionType.ADMINISTRATOR)
@@ -79,7 +79,7 @@ public class SlashCommandManager {
                         SlashCommandOption.createWithOptions(SlashCommandOptionType.SUB_COMMAND, "channels", "The different channels such as the floor channel", Arrays.asList(
                                 SlashCommandOption.create(SlashCommandOptionType.CHANNEL, "floorchannel", "Channel used for debating motions and bills.", false),
                                 SlashCommandOption.create(SlashCommandOptionType.CHANNEL, "agendachannel", "Channel used for displaying all motions.", false),
-                                SlashCommandOption.create(SlashCommandOptionType.CHANNEL, "resultchannel", "Channel into which all votes are put into.", false),
+                                SlashCommandOption.create(SlashCommandOptionType.CHANNEL, "minutechannel", "Channel into which all actions are put into.", false),
                                 SlashCommandOption.create(SlashCommandOptionType.CHANNEL, "legislationchannel", "Channel into which all passed bills are put.", false)
                         )),
                         SlashCommandOption.createWithOptions(SlashCommandOptionType.SUB_COMMAND, "vote_weights", "Give a role a specific vote weight.", Arrays.asList(

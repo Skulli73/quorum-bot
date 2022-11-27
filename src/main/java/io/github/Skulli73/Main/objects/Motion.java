@@ -196,11 +196,11 @@ public class Motion {
                                     .addField("Did not Vote", notVotedAmount + " (" + notVotedMembers.toString() + ")")
                                     .setColor(lColour)
                                     .setFooter(lTypeOfMajorityArray[typeOfMajority] + ", " +  neededMajority*100 + "%")
-                    ).send(pCouncil.getResultChannel(pApi));
+                    ).send(pCouncil.getResultChannel());
 
             Message lAgendaMessage = null;
             try {
-                lAgendaMessage = getMessage(pApi, pCouncil.getAgendaChannel(pApi));
+                lAgendaMessage = getMessage(pApi, pCouncil.getAgendaChannel());
             } catch (ExecutionException | InterruptedException e) {
                 e.printStackTrace();
             }

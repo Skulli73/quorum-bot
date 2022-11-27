@@ -19,7 +19,7 @@ public class BillCommand extends CouncilCommand{
     @Override
     public void executeCommand(SlashCommandInteraction pInteraction, DiscordApi pApi) {
         try {
-            if(council.getCouncillorRole(pApi).hasUser(pInteraction.getUser())) {
+            if(council.getCouncillorRole().hasUser(pInteraction.getUser())) {
                 PrivateChannel lChannel = pInteraction.getUser().openPrivateChannel().get();
                 MessageBuilder lMessageBuilder = new MessageBuilder();
                 Bill lBill = new Bill(pInteraction.getArguments().get(0).getStringValue().get(), (int)council.getId(), pInteraction.getUser().getId());

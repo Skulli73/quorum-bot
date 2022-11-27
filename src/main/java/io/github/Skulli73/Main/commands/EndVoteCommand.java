@@ -16,7 +16,7 @@ public class EndVoteCommand extends CouncilCommand {
             pInteraction.createImmediateResponder()
                     .append(pInteraction.getUser().getMentionTag() + "ended the vote on " + lMotion.getTitle() + ".")
                     .respond();
-            lMotion.endMotionVote(pApi, council, pInteraction, council.getCouncillorRole(pApi).getUsers().toArray());
+            lMotion.endMotionVote(pApi, council, pInteraction, council.getCouncillorRole().getUsers().toArray());
         } else {
             pInteraction.createImmediateResponder()
                     .append("There is no active Motion")

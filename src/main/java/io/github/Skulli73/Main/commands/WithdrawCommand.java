@@ -32,7 +32,7 @@ public class WithdrawCommand extends CouncilCommand{
                         council.toNextMotion();
                     }
                     lMotion.completed = true;
-                    TextChannel lAgendaChannel = council.getAgendaChannel(pApi);
+                    TextChannel lAgendaChannel = council.getAgendaChannel();
                     try {
                         Message lMessage =lMotion.getMessage(pApi, lAgendaChannel);
                         lMessage.edit(lMessage.getEmbeds().get(0).toBuilder().setColor(Color.DARK_GRAY));

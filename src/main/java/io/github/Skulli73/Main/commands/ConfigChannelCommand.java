@@ -34,12 +34,12 @@ public class ConfigChannelCommand extends ConfigCommand{
             }
         }
 
-        Optional<ServerChannel> lOptionalResultChannel = pInteraction.getOptions().get(0).getOptionChannelValueByName("resultchannel");
+        Optional<ServerChannel> lOptionalResultChannel = pInteraction.getOptions().get(0).getOptionChannelValueByName("minutechannel");
         if(lOptionalResultChannel.isPresent()) {
             if(lOptionalResultChannel.get().getType().isTextChannelType()) {
-                council.resultChannel = lOptionalResultChannel.get().getId();
+                council.minuteChannel = lOptionalResultChannel.get().getId();
             } else {
-                pInteraction.createImmediateResponder().append("Invalid Result Channel").respond();
+                pInteraction.createImmediateResponder().append("Invalid Minute Channel").respond();
                 return;
             }
         }

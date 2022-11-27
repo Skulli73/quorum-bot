@@ -25,16 +25,16 @@ public class CreateCouncilCommand {
         String      lCouncilName = null;
         TextChannel lFloorChannel= null;
         TextChannel lAgendaChannel = null;
-        TextChannel lResultChannel = null;
+        TextChannel lMinuteChannel = null;
         Role lCouncillorRole = null;
 
         try {
             lCouncilName    =               interaction.getOptionStringValueByName("name").get();
             lFloorChannel   = (TextChannel) interaction.getOptionChannelValueByName("floorchannel").get();
             lAgendaChannel  = (TextChannel) interaction.getOptionChannelValueByName("agendachannel").get();//api.getServerTextChannelById(event.getSlashCommandInteraction().getArguments().get(2).getStringValue().toString().replace("Optional[","").replace("]","")).get();
-            lResultChannel  = (TextChannel) interaction.getOptionChannelValueByName("resultchannel").get();//api.getServerTextChannelById(event.getSlashCommandInteraction().getArguments().get(3).getStringValue().toString().replace("Optional[","").replace("]","")).get();
+            lMinuteChannel  = (TextChannel) interaction.getOptionChannelValueByName("minutechannel").get();//api.getServerTextChannelById(event.getSlashCommandInteraction().getArguments().get(3).getStringValue().toString().replace("Optional[","").replace("]","")).get();
             lCouncillorRole =               interaction.getArguments().get(4).getRoleValue().get();
-            System.out.println(lCouncilName+" | "+lFloorChannel+" | "+lAgendaChannel+" | "+lResultChannel);
+            System.out.println(lCouncilName+" | "+lFloorChannel+" | "+lAgendaChannel+" | "+lMinuteChannel);
 
         } catch (Exception e) {
             lFail = true;
@@ -42,7 +42,7 @@ public class CreateCouncilCommand {
             e.printStackTrace();
         }
 
-        if(lFloorChannel == lAgendaChannel || lFloorChannel == lResultChannel|| lAgendaChannel == lResultChannel) {
+        if(lFloorChannel == lAgendaChannel || lFloorChannel == lMinuteChannel|| lAgendaChannel == lMinuteChannel) {
             lFail = true;
             interaction.createImmediateResponder().setContent("The Floor, Agenda and Result Channel must be **different** channels.").respond();
         }
@@ -60,7 +60,7 @@ public class CreateCouncilCommand {
                     myReader.close();
                     String lJson = lStringBuilder.toString();
                     Gson lGson = new Gson();
-                    if(lGson.fromJson(lJson, Council.class).getFloorChannel(pApi) == lFloorChannel) {
+                    if(lGson.fromJson(lJson, Council.class).getFloorChannel() == lFloorChannel) {
                         lFail = true;
                         interaction.createImmediateResponder().setContent("The floor channel, you wish to use for your council, is already used by a council").respond();
                     }
@@ -73,7 +73,7 @@ public class CreateCouncilCommand {
 
         if(!lFail) {
             System.out.println(pApi);
-            Council lCouncil = new Council(lCouncilName,lFloorChannel, lAgendaChannel, lResultChannel,  lCouncillorRole.getId(), interaction.getServer().get().getId(), councils.size());
+            Council lCouncil = new Council(lCouncilName,lFloorChannel, lAgendaChannel, lMinuteChannel,  lCouncillorRole.getId(), interaction.getServer().get().getId(), councils.size());
             councils.add(lCouncil);
             SlashCommandListener.saveCouncil(lCouncil);
             interaction.createImmediateResponder().setContent("Your council was successfully created.").respond();

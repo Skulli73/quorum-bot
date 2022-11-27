@@ -43,13 +43,13 @@ public class MoveCommand {
                             throw new RuntimeException(e);
                         }
                         try {
-                            lMotion.getMessage(lApi, lCouncil.getAgendaChannel(lApi)).edit(
+                            lMotion.getMessage(lApi, lCouncil.getAgendaChannel()).edit(
                                     lEmbed
                             );
                         } catch (ExecutionException | InterruptedException e) {
                             e.printStackTrace();
                         }
-                        int requiredCouncillors = (int )Math.ceil(lCouncil.getCouncillorRole(lApi).getUsers().size()*lMotion.neededMajority);
+                        int requiredCouncillors = (int )Math.ceil(lCouncil.getCouncillorRole().getUsers().size()*lMotion.neededMajority);
                         String lFooter;
                         if(lMotion.typeOfMajority<3) {
                             lFooter = " councillors need to vote in favour of this bill for it to be passed. \n";
@@ -60,7 +60,7 @@ public class MoveCommand {
                                 .setEmbed(lEmbed.setFooter(requiredCouncillors + lFooter + lTypeOfMajorityArray[lMotion.typeOfMajority] + ", " +  lMotion.neededMajority*100 + "%")
                                 ).send(interaction.getChannel().get());
 
-                        Object[] lCouncillors = lCouncil.getCouncillorRole(lApi).getUsers().toArray();
+                        Object[] lCouncillors = lCouncil.getCouncillorRole().getUsers().toArray();
 
                         for(int i = 0; i<lCouncillors.length;i++) {
                             PrivateChannel lChannel = null;
