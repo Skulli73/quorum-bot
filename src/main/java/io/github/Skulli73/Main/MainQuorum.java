@@ -82,7 +82,7 @@ public class MainQuorum {
                 String lJson = lJsonBuilder.toString();
                 for (JsonElement lJsonElement : JsonParser.parseString(lJsonBuilder.toString()).getAsJsonArray()) {
                     JsonObject lJsonObject = lJsonElement.getAsJsonObject();
-                    Council lCouncil = new Council(lJsonObject.get("name").getAsString(), lJsonObject.get("floorChannel").getAsLong(), lJsonObject.get("agendaChannel").getAsLong(), lJsonObject.get("resultChannel").getAsLong(), lJsonObject.get("councillorRoleId").getAsLong(), lJsonObject.get("serverId").getAsLong(), lJsonObject.get("id").getAsInt());
+                    Council lCouncil = new Council(lJsonObject.get("name").getAsString(), lJsonObject.get("floorChannel").getAsLong(), lJsonObject.get("agendaChannel").getAsLong(), lJsonObject.get("minuteChannel").getAsLong(), lJsonObject.get("councillorRoleId").getAsLong(), lJsonObject.get("serverId").getAsLong(), lJsonObject.get("id").getAsInt());
                     lCouncil.currentMotion = lJsonObject.get("currentMotion").getAsInt();
                     lCouncil.nextMotion = lJsonObject.get("nextMotion").getAsInt();
                     lCouncil.standardMajorityType = lJsonObject.get("standardMajorityType").getAsInt();
@@ -106,7 +106,10 @@ public class MainQuorum {
                         lMotion.abstainVotes = StreamSupport.stream(lJsonObject2.get("abstainVotes").getAsJsonArray().spliterator(), false).map(JsonElement::getAsString).collect(ArrayList::new, List::add, List::addAll);
                         lMotion.notVoted = StreamSupport.stream(lJsonObject2.get("notVoted").getAsJsonArray().spliterator(), false).map(JsonElement::getAsString).collect(ArrayList::new, List::add, List::addAll);
                         lMotion.dmMessages = StreamSupport.stream(lJsonObject2.get("dmMessages").getAsJsonArray().spliterator(), false).map(JsonElement::getAsString).collect(ArrayList::new, List::add, List::addAll);
-                        lMotion.dmMessagesCouncillors = StreamSupport.stream(lJsonObject2.get("dmMessagesCouncillors").getAsJsonArray().spliterator(), false).map(JsonElement::getAsString).collect(ArrayList::new, List::add, List::addAll);
+                        if(lJsonObject2.get("dmMessagesCouncillors").getAsJsonArray() != null)
+                            lMotion.dmMessagesCouncillors = StreamSupport.stream(lJsonObject2.get("dmMessagesCouncillors").getAsJsonArray().spliterator(), false).map(JsonElement::getAsString).collect(ArrayList::new, List::add, List::addAll);
+                        if(lJsonObject2.get("approved") != null)
+                            lMotion.approved = lJsonObject2.get("approved").getAsBoolean();
                         lMotion.completed = lJsonObject2.get("completed").getAsBoolean();
                         if(lJsonObject2.get("billId") != null)
                             lMotion.billId = lJsonObject2.get("billId").getAsLong();

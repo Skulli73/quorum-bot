@@ -15,6 +15,7 @@ import org.javacord.api.interaction.SlashCommandInteraction;
 import java.awt.*;
 import java.util.concurrent.ExecutionException;
 
+import static io.github.Skulli73.Main.MainQuorum.bills;
 import static io.github.Skulli73.Main.MainQuorum.councils;
 import static io.github.Skulli73.Main.listeners.SlashCommandListener.lTypeOfMajorityArray;
 
@@ -55,11 +56,22 @@ public class MoveCommand {
                             lFooter = " councillors need to vote in favour of this bill for it to be passed. \n";
                         }else
                             lFooter = " councillors need to vote against this bill for it not to be passed. \n";
-                        new MessageBuilder()
+                        MessageBuilder lMessageBuilder = new MessageBuilder()
                                 .append(interaction.getUser().getMentionTag() + " moves " + lMotion.getTitle() + " from the agenda")
-                                .setEmbed(lEmbed.setFooter(requiredCouncillors + lFooter + lTypeOfMajorityArray[lMotion.typeOfMajority] + ", " +  lMotion.neededMajority*100 + "%")
-                                ).send(interaction.getChannel().get());
-
+                                .setEmbed(lEmbed.setFooter(requiredCouncillors + lFooter + lTypeOfMajorityArray[lMotion.typeOfMajority] + ", " +  lMotion.neededMajority*100 + "%"));
+                        lMessageBuilder.send(interaction.getChannel().get());
+                        lMessageBuilder.send(lCouncil.getResultChannel());
+                        String lQuestion = "";
+                        if(lMotion.isBill()) {
+                            if(bills.get(Long.toString(lMotion.billId)).firstReadingFinished)
+                                lQuestion = "That the bill be introduced";
+                            else
+                                lQuestion = "That the bill be adopted into law";
+                        } else if (lMotion.isAmendment()) {
+                            lQuestion = "That the amendment be agreed to";
+                        } else
+                            lQuestion = "That the motion be agreed to";
+                        lCouncil.getResultChannel().sendMessage("Question-" + lQuestion + "-put");
                         Object[] lCouncillors = lCouncil.getCouncillorRole().getUsers().toArray();
 
                         for(int i = 0; i<lCouncillors.length;i++) {

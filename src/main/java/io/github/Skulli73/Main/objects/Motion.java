@@ -16,6 +16,8 @@ import java.awt.*;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.ExecutionException;
@@ -47,6 +49,8 @@ public class Motion {
     @Nullable
     public Long                         amendmentId;
 
+    public boolean                      approved;
+
     public Motion(String pTitle, String pText, long pIntroducerId, long pAgendaMessageId, double pNeededMajority, int pTypeOfMajority, int pId) {
         title           = pTitle;
         text            = pText;
@@ -62,6 +66,7 @@ public class Motion {
         dmMessages      = new ArrayList<>();
         dmMessagesCouncillors = new ArrayList<>();
         id              = pId;
+        approved = false;
     }
     public Motion(String pTitle, String pText, long pIntroducerId, long pAgendaMessageId, double pNeededMajority, int pTypeOfMajority, int pId, @Nullable Long pBillId, @Nullable Long pAmendmentId) {
         this(pTitle, pText, pIntroducerId, pAgendaMessageId, pNeededMajority, pTypeOfMajority, pId);
@@ -86,7 +91,7 @@ public class Motion {
             try {
                 embed = new EmbedBuilder()
                         .setTitle(getTitle())
-                        .setDescription(getText())
+                        //.setDescription(getText())
                         .setColor(Color.GREEN)
                         .setAuthor(pApi.getUserById(introducerId).get().getName(), "", pApi.getUserById(introducerId).get().getAvatar());
             } catch (InterruptedException | ExecutionException e) {
@@ -170,7 +175,7 @@ public class Motion {
             else {
                 if(ayeVotesAmount + nayVotesAmount <= pCouncil.quorum * lTotalCouncillors) {
                     lPassed = false;
-                    lQuorumFailed = " due to the Quorum not being reached";
+                    lQuorumFailed = "but the Quorum not being reached";
                 }
             }
             Color lColour;
@@ -181,19 +186,19 @@ public class Motion {
 
             String lResultString = "";
             if(lPassed) {
-                lResultString = "The following motion passed";
+                lResultString = pCouncil.getName() + " divided";
                 onPassed();
             }
             else
-                lResultString = "The following motion was denied" + lQuorumFailed;
+                lResultString = pCouncil.getName() + " divided " + lQuorumFailed;
             new MessageBuilder()
                     .append(lResultString)
                     .setEmbed(
 
-                            embed.addField("Aye", ayeVotesAmount + " (" + ayeVotesMembers.toString() + ")")
-                                    .addField("Nay", nayVotesAmount + " (" + nayVotesMembers.toString() + ")")
-                                    .addField("Abstain", abstainVotesAmount + " (" + abstainVotesMembers.toString() + ")")
-                                    .addField("Did not Vote", notVotedAmount + " (" + notVotedMembers.toString() + ")")
+                            embed.addField("Aye", ayeVotesAmount + " (" + ayeVotesMembers + ")")
+                                    .addField("Nay", nayVotesAmount + " (" + nayVotesMembers + ")")
+                                    .addField("Abstain", abstainVotesAmount + " (" + abstainVotesMembers + ")")
+                                    .addField("Did not Vote", notVotedAmount + " (" + notVotedMembers + ")")
                                     .setColor(lColour)
                                     .setFooter(lTypeOfMajorityArray[typeOfMajority] + ", " +  neededMajority*100 + "%")
                     ).send(pCouncil.getResultChannel());
@@ -216,9 +221,38 @@ public class Motion {
             SlashCommandListener.saveMotion(pCouncil, this);
 
             deleteMessages(pApi);
-            if((isAmendment() && amendmentId+1 == bills.get(Long.toString(billId)).amendments.size())  || (isBill() && bills.get(Long.toString(billId)).amendments.size() == 0&& !bills.get(Long.toString(billId)).thirdReadingFinished) && lPassed) {
+            approved = lPassed;
+            boolean b = pCouncil.motionArrayList.stream().filter(c -> c.isAmendment() && Objects.equals(billId, c.billId) && !c.completed).toList().isEmpty() && !bills.get(Long.toString(billId)).thirdReadingFinished;
+            if(isBill()) {
+                if(bills.get(Long.toString(billId)).firstReadingFinished && bills.get(Long.toString(billId)).amendmentsFinished) {
+                    bills.get(Long.toString(billId)).thirdReadingFinished = true;
+                    saveBills();
+                }
+            }
+            if( isBill() || isAmendment())
+                if(b
+                        //pCouncil.motionArrayList.stream().filter(c -> c.isAmendment()&& Objects.equals(billId, c.billId) &&!c.completed).toList().isEmpty() && !bills.get(Long.toString(billId)).thirdReadingFinished;
+                    //isAmendment() && amendmentId+1 == bills.get(Long.toString(billId)).amendments.size())
+                    //|| (isBill() && bills.get(Long.toString(billId)).amendments.size() == 0&& !bills.get(Long.toString(billId)).thirdReadingFinished) && lPassed
+            ) {
+
                 Bill lBill = bills.get(Long.toString(billId));
                 lBill.amendmentsFinished = true;
+                List<Motion> lApprovedAmendmentsMotionList = pCouncil.motionArrayList.stream().filter(c -> c.isAmendment()&& Objects.equals(billId, c.billId) &&c.approved).toList();
+                StringBuilder lApprovedAmendmentsStringBuilder = new StringBuilder();
+                for(Motion lMotion:lApprovedAmendmentsMotionList)
+                    lApprovedAmendmentsStringBuilder.append("Amendment #" + lMotion.amendmentId);
+                List<Motion> lDeniedAmendmentsMotionList = pCouncil.motionArrayList.stream().filter(c -> c.isAmendment()&& Objects.equals(billId, c.billId) &&!c.approved).toList();
+                StringBuilder lDeniedAmendmentsStringBuilder = new StringBuilder();
+                for(Motion lMotion:lDeniedAmendmentsMotionList)
+                    lDeniedAmendmentsStringBuilder.append("Amendment #" + (lMotion.amendmentId+1));
+                EmbedBuilder lEmbedBuilder = new EmbedBuilder();
+                lEmbedBuilder.setTitle(lBill.title + " as amended")
+                        .setDescription(lBill.toString(false))
+                        .addField("Approved", lApprovedAmendmentsStringBuilder.toString() , true)
+                        .addField("Denied", lDeniedAmendmentsStringBuilder.toString() , true);
+                pCouncil.getResultChannel().sendMessage("There being no amendments left on the agenda, the bill was taken to be agreed to with amendments.\n",
+                        lEmbedBuilder);
                 try {
                     SlashCommandListener.createMotionEnd(discordApi.getUserById(lBill.initiatorId).get(), pCouncil, "Motion #" + (pCouncil.motionArrayList.size()+1) + ": " + lBill.title, lBill.majority, lBill.typeOfMajority, lBill.toString(false), discordApi.getServerById(pCouncil.getServerId()).get(), lBill.messageId, null);
                 } catch (InterruptedException | ExecutionException e) {

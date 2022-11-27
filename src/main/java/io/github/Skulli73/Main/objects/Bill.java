@@ -157,7 +157,7 @@ public class Bill {
         int i = 1;
         for (Amendment lAmendment: amendments) {
             try {
-                SlashCommandListener.createMotionEnd(discordApi.getUserById(initiatorId).get(), lCouncil, "Motion #" + (lCouncil.motionArrayList.size()+1) + ": Amendment " + i + " to " + title, lCouncil.amendmentMajority, lCouncil.amendmentTypeOfMajority, lAmendment.toString(), discordApi.getServerById(lCouncil.getServerId()).get(), messageId, (long) (i-1));
+                SlashCommandListener.createMotionEnd(discordApi.getUserById(lAmendment.introducerId).get(), lCouncil, "Motion #" + (lCouncil.motionArrayList.size()+1) + ": Amendment " + i + " to " + title, lCouncil.amendmentMajority, lCouncil.amendmentTypeOfMajority, lAmendment.toString(), discordApi.getServerById(lCouncil.getServerId()).get(), messageId, (long) (i-1));
             } catch (InterruptedException | ExecutionException e) {
                 throw new RuntimeException(e);
             }
