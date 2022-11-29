@@ -191,7 +191,7 @@ public class Motion {
             }
             else
                 lResultString = pCouncil.getName() + " divided " + lQuorumFailed;
-            new MessageBuilder()
+            MessageBuilder lMessageBuilder = new MessageBuilder()
                     .append(lResultString)
                     .setEmbed(
 
@@ -201,7 +201,7 @@ public class Motion {
                                     .addField("Did not Vote", notVotedAmount + " (" + notVotedMembers + ")")
                                     .setColor(lColour)
                                     .setFooter(lTypeOfMajorityArray[typeOfMajority] + ", " +  neededMajority*100 + "%")
-                    ).send(pCouncil.getResultChannel());
+                    );
 
             Message lAgendaMessage = null;
             try {
@@ -222,44 +222,51 @@ public class Motion {
 
             deleteMessages(pApi);
             approved = lPassed;
-            boolean b = pCouncil.motionArrayList.stream().filter(c -> c.isAmendment() && Objects.equals(billId, c.billId) && !c.completed).toList().isEmpty() && !bills.get(Long.toString(billId)).thirdReadingFinished;
+
             if(isBill()) {
                 if(bills.get(Long.toString(billId)).firstReadingFinished && bills.get(Long.toString(billId)).amendmentsFinished) {
                     bills.get(Long.toString(billId)).thirdReadingFinished = true;
                     saveBills();
                 }
             }
-            if( isBill() || isAmendment())
-                if(b
-                        //pCouncil.motionArrayList.stream().filter(c -> c.isAmendment()&& Objects.equals(billId, c.billId) &&!c.completed).toList().isEmpty() && !bills.get(Long.toString(billId)).thirdReadingFinished;
+            if( isBill() || isAmendment()) {
+                boolean b = pCouncil.motionArrayList.stream().filter(c -> c.isAmendment() && Objects.equals(billId, c.billId) && !c.completed).toList().isEmpty() && !bills.get(Long.toString(billId)).thirdReadingFinished;
+                if (b)
+                    //pCouncil.motionArrayList.stream().filter(c -> c.isAmendment()&& Objects.equals(billId, c.billId) &&!c.completed).toList().isEmpty() && !bills.get(Long.toString(billId)).thirdReadingFinished;
                     //isAmendment() && amendmentId+1 == bills.get(Long.toString(billId)).amendments.size())
                     //|| (isBill() && bills.get(Long.toString(billId)).amendments.size() == 0&& !bills.get(Long.toString(billId)).thirdReadingFinished) && lPassed
-            ) {
+                 {
 
-                Bill lBill = bills.get(Long.toString(billId));
-                lBill.amendmentsFinished = true;
-                List<Motion> lApprovedAmendmentsMotionList = pCouncil.motionArrayList.stream().filter(c -> c.isAmendment()&& Objects.equals(billId, c.billId) &&c.approved).toList();
-                StringBuilder lApprovedAmendmentsStringBuilder = new StringBuilder();
-                for(Motion lMotion:lApprovedAmendmentsMotionList)
-                    lApprovedAmendmentsStringBuilder.append("Amendment #" + lMotion.amendmentId);
-                List<Motion> lDeniedAmendmentsMotionList = pCouncil.motionArrayList.stream().filter(c -> c.isAmendment()&& Objects.equals(billId, c.billId) &&!c.approved).toList();
-                StringBuilder lDeniedAmendmentsStringBuilder = new StringBuilder();
-                for(Motion lMotion:lDeniedAmendmentsMotionList)
-                    lDeniedAmendmentsStringBuilder.append("Amendment #" + (lMotion.amendmentId+1));
-                EmbedBuilder lEmbedBuilder = new EmbedBuilder();
-                lEmbedBuilder.setTitle(lBill.title + " as amended")
-                        .setDescription(lBill.toString(false))
-                        .addField("Approved", lApprovedAmendmentsStringBuilder.toString() , true)
-                        .addField("Denied", lDeniedAmendmentsStringBuilder.toString() , true);
-                pCouncil.getResultChannel().sendMessage("There being no amendments left on the agenda, the bill was taken to be agreed to with amendments.\n",
-                        lEmbedBuilder);
-                try {
-                    SlashCommandListener.createMotionEnd(discordApi.getUserById(lBill.initiatorId).get(), pCouncil, "Motion #" + (pCouncil.motionArrayList.size()+1) + ": " + lBill.title, lBill.majority, lBill.typeOfMajority, lBill.toString(false), discordApi.getServerById(pCouncil.getServerId()).get(), lBill.messageId, null);
-                } catch (InterruptedException | ExecutionException e) {
-                    throw new RuntimeException(e);
-                }
-                bills.put(String.valueOf(lBill.messageId), lBill);
-            }
+                    Bill lBill = bills.get(Long.toString(billId));
+                    lBill.amendmentsFinished = true;
+                    List<Motion> lApprovedAmendmentsMotionList = pCouncil.motionArrayList.stream().filter(c -> c.isAmendment() && Objects.equals(billId, c.billId) && c.approved).toList();
+                    StringBuilder lApprovedAmendmentsStringBuilder = new StringBuilder();
+                    for (Motion lMotion : lApprovedAmendmentsMotionList)
+                        lApprovedAmendmentsStringBuilder.append("Amendment #").append(lMotion.amendmentId);
+                    List<Motion> lDeniedAmendmentsMotionList = pCouncil.motionArrayList.stream().filter(c -> c.isAmendment() && Objects.equals(billId, c.billId) && !c.approved).toList();
+                    StringBuilder lDeniedAmendmentsStringBuilder = new StringBuilder();
+                    for (Motion lMotion : lDeniedAmendmentsMotionList)
+                        lDeniedAmendmentsStringBuilder.append("Amendment #").append(lMotion.amendmentId + 1).append("\n");
+
+                    EmbedBuilder lEmbedBuilder = new EmbedBuilder()
+                            .setTitle(lBill.title + " as amended")
+                            .setDescription(lBill.toString(false) + "\n\n**Approved**\n" + lApprovedAmendmentsStringBuilder + "\n**Denied**\n" + lDeniedAmendmentsStringBuilder)
+                            //.addField("Approved", lApprovedAmendmentsStringBuilder.toString(), true)
+                            //.addField("Denied", lDeniedAmendmentsStringBuilder.toString(), true)
+                            .setColor(Color.green);
+                    lMessageBuilder
+                            .addEmbed(lEmbedBuilder)
+                            .append("\nThere being no amendments left on the agenda, the bill was taken to be agreed to with amendments.")
+                            .send(pCouncil.getMinuteChannel());
+                    try {
+                        SlashCommandListener.createMotionEnd(discordApi.getUserById(lBill.initiatorId).get(), pCouncil, "Motion #" + (pCouncil.motionArrayList.size() + 1) + ": " + lBill.title, lBill.majority, lBill.typeOfMajority, lBill.toString(false), discordApi.getServerById(pCouncil.getServerId()).get(), lBill.messageId, null);
+                    } catch (InterruptedException | ExecutionException e) {
+                        throw new RuntimeException(e);
+                    }
+                    bills.put(String.valueOf(lBill.messageId), lBill);
+                    saveBills();
+                } else lMessageBuilder.send(pCouncil.getMinuteChannel());
+            } else lMessageBuilder.send(pCouncil.getMinuteChannel());
         }
     }
 

@@ -60,7 +60,7 @@ public class MoveCommand {
                                 .append(interaction.getUser().getMentionTag() + " moves " + lMotion.getTitle() + " from the agenda")
                                 .setEmbed(lEmbed.setFooter(requiredCouncillors + lFooter + lTypeOfMajorityArray[lMotion.typeOfMajority] + ", " +  lMotion.neededMajority*100 + "%"));
                         lMessageBuilder.send(interaction.getChannel().get());
-                        lMessageBuilder.send(lCouncil.getResultChannel());
+                        lMessageBuilder.send(lCouncil.getMinuteChannel());
                         String lQuestion = "";
                         if(lMotion.isBill()) {
                             if(bills.get(Long.toString(lMotion.billId)).firstReadingFinished)
@@ -71,7 +71,7 @@ public class MoveCommand {
                             lQuestion = "That the amendment be agreed to";
                         } else
                             lQuestion = "That the motion be agreed to";
-                        lCouncil.getResultChannel().sendMessage("Question-" + lQuestion + "-put");
+                        lCouncil.getMinuteChannel().sendMessage("Question-" + lQuestion + "-put");
                         Object[] lCouncillors = lCouncil.getCouncillorRole().getUsers().toArray();
 
                         for(int i = 0; i<lCouncillors.length;i++) {

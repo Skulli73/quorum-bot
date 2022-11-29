@@ -17,7 +17,7 @@ public class EndVoteCommand extends CouncilCommand {
             pInteraction.createImmediateResponder()
                     .append(lMessageString)
                     .respond();
-            council.getResultChannel().sendMessage(lMessageString);
+            council.getMinuteChannel().sendMessage(lMessageString);
             lMotion.endMotionVote(pApi, council, pInteraction, council.getCouncillorRole().getUsers().toArray());
         } else {
             pInteraction.createImmediateResponder()

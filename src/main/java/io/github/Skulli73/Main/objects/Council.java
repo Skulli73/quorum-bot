@@ -71,9 +71,9 @@ public class Council {
 
     // Getters & Setters
 
-    public TextChannel  getAgendaChannel() { return discordApi.getServerById(serverId).flatMap(serverById -> serverById.getTextChannelById(agendaChannel)).get(); }
-    public TextChannel  getFloorChannel()  { return discordApi.getServerById(serverId).flatMap(serverById -> serverById.getTextChannelById(floorChannel)).get();  }
-    public TextChannel  getResultChannel() { return discordApi.getServerById(serverId).flatMap(serverById -> serverById.getTextChannelById(minuteChannel)).get(); }
+    public TextChannel  getAgendaChannel() { return discordApi.getServerById(serverId).get().getTextChannelById(agendaChannel).get(); }
+    public TextChannel  getFloorChannel()  { return discordApi.getServerById(serverId).get().getTextChannelById(floorChannel).get();  }
+    public TextChannel getMinuteChannel() { return discordApi.getServerById(serverId).get().getTextChannelById(minuteChannel).get(); }
     public Role         getCouncillorRole()       { return discordApi.getRoleById(councillorRoleId).get(); }
     public String       getName() { return name; }
     public long         getId() { return id; }
