@@ -53,12 +53,12 @@ public class Council {
         proposeRoleId       = councillorRoleId;
         legislationChannel = minuteChannel;
         motionArrayList     = new ArrayList<>();
-        standardMajority = 0.501;
-        standardMajorityType = 0;
-        timeOutTime = 24;
-        nextMotion = 1;
-        currentMotion = 0;
-        quorum = 0.5;
+        standardMajority    = 0.501;
+        standardMajorityType= 0;
+        timeOutTime         = 24;
+        nextMotion          = 1;
+        currentMotion       = 0;
+        quorum              = 0.5;
         absentionsCountToQuorum = true;
         MainQuorum.timers.add(id, null);
         firstReadingMajority = 0.501;
@@ -66,6 +66,7 @@ public class Council {
         amendmentMajority = 0.501;
         amendmentTypeOfMajority = 0;
         voteWeightArrayList = new ArrayList<>();
+        voteWeightArrayList.add(new VoteWeight(councillorRoleId, 1));
     }
 
 
