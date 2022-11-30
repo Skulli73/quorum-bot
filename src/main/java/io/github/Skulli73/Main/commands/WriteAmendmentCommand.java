@@ -22,8 +22,12 @@ public abstract class WriteAmendmentCommand {
                 bill = bills.get(lBillMessageId);
                 if(bill.amendmentDrafts.size()> amendmentDraftId) {
                     amendment = bill.amendmentDrafts.get(amendmentDraftId);
-                    if (bill.amendmentDrafts.get(amendmentDraftId) != null)
-                        this.executeCommand(pInteraction, pApi);
+                    if (bill.amendmentDrafts.get(amendmentDraftId) != null) {
+                        if (bill.amendmentDrafts.get(amendmentDraftId).introducerId == pInteraction.getUser().getId())
+                            this.executeCommand(pInteraction, pApi);
+                        else
+                            pInteraction.createImmediateResponder().append("This is not your amendment.");
+                    }
                     else
                         pInteraction.createImmediateResponder().append("This draft is already finished").respond();
                 } else
