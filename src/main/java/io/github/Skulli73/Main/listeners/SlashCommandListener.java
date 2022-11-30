@@ -45,6 +45,8 @@ public class SlashCommandListener implements SlashCommandCreateListener {
         if (interaction.getFullCommandName().equals("config vote_weights"))
             new ConfigVoteWeightsCommand(interaction, discordApi);
         if (interaction.getFullCommandName().equals("config quorum")) new ConfigQuorum(interaction, discordApi);
+        if (interaction.getFullCommandName().equals("config councillor_role"))
+            new ConfigCouncillorRoleCommand(interaction, discordApi);
         if (interaction.getFullCommandName().equals("write_bill add_part"))
             new WriteBillAddPartCommand(interaction, discordApi);
         if (interaction.getFullCommandName().equals("write_bill add_division"))

@@ -85,6 +85,9 @@ public class SlashCommandManager {
                         SlashCommandOption.createWithOptions(SlashCommandOptionType.SUB_COMMAND, "vote_weights", "Give a role a specific vote weight.", Arrays.asList(
                                 SlashCommandOption.create(SlashCommandOptionType.ROLE, "role", "The role to be given a vote weight.", true),
                                 SlashCommandOption.create(SlashCommandOptionType.DECIMAL, "vote_weight", "The vote weight for the aforementioned role.", true)
+                        )),
+                        SlashCommandOption.createWithOptions(SlashCommandOptionType.SUB_COMMAND, "councillor_role", "The Role for Councillors.", Arrays.asList(
+                                SlashCommandOption.create(SlashCommandOptionType.ROLE, "role", "The new Councillor Role.", true)
                         ))
                 ))
                         .setDefaultEnabledForPermissions(PermissionType.MANAGE_CHANNELS, PermissionType.ADMINISTRATOR)
