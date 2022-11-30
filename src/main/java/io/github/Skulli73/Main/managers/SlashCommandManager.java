@@ -45,6 +45,7 @@ public class SlashCommandManager {
                         .join();
         SlashCommand configCommand =
                 SlashCommand.with("config", "Change the configurations of the Quorum Bot in this Council.", Arrays.asList(
+                        SlashCommandOption.create(SlashCommandOptionType.SUB_COMMAND, "show", "Show all the current configs"),
                         SlashCommandOption.createWithOptions(SlashCommandOptionType.SUB_COMMAND, "default_majority", "The majority needed if not stated in the motion.", Arrays.asList(
                                 SlashCommandOption.create(SlashCommandOptionType.DECIMAL, "majority", "Required majority (e.g 50% = 0.5)", true),
                                 SlashCommandOption.createWithChoices(SlashCommandOptionType.DECIMAL, "type_of_majority", "What type of a majority is necessary", true,
