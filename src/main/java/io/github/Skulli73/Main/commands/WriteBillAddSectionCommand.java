@@ -21,5 +21,6 @@ public class WriteBillAddSectionCommand extends WriteBillCommand{
                 .sectionArrayList
                 .add(new Section(pInteraction.getOptionByName("add_section").get().getOptionStringValueByName("section_title").get(), pInteraction.getOptionByName("add_section").get().getOptionStringValueByName("section_text").get()));
         bills.get(lMessageId).update();
+        respondMessageSuccessful(pInteraction);
     }
 }

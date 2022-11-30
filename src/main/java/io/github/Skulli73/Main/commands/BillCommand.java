@@ -24,6 +24,7 @@ public class BillCommand extends CouncilCommand{
                 bills.put(lMessageId, lBill);
                 MainQuorum.saveBills();
                 lBill.update();
+                pInteraction.createImmediateResponder().append("Bill creation process initiated, look in dms.").respond();
             }
 
 

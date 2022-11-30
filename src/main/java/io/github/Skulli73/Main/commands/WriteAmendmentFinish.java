@@ -23,5 +23,6 @@ public class WriteAmendmentFinish extends WriteAmendmentCommand{
         }
         bills.put(String.valueOf(bill.messageId), bill);
         saveBills();
+        pInteraction.createImmediateResponder().append("The amendment was successfully finished.").respond();
     }
 }

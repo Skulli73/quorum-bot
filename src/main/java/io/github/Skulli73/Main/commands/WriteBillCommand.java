@@ -16,4 +16,8 @@ public abstract class WriteBillCommand {
             pInteraction.createImmediateResponder().append("This message does not exist.").respond();
     }
     public abstract void executeCommand(SlashCommandInteraction pInteraction, DiscordApi pApi);
+
+    public void respondMessageSuccessful(SlashCommandInteraction pInteraction) {
+        pInteraction.createImmediateResponder().append("Bill successfully edited.").respond();
+    }
 }

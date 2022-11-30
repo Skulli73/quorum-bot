@@ -16,5 +16,6 @@ public class WriteBillAddDivsionCommand extends WriteBillCommand{
         String lMessageId = pInteraction.getOptionByName("add_division").get().getOptionStringValueByName("bill_message_id").get();
         bills.get(lMessageId).partArrayList.get(bills.get(lMessageId).partArrayList.size()-1).divisionArrayList.add(new Division(pInteraction.getOptionByName("add_division").get().getOptionStringValueByName("title").get()));
         bills.get(lMessageId).update();
+        respondMessageSuccessful(pInteraction);
     }
 }

@@ -36,6 +36,7 @@ public class AmendCommand extends CouncilCommand {
 
                         bills.put(String.valueOf(lMotion.billId), lBill);
                         saveBills();
+                        pInteraction.createImmediateResponder().append("Amendment creation process initiated, look in dms.").respond();
                     } else
                         pInteraction.createImmediateResponder().append("This is not the first reading.").respond();
                 } else

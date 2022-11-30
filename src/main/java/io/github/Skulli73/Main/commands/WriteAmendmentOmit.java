@@ -58,17 +58,24 @@ public class WriteAmendmentOmit extends WriteAmendmentCommand{
                                             }
                                             if(lValid2) {
                                                  amendment.omittings.add(lPartId + "." + lDivisionId + "." + lSectionId + "." + lSubSectionIdString);
+                                                successfullyExecutedCommandMessage(pInteraction);
                                             }
                                         } else pInteraction.createImmediateResponder().append("Not a valid Sub-Section.\nError Code: 01").respond();
                                     }
-                                } else
+                                } else {
                                     amendment.omittings.add(lPartId + "." + lDivisionId + "." + lSectionId);
+                                    successfullyExecutedCommandMessage(pInteraction);
+                                }
                             }
-                        } else
+                        } else {
                             amendment.omittings.add(lPartId + "." + lDivisionId);
+                            successfullyExecutedCommandMessage(pInteraction);
+                        }
                     }
-            } else
+            } else {
                 amendment.omittings.add(String.valueOf(lPartId));
+                successfullyExecutedCommandMessage(pInteraction);
+            }
             bill.amendmentDrafts.set(amendmentDraftId, amendment);
             bills.put(String.valueOf(bill.messageId), bill);
             MainQuorum.saveBills();
@@ -77,4 +84,6 @@ public class WriteAmendmentOmit extends WriteAmendmentCommand{
             pInteraction.createImmediateResponder().append("This Part does not exist").respond();
 
     }
+
+
 }

@@ -59,11 +59,14 @@ public class WriteAmendmentAmend extends WriteAmendmentCommand{
                                             }
                                             if(lValid2) {
                                                  amendment.amendments.add(new String[]{lPartId + "." + lDivisionId + "." + lSectionId + "." + lSubSectionIdString, lAmendmentText});
+                                                successfullyExecutedCommandMessage(pInteraction);
                                             }
                                         } else pInteraction.createImmediateResponder().append("Not a valid Sub-Section.\nError Code: 01").respond();
                                     }
-                                } else
+                                } else {
                                     amendment.amendments.add(new String[]{lPartId + "." + lDivisionId + "." + lSectionId, lAmendmentText});
+                                    successfullyExecutedCommandMessage(pInteraction);
+                                }
                             }
                         }
                     }

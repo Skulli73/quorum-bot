@@ -39,4 +39,8 @@ public abstract class WriteAmendmentCommand {
             pInteraction.createImmediateResponder().append("This amendment does not exist.").respond();
     }
     public abstract void executeCommand(SlashCommandInteraction pInteraction, DiscordApi pApi);
+
+    public void successfullyExecutedCommandMessage(SlashCommandInteraction pInteraction) {
+        pInteraction.createImmediateResponder().append("The amendment was successfully edited.").respond();
+    }
 }

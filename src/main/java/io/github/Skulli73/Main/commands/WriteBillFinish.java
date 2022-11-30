@@ -36,7 +36,7 @@ public class WriteBillFinish extends WriteBillCommand{
             throw new RuntimeException(e);
         }
         lBill.draftFinished = true;
-
+        pInteraction.createImmediateResponder().append("Your bill was successfully finished").respond();
         bills.put(billMessageId, lBill);
         MainQuorum.saveBills();
     }

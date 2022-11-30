@@ -23,11 +23,14 @@ public class WriteBillAddSubSectionCommand extends WriteBillCommand{
                         .sectionArrayList);
         if(lSection.subSectionArrayList.size() !=0 && subSectionLevel != 0) {
             lSection.subSectionArrayList.get(lSection.subSectionArrayList.size()-1).newSubSection(lText, Math.toIntExact(subSectionLevel));
+            respondMessageSuccessful(pInteraction);
         } else if (subSectionLevel == 0) {
             lSection.subSectionArrayList.add(new SubSection(lText));
+            respondMessageSuccessful(pInteraction);
         } else {
             lSection.subSectionArrayList.add(new SubSection(""));
             lSection.subSectionArrayList.get(0).newSubSection(lText, Math.toIntExact(subSectionLevel));
+            respondMessageSuccessful(pInteraction);
         }
         bills.get(lMessageId).
                 partArrayList.get(bills.get(lMessageId).partArrayList.size()-1)

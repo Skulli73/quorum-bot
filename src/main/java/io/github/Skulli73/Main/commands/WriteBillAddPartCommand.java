@@ -13,6 +13,7 @@ public class WriteBillAddPartCommand extends WriteBillCommand{
     public void executeCommand(SlashCommandInteraction pInteraction, DiscordApi pApi) {
         String lMessageId = pInteraction.getOptionByName("add_part").get().getOptionStringValueByName("bill_message_id").get();
         bills.get(lMessageId).partArrayList.add(new Part(pInteraction.getOptionByName("add_part").get().getOptionStringValueByName("title").get()));
+        respondMessageSuccessful(pInteraction);
         bills.get(lMessageId).update();
     }
 }
