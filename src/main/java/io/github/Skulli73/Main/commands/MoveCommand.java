@@ -63,7 +63,7 @@ public class MoveCommand {
                         lMessageBuilder.send(lCouncil.getMinuteChannel());
                         String lQuestion = "";
                         if(lMotion.isBill()) {
-                            if(bills.get(Long.toString(lMotion.billId)).firstReadingFinished)
+                            if(!bills.get(Long.toString(lMotion.billId)).amendmentsFinished)
                                 lQuestion = "That the bill be introduced";
                             else
                                 lQuestion = "That the bill be adopted into law";
@@ -104,7 +104,7 @@ public class MoveCommand {
                         }
                         lMotion.startMotionVote(pApi, lCouncil, interaction, lCouncillors);
                         SlashCommandListener.saveMotion(lCouncil, lMotion);
-
+                        lCouncil.getFloorChannel().asServerTextChannel().get().updateTopic("Current Motion: " + lMotion.getTitle() + " | " +lCouncillors.length+" Councillors left to vote.");
                     }
                     else
                         interaction.getChannel().get().sendMessage(interaction.getUser().getMentionTag() + ", you do not have the propose role and cannot move the motion.");

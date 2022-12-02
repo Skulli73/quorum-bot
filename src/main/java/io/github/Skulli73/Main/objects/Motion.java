@@ -250,7 +250,6 @@ public class Motion {
             MessageBuilder lMessageBuilder = new MessageBuilder()
                     .append(lResultString)
                     .setEmbed(
-
                             embed.addField("Aye", lFormat.format(ayeVotesAmount) + " (" + ayeVotesMembers + ")")
                                     .addField("Nay", lFormat.format(nayVotesAmount) + " (" + nayVotesMembers + ")")
                                     .addField("Abstain", lFormat.format(abstainVotesAmount) + " (" + abstainVotesMembers + ")")
@@ -273,6 +272,8 @@ public class Motion {
 
 
             pCouncil.toNextMotion();
+
+            pCouncil.getFloorChannel().asServerTextChannel().get().updateTopic("No Active Motion");
 
             SlashCommandListener.saveMotion(pCouncil, this);
 

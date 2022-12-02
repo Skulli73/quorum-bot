@@ -2,9 +2,6 @@ package io.github.Skulli73.Main.listeners;
 
 import io.github.Skulli73.Main.objects.Council;
 import io.github.Skulli73.Main.objects.Motion;
-import org.javacord.api.entity.message.component.ActionRow;
-import org.javacord.api.entity.message.component.TextInput;
-import org.javacord.api.entity.message.component.TextInputStyle;
 import org.javacord.api.event.interaction.MessageComponentCreateEvent;
 import org.javacord.api.interaction.Interaction;
 import org.javacord.api.interaction.MessageComponentInteraction;
@@ -117,16 +114,8 @@ public class MessageComponentListener implements MessageComponentCreateListener 
             }
             assert lCouncil != null;
             SlashCommandListener.saveMotion(lCouncil, lMotion);
-        }
-        else {
-                switch (customId) {
-                    case "add_part":
-                        messageComponentInteraction.respondWithModal("add_part_modal" + messageComponentInteraction.getMessage().getId(), "New Part",
-                                ActionRow.of(TextInput.create(TextInputStyle.SHORT, "add_part_modal_text_input", "Title of the Part"))
-                        );
-                        break;
-                        //bills.get(messageComponentInteraction.getMessage().getId()).partArrayList.add();
-                }
+            lCouncil.getFloorChannel().asServerTextChannel().get().updateTopic("Current Motion: " + lMotion.getTitle() + " | " +(lCouncil.getCouncillorRole().getUsers().size() - lMotion.ayeVotes.size() - lMotion.nayVotes.size() - lMotion.abstainVotes.size())+" Councillor(s) left to vote.");
+
         }
     }
 }
