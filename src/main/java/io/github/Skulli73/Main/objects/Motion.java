@@ -266,7 +266,7 @@ public class Motion {
             }
 
             assert lAgendaMessage != null;
-            lAgendaMessage.edit(lAgendaMessage.getEmbeds().get(0).toBuilder().setColor(Color.GREEN));
+            lAgendaMessage.delete();
 
             completed = true;
 
