@@ -1,5 +1,6 @@
 package io.github.Skulli73.Main.commands;
 
+import io.github.Skulli73.Main.MainQuorum;
 import io.github.Skulli73.Main.listeners.SlashCommandListener;
 import io.github.Skulli73.Main.objects.Council;
 import io.github.Skulli73.Main.objects.Motion;
@@ -13,10 +14,11 @@ import org.javacord.api.entity.user.User;
 import org.javacord.api.interaction.SlashCommandInteraction;
 
 import java.awt.*;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.concurrent.ExecutionException;
 
-import static io.github.Skulli73.Main.MainQuorum.bills;
-import static io.github.Skulli73.Main.MainQuorum.councils;
+import static io.github.Skulli73.Main.MainQuorum.*;
 import static io.github.Skulli73.Main.listeners.SlashCommandListener.lTypeOfMajorityArray;
 
 public class MoveCommand {
@@ -27,21 +29,33 @@ public class MoveCommand {
         lApi = pApi;
 
         if(councils.size()!=0) {
-            if(councils.get(0).isChannelFloor(interaction.getChannel().get(), councils)) {
-                Council lCouncil = councils.get(0).councilByFloorChannel(interaction.getChannel().get(), councils);
+            if(Council.isChannelFloor(interaction.getChannel().get(), councils)) {
+                Council lCouncil = Council.councilByFloorChannel(interaction.getChannel().get(), councils);
                 Motion lMotion = lCouncil.motionArrayList.get(lCouncil.currentMotion);
                 if(!lMotion.isMoved) {
                     if(lApi.getRoleById(lCouncil.getProposeRoleId()).get().hasUser(interaction.getUser())) {
                         lMotion.isMoved = true;
-                        EmbedBuilder lEmbed = null;
-                        try {
-                            lEmbed = new EmbedBuilder()
-                                    .setTitle(lMotion.getTitle())
-                                    .setDescription(lMotion.getText())
-                                    .setColor(Color.YELLOW)
-                                    .setAuthor(lApi.getUserById(lMotion.introducerId).get().getName(), "", lApi.getUserById(lMotion.introducerId).get().getAvatar());
-                        } catch (InterruptedException | ExecutionException e) {
-                            throw new RuntimeException(e);
+                        int requiredCouncillors = (int )Math.ceil(lCouncil.getCouncillorRole().getUsers().size()*lMotion.neededMajority);
+                        String lFooter;
+                        if(lMotion.typeOfMajority<3) {
+                            lFooter = " councillors need to vote in favour of this bill for it to be passed. \n";
+                        }else
+                            lFooter = " councillors need to vote against this bill for it not to be passed. \n";
+                        lFooter = lFooter + lTypeOfMajorityArray[lMotion.typeOfMajority] + ", " +  lMotion.neededMajority*100 + "%";
+                        List<EmbedBuilder> lEmbed;
+                        if(lMotion.getText().length() > 2000) {
+                            lEmbed = MainQuorum.splitEmbeds(lMotion.getText(), Color.yellow, lMotion.getTitle(), lFooter);
+                        } else {
+                            lEmbed = new LinkedList<EmbedBuilder>();
+                            lEmbed.add(new EmbedBuilder().setTitle(lMotion.getTitle()).setDescription(lMotion.getText()).setColor(Color.yellow));
+                        }
+                        int i = 0;
+                        for(EmbedBuilder ignored:lEmbed) {
+                            try {
+                                lEmbed.get(i).setAuthor(discordApi.getUserById(lMotion.introducerId).get());
+                            } catch (InterruptedException | ExecutionException e ) {
+                                throw new RuntimeException(e);
+                            }
                         }
                         try {
                             lMotion.getMessage(lApi, lCouncil.getAgendaChannel()).edit(
@@ -50,15 +64,10 @@ public class MoveCommand {
                         } catch (ExecutionException | InterruptedException e) {
                             e.printStackTrace();
                         }
-                        int requiredCouncillors = (int )Math.ceil(lCouncil.getCouncillorRole().getUsers().size()*lMotion.neededMajority);
-                        String lFooter;
-                        if(lMotion.typeOfMajority<3) {
-                            lFooter = " councillors need to vote in favour of this bill for it to be passed. \n";
-                        }else
-                            lFooter = " councillors need to vote against this bill for it not to be passed. \n";
+
                         MessageBuilder lMessageBuilder = new MessageBuilder()
                                 .append(interaction.getUser().getMentionTag() + " moves " + lMotion.getTitle() + " from the agenda")
-                                .setEmbed(lEmbed.setFooter(requiredCouncillors + lFooter + lTypeOfMajorityArray[lMotion.typeOfMajority] + ", " +  lMotion.neededMajority*100 + "%"));
+                                .addEmbeds(lEmbed);
                         lMessageBuilder.send(interaction.getChannel().get());
                         lMessageBuilder.send(lCouncil.getMinuteChannel());
                         String lQuestion = "";
@@ -74,20 +83,18 @@ public class MoveCommand {
                         lCouncil.getMinuteChannel().sendMessage("Question-" + lQuestion + "-put");
                         Object[] lCouncillors = lCouncil.getCouncillorRole().getUsers().toArray();
 
-                        for(int i = 0; i<lCouncillors.length;i++) {
-                            PrivateChannel lChannel = null;
+                        for(int j = 0; i<lCouncillors.length;i++) {
+                            PrivateChannel lChannel;
                             try {
-                                lChannel = ((User)lCouncillors[i]).openPrivateChannel().get();
-                            } catch (InterruptedException e) {
-                                throw new RuntimeException(e);
-                            } catch (ExecutionException e) {
+                                lChannel = ((User)lCouncillors[j]).openPrivateChannel().get();
+                            } catch (InterruptedException | ExecutionException e) {
                                 throw new RuntimeException(e);
                             }
                             lMotion.notVoted.add(((User)lCouncillors[i]).getIdAsString());
                             try {
                                 lMotion.dmMessages.add( new MessageBuilder().append("Vote")
-                                        .setEmbed(
-                                                lEmbed.setFooter(requiredCouncillors + lFooter + lTypeOfMajorityArray[lMotion.typeOfMajority] + ", " +  lMotion.neededMajority*100 + "%")
+                                        .addEmbeds(
+                                                lEmbed
                                         )
                                         .addComponents(
                                                 ActionRow.of(

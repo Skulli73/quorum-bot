@@ -2,6 +2,7 @@ package io.github.Skulli73.Main.listeners;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import io.github.Skulli73.Main.MainQuorum;
 import io.github.Skulli73.Main.commands.*;
 import io.github.Skulli73.Main.objects.Council;
 import io.github.Skulli73.Main.objects.Motion;
@@ -17,6 +18,8 @@ import org.jetbrains.annotations.Nullable;
 import java.awt.*;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 import static io.github.Skulli73.Main.MainQuorum.*;
@@ -77,7 +80,7 @@ public class SlashCommandListener implements SlashCommandCreateListener {
     }
 
     public static void createMotion(SlashCommandInteraction pInteraction) throws ExecutionException, InterruptedException {
-        Council lCouncil = councils.get(0).councilByFloorChannel(pInteraction.getChannel().get(), councils);
+        Council lCouncil = Council.councilByFloorChannel(pInteraction.getChannel().get(), councils);
 
         String lMotionName;
         double lMajority = lCouncil.standardMajority;
@@ -117,15 +120,27 @@ public class SlashCommandListener implements SlashCommandCreateListener {
     }
 
     public static Motion createMotionEnd(User pUser, Council pCouncil, String pMotionName, double pMajority, int pTypeOfMajority, String pMotionDesc, Server pServer, @Nullable Long billId, @Nullable Long pAmendmentId) throws InterruptedException, ExecutionException {
+        List<EmbedBuilder> lEmbed;
+        if(pMotionDesc.length() > 2048) {
+            lEmbed = MainQuorum.splitEmbeds(pMotionDesc, Color.red, pMotionName, lTypeOfMajorityArray[pTypeOfMajority] + ", " + pMajority * 100 + "%");
+            int i = 0;
+            for(EmbedBuilder ignored: lEmbed) {
+                lEmbed.get(i).setAuthor(pUser);
+                i++;
+            }
+        } else {
+            lEmbed = new LinkedList<EmbedBuilder>();
+            lEmbed.add(new EmbedBuilder()
+                    .setTitle(pMotionName)
+                    .setDescription(pMotionDesc)
+                    .setColor(Color.RED)
+                    .setAuthor(pUser.getDisplayName(pServer), pUser.getAvatar().getUrl().toString(), pUser.getAvatar())
+                    .setFooter(lTypeOfMajorityArray[pTypeOfMajority] + ", " + pMajority * 100 + "%"
+                    ));
+        }
         Motion lMotion = new Motion(pMotionName, pMotionDesc, pUser.getId(),
-                new MessageBuilder().setEmbed(
-                        new EmbedBuilder()
-                                .setTitle(pMotionName)
-                                .setDescription(pMotionDesc)
-                                .setColor(Color.RED)
-                                .setAuthor(pUser.getDisplayName(pServer), pUser.getAvatar().getUrl().toString(), pUser.getAvatar())
-                                .setFooter(lTypeOfMajorityArray[pTypeOfMajority] + ", " + pMajority * 100 + "%"
-                                )
+                new MessageBuilder().addEmbeds(
+                        lEmbed
                 ).send(pCouncil.getAgendaChannel()).get().getId(), pMajority, pTypeOfMajority, pCouncil.motionArrayList.size(), billId, pAmendmentId);
         pCouncil.motionArrayList.add(lMotion);
         saveCouncil(pCouncil);

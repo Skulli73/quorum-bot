@@ -7,13 +7,16 @@ import io.github.Skulli73.Main.managers.SlashCommandManager;
 import io.github.Skulli73.Main.objects.*;
 import org.javacord.api.DiscordApi;
 import org.javacord.api.DiscordApiBuilder;
+import org.javacord.api.entity.message.embed.EmbedBuilder;
 import org.jetbrains.annotations.Nullable;
 
+import java.awt.*;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.*;
+import java.util.List;
 import java.util.stream.StreamSupport;
 
 public class MainQuorum {
@@ -323,5 +326,38 @@ public class MainQuorum {
             throw new RuntimeException(e);
         }
 
+    }
+    public static List<EmbedBuilder> splitEmbeds(String pString, Color pColour, String pTitle) {
+            ArrayList<EmbedBuilder> lEmbedBuilders = new ArrayList<>();
+            int lSize = (int) Math.ceil(((double) pString.length())/2000);
+            System.out.println(lSize  + " different Embeds");
+            boolean b = true;
+            for(int i = 0; b; i++) {
+                String lDescEmbed;
+                if(i == lSize-1) {
+                    lDescEmbed = pString.substring(i * 2000);
+                    b = false;
+                }
+                else
+                    lDescEmbed = pString.substring(i*2000, (i+1)*2000);
+                EmbedBuilder lEmbedBuilder = new EmbedBuilder();
+                lEmbedBuilder.setColor(pColour)
+                        .setTitle(pTitle)
+                        .setDescription(lDescEmbed);
+                lEmbedBuilders.add(lEmbedBuilder);
+
+                System.out.println("Embed " + (i+1) + ": " + lDescEmbed);
+            }
+            return lEmbedBuilders;
+
+    }
+    public static List<EmbedBuilder> splitEmbeds(String pString, Color pColour, String pTitle, String pFooter) {
+        List<EmbedBuilder> lEmbedBuilders = splitEmbeds(pString, pColour, pTitle);
+        int i = 0;
+        for(EmbedBuilder ignored: lEmbedBuilders) {
+            lEmbedBuilders.get(i).setFooter(pFooter);
+            i++;
+        }
+        return lEmbedBuilders;
     }
 }

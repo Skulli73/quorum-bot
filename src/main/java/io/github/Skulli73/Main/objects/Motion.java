@@ -304,15 +304,22 @@ public class Motion {
                     StringBuilder lDeniedAmendmentsStringBuilder = new StringBuilder();
                     for (Motion lMotion : lDeniedAmendmentsMotionList)
                         lDeniedAmendmentsStringBuilder.append("Amendment #").append(lMotion.amendmentId + 1).append("\n");
-
-                    EmbedBuilder lEmbedBuilder = new EmbedBuilder()
-                            .setTitle(lBill.title + " as amended")
-                            .setDescription(lBill.toString(false) + "\n\n**Approved**\n" + lApprovedAmendmentsStringBuilder + "\n**Denied**\n" + lDeniedAmendmentsStringBuilder)
-                            //.addField("Approved", lApprovedAmendmentsStringBuilder.toString(), true)
-                            //.addField("Denied", lDeniedAmendmentsStringBuilder.toString(), true)
-                            .setColor(Color.green);
+                    String lDesc = lBill.toString(true) + "\n\n**Approved**\n" + lApprovedAmendmentsStringBuilder + "\n**Denied**\n" + lDeniedAmendmentsStringBuilder;
+                    List<EmbedBuilder> lEmbedBuilders;
+                    if(lDesc.length()>2048) {
+                        lEmbedBuilders = MainQuorum.splitEmbeds(lDesc, Color.GREEN, lBill.title + "as amended");
+                    } else {
+                        EmbedBuilder lEmbedBuilder = new EmbedBuilder()
+                                .setTitle(lBill.title + " as amended")
+                                .setDescription(lDesc)
+                                //.addField("Approved", lApprovedAmendmentsStringBuilder.toString(), true)
+                                //.addField("Denied", lDeniedAmendmentsStringBuilder.toString(), true)
+                                .setColor(Color.green);
+                        lEmbedBuilders = new LinkedList<>();
+                        lEmbedBuilders.add(lEmbedBuilder);
+                    }
                     lMessageBuilder
-                            .addEmbed(lEmbedBuilder)
+                            .addEmbeds(lEmbedBuilders)
                             .append("\nThere being no amendments left on the agenda, the bill was taken to be agreed to with amendments.")
                             .send(pCouncil.getMinuteChannel());
                     try {
@@ -362,7 +369,10 @@ public class Motion {
             else {
                 lBill.thirdReadingFinished = true;
                 Council lCouncil = councils.get(lBill.councilId);
-                lCouncil.getLegislationChannel().sendMessage("Bill passed", lBill.toEmbed(false).setColor(Color.green));
+                if(lBill.toString(false).length() > 2048) {
+                    lCouncil.getLegislationChannel().sendMessage("Bill passed", lBill.toEmbeds(false, Color.green));
+                } else
+                    lCouncil.getLegislationChannel().sendMessage("Bill passed", lBill.toEmbed(false).setColor(Color.green));
             }
             bills.put(Long.toString(billId), lBill);
             saveBills();

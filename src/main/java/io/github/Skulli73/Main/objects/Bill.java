@@ -6,7 +6,9 @@ import io.github.Skulli73.Main.listeners.SlashCommandListener;
 import org.javacord.api.entity.message.MessageBuilder;
 import org.javacord.api.entity.message.embed.EmbedBuilder;
 
+import java.awt.*;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 import static io.github.Skulli73.Main.MainQuorum.councils;
@@ -73,6 +75,12 @@ public class Bill {
         lEmbedBuilder.setFooter("Message id: " + messageId);
         return lEmbedBuilder;
     }
+    public List<EmbedBuilder> toEmbeds(boolean pEditorMode, Color pColour) {
+        return MainQuorum.splitEmbeds(toString(pEditorMode), pColour, title);
+    }
+    public List<EmbedBuilder> toEmbeds(boolean pEditorMode, Color pColour, String pFooter) {
+        return MainQuorum.splitEmbeds(toString(pEditorMode), pColour, title, pFooter);
+    }
     public EmbedBuilder toEmbed(boolean pEditor) {
             return toEmbed(toString(pEditor));
     }
@@ -118,7 +126,12 @@ public class Bill {
     }
     public void update() {
         try {
-            discordApi.getMessageById(messageId, discordApi.getUserById(initiatorId).get().openPrivateChannel().get()).get().edit(toEmbed(true));
+            if(toString(true).length() > 2048) {
+                List<EmbedBuilder> lEmbedBuilders = toEmbeds(true, Color.yellow,"Message id: " + messageId);
+                discordApi.getMessageById(messageId, discordApi.getUserById(initiatorId).get().openPrivateChannel().get()).get().edit(lEmbedBuilders);
+            }
+            else
+                discordApi.getMessageById(messageId, discordApi.getUserById(initiatorId).get().openPrivateChannel().get()).get().edit(toEmbed(true));
             MainQuorum.saveBills();
         } catch (InterruptedException | ExecutionException e) {
             throw new RuntimeException(e);
