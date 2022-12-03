@@ -59,6 +59,8 @@ public class SlashCommandListener implements SlashCommandCreateListener {
             new WriteBillAddSubSectionCommand(interaction, discordApi);
         if (interaction.getFullCommandName().equals("write_bill finish"))
             new WriteBillFinish(interaction, discordApi);
+        if (interaction.getFullCommandName().equals("write_bill undo"))
+            new WriteBillUndoCommand(interaction, discordApi);
         if (interaction.getFullCommandName().equals("write_amendment omit"))
             new WriteAmendmentOmit(interaction, discordApi);
         if (interaction.getFullCommandName().equals("write_amendment amend"))

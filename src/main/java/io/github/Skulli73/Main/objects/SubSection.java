@@ -39,4 +39,14 @@ public class SubSection {
             subSectionArrayList.get(subSectionArrayList.size()-1).newSubSection(pText, pLevel-1);
         }
     }
+
+    public SubSection deleteLowestSubSection() {
+        SubSection lSubSubSection = subSectionArrayList.get(subSectionArrayList.size()-1);
+        if(lSubSubSection.hasSubSections()) {
+            lSubSubSection = lSubSubSection.deleteLowestSubSection();
+            subSectionArrayList.set(subSectionArrayList.size()-1, lSubSubSection);
+        } else
+            subSectionArrayList.remove(subSectionArrayList.size()-1);
+        return this;
+    }
 }

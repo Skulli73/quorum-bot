@@ -151,6 +151,9 @@ public class SlashCommandManager {
                                                 SlashCommandOptionChoice.create("majority_of_the_entire_membership", 1),
                                                 SlashCommandOptionChoice.create("majority_in_the_negative", 2)
                                         ))
+                                )),
+                                SlashCommandOption.createWithOptions(SlashCommandOptionType.SUB_COMMAND, "undo", "Undo the last addition to a bill", Arrays.asList(
+                                        SlashCommandOption.create(SlashCommandOptionType.STRING, "bill_message_id", "Id of the Message of the Bill", true)
                                 ))
                             )
                         )
