@@ -14,6 +14,7 @@ import org.javacord.api.entity.user.User;
 import org.javacord.api.interaction.SlashCommandInteraction;
 
 import java.awt.*;
+import java.io.File;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -64,11 +65,11 @@ public class MoveCommand {
                         } catch (ExecutionException | InterruptedException e) {
                             e.printStackTrace();
                         }
-
+                        File lFile = toTxtFile(lMotion.getText(),  lCouncil.getId() + "_" + lMotion.id + "_bill_as_amended");
                         MessageBuilder lMessageBuilder = new MessageBuilder()
                                 .append(interaction.getUser().getMentionTag() + " moves " + lMotion.getTitle() + " from the agenda")
                                 .addEmbeds(lEmbed)
-                                .addAttachment(toTxtFile(lMotion.getText(),  lCouncil.getId() + "_" + lMotion.id + "_bill_as_amended"));
+                                .addAttachment(lFile);
                         lMessageBuilder.send(interaction.getChannel().get());
                         lMessageBuilder.send(lCouncil.getMinuteChannel());
                         String lQuestion = "";
@@ -83,7 +84,7 @@ public class MoveCommand {
                             lQuestion = "That the motion be agreed to";
                         lCouncil.getMinuteChannel().sendMessage("Question-" + lQuestion + "-put");
                         Object[] lCouncillors = lCouncil.getCouncillorRole().getUsers().toArray();
-
+                        lFile.delete();
                         for(int j = 0; i<lCouncillors.length;i++) {
                             PrivateChannel lChannel;
                             try {
@@ -93,6 +94,7 @@ public class MoveCommand {
                             }
                             lMotion.notVoted.add(((User)lCouncillors[i]).getIdAsString());
                             try {
+                                File lFile2 = toTxtFile(lMotion.getText(),  lCouncil.getId() + "_" + lMotion.id + "_bill_as_amended");
                                 lMotion.dmMessages.add( new MessageBuilder().append("Vote")
                                         .addEmbeds(
                                                 lEmbed
@@ -104,9 +106,10 @@ public class MoveCommand {
                                                         Button.secondary("abstain" , "Abstain")
                                                 )
                                         )
-                                        .addAttachment(toTxtFile(lMotion.getText(),  lCouncil.getId() + "_" + lMotion.id + "_bill_as_amended"))
+                                        .addAttachment(lFile2)
                                         .send(lChannel).get().getIdAsString());
                                 lMotion.dmMessagesCouncillors.add(((User) lCouncillors[i]).getIdAsString());
+                                lFile2.delete();
                             } catch (InterruptedException | ExecutionException e) {
                                 throw new RuntimeException(e);
                             }

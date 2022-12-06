@@ -380,7 +380,6 @@ public class MainQuorum {
             lFileWriter.write(pText);
             lFileWriter.close();
             lFile = new File(pFileName + ".txt");
-            lFile.deleteOnExit();
             return lFile;
         } catch (IOException e) {
             throw new RuntimeException(e);

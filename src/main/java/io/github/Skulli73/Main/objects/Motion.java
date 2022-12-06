@@ -12,6 +12,7 @@ import org.javacord.api.interaction.SlashCommandInteraction;
 import org.jetbrains.annotations.Nullable;
 
 import java.awt.*;
+import java.io.File;
 import java.text.DecimalFormat;
 import java.util.List;
 import java.util.*;
@@ -318,9 +319,10 @@ public class Motion {
                         lEmbedBuilders = new LinkedList<>();
                         lEmbedBuilders.add(lEmbedBuilder);
                     }
+                    File lFile = toTxtFile(lDesc,  lBill.messageId + "_bill_as_amended");
                     new MessageBuilder()
                             .addEmbeds(lEmbedBuilders)
-                            .addAttachment(toTxtFile(lDesc,  lBill.messageId + "_bill_as_amended"))
+                            .addAttachment(lFile)
                             .append("\nThere being no amendments left on the agenda, the bill was taken to be agreed to with amendments.")
                             .send(pCouncil.getMinuteChannel());
                     try {
@@ -328,6 +330,7 @@ public class Motion {
                     } catch (InterruptedException | ExecutionException e) {
                         throw new RuntimeException(e);
                     }
+                    lFile.delete();
                     bills.put(String.valueOf(lBill.messageId), lBill);
                     saveBills();
                 }// else lMessageBuilder.send(pCouncil.getMinuteChannel());
@@ -370,10 +373,12 @@ public class Motion {
             else {
                 lBill.thirdReadingFinished = true;
                 Council lCouncil = councils.get(lBill.councilId);
+                File lFile = toTxtFile(text, lBill.messageId + "_bill_passed");
                 if(lBill.toString(false).length() > 2048) {
-                    lCouncil.getLegislationChannel().sendMessage("Bill passed", lBill.toEmbeds(false, Color.green, false), toTxtFile(text, lBill.messageId + "_bill_passed"));
+                    lCouncil.getLegislationChannel().sendMessage("Bill passed", lBill.toEmbeds(false, Color.green, false), lFile);
                 } else
-                    lCouncil.getLegislationChannel().sendMessage("Bill passed", lBill.toEmbed(false).setColor(Color.green), toTxtFile(text, lBill.messageId + "_bill_passed"));
+                    lCouncil.getLegislationChannel().sendMessage("Bill passed", lBill.toEmbed(false).setColor(Color.green), lFile);
+                lFile.delete();
             }
             bills.put(Long.toString(billId), lBill);
             saveBills();
