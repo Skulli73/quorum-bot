@@ -122,7 +122,7 @@ public class SlashCommandListener implements SlashCommandCreateListener {
     public static Motion createMotionEnd(User pUser, Council pCouncil, String pMotionName, double pMajority, int pTypeOfMajority, String pMotionDesc, Server pServer, @Nullable Long billId, @Nullable Long pAmendmentId) throws InterruptedException, ExecutionException {
         List<EmbedBuilder> lEmbed;
         if(pMotionDesc.length() > 2048) {
-            lEmbed = MainQuorum.splitEmbeds(pMotionDesc, Color.red, pMotionName, lTypeOfMajorityArray[pTypeOfMajority] + ", " + pMajority * 100 + "%");
+            lEmbed = MainQuorum.splitEmbeds(MainQuorum.cutOffText(pMotionDesc, false), Color.red, pMotionName, lTypeOfMajorityArray[pTypeOfMajority] + ", " + pMajority * 100 + "%");
             int i = 0;
             for(EmbedBuilder ignored: lEmbed) {
                 lEmbed.get(i).setAuthor(pUser);

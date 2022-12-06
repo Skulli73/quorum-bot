@@ -38,13 +38,13 @@ public class MoveCommand {
                         int requiredCouncillors = (int )Math.ceil(lCouncil.getCouncillorRole().getUsers().size()*lMotion.neededMajority);
                         String lFooter;
                         if(lMotion.typeOfMajority<3) {
-                            lFooter = " councillors need to vote in favour of this bill for it to be passed. \n";
+                            lFooter = requiredCouncillors + " councillors need to vote in favour of this bill for it to be passed. \n";
                         }else
-                            lFooter = " councillors need to vote against this bill for it not to be passed. \n";
+                            lFooter = requiredCouncillors + " councillors need to vote against this bill for it not to be passed. \n";
                         lFooter = lFooter + lTypeOfMajorityArray[lMotion.typeOfMajority] + ", " +  lMotion.neededMajority*100 + "%";
                         List<EmbedBuilder> lEmbed;
                         if(lMotion.getText().length() > 2000) {
-                            lEmbed = MainQuorum.splitEmbeds(lMotion.getText(), Color.yellow, lMotion.getTitle(), lFooter);
+                            lEmbed = MainQuorum.splitEmbeds(MainQuorum.cutOffText(lMotion.getText(), false), Color.yellow, lMotion.getTitle(), lFooter);
                         } else {
                             lEmbed = new LinkedList<EmbedBuilder>();
                             lEmbed.add(new EmbedBuilder().setTitle(lMotion.getTitle()).setDescription(lMotion.getText()).setColor(Color.yellow));
@@ -67,7 +67,8 @@ public class MoveCommand {
 
                         MessageBuilder lMessageBuilder = new MessageBuilder()
                                 .append(interaction.getUser().getMentionTag() + " moves " + lMotion.getTitle() + " from the agenda")
-                                .addEmbeds(lEmbed);
+                                .addEmbeds(lEmbed)
+                                .addAttachment(toTxtFile(lMotion.getText(),  lCouncil.getId() + "_" + lMotion.id + "_bill_as_amended"));
                         lMessageBuilder.send(interaction.getChannel().get());
                         lMessageBuilder.send(lCouncil.getMinuteChannel());
                         String lQuestion = "";
@@ -103,6 +104,7 @@ public class MoveCommand {
                                                         Button.secondary("abstain" , "Abstain")
                                                 )
                                         )
+                                        .addAttachment(toTxtFile(lMotion.getText(),  lCouncil.getId() + "_" + lMotion.id + "_bill_as_amended"))
                                         .send(lChannel).get().getIdAsString());
                                 lMotion.dmMessagesCouncillors.add(((User) lCouncillors[i]).getIdAsString());
                             } catch (InterruptedException | ExecutionException e) {

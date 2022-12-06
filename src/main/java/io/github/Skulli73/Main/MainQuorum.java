@@ -360,4 +360,30 @@ public class MainQuorum {
         }
         return lEmbedBuilders;
     }
+
+    public static String cutOffText(String pString, boolean pAtCutOffAtStart) {
+        int lSize = pString.length();
+        if(lSize > 5000) {
+            if(pAtCutOffAtStart)
+                return "..." + pString.substring(lSize-5000);
+            else
+                return pString.substring(0, 5000) + "...";
+        } else
+            return pString;
+    }
+
+    public static File toTxtFile(String pText, String pFileName) {
+        try {
+            File lFile = new File(pFileName + ".txt");
+            lFile.createNewFile();
+            FileWriter lFileWriter = new FileWriter(pFileName + ".txt");
+            lFileWriter.write(pText);
+            lFileWriter.close();
+            lFile = new File(pFileName + ".txt");
+            lFile.deleteOnExit();
+            return lFile;
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }

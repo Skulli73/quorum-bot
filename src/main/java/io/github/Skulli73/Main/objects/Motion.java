@@ -279,7 +279,7 @@ public class Motion {
 
             deleteMessages(pApi);
             approved = lPassed;
-
+            lMessageBuilder.send(pCouncil.getMinuteChannel());
             if(isBill()) {
                 if(bills.get(Long.toString(billId)).firstReadingFinished && bills.get(Long.toString(billId)).amendmentsFinished) {
                     bills.get(Long.toString(billId)).thirdReadingFinished = true;
@@ -287,7 +287,7 @@ public class Motion {
                 }
             }
             if( isBill() || isAmendment()) {
-                boolean b = pCouncil.motionArrayList.stream().filter(c -> c.isAmendment() && Objects.equals(billId, c.billId) && !c.completed).toList().isEmpty() && !bills.get(Long.toString(billId)).thirdReadingFinished;
+                boolean b = pCouncil.motionArrayList.stream().filter(c -> c.isAmendment() && Objects.equals(billId, c.billId) && !c.completed).toList().isEmpty() && !bills.get(Long.toString(billId)).thirdReadingFinished && (!isBill()||lPassed);
                 if (b)
                     //pCouncil.motionArrayList.stream().filter(c -> c.isAmendment()&& Objects.equals(billId, c.billId) &&!c.completed).toList().isEmpty() && !bills.get(Long.toString(billId)).thirdReadingFinished;
                     //isAmendment() && amendmentId+1 == bills.get(Long.toString(billId)).amendments.size())
@@ -318,8 +318,9 @@ public class Motion {
                         lEmbedBuilders = new LinkedList<>();
                         lEmbedBuilders.add(lEmbedBuilder);
                     }
-                    lMessageBuilder
+                    new MessageBuilder()
                             .addEmbeds(lEmbedBuilders)
+                            .addAttachment(toTxtFile(lDesc,  lBill.messageId + "_bill_as_amended"))
                             .append("\nThere being no amendments left on the agenda, the bill was taken to be agreed to with amendments.")
                             .send(pCouncil.getMinuteChannel());
                     try {
@@ -329,8 +330,8 @@ public class Motion {
                     }
                     bills.put(String.valueOf(lBill.messageId), lBill);
                     saveBills();
-                } else lMessageBuilder.send(pCouncil.getMinuteChannel());
-            } else lMessageBuilder.send(pCouncil.getMinuteChannel());
+                }// else lMessageBuilder.send(pCouncil.getMinuteChannel());
+            } //else lMessageBuilder.send(pCouncil.getMinuteChannel());
         }
     }
 
@@ -370,9 +371,9 @@ public class Motion {
                 lBill.thirdReadingFinished = true;
                 Council lCouncil = councils.get(lBill.councilId);
                 if(lBill.toString(false).length() > 2048) {
-                    lCouncil.getLegislationChannel().sendMessage("Bill passed", lBill.toEmbeds(false, Color.green));
+                    lCouncil.getLegislationChannel().sendMessage("Bill passed", lBill.toEmbeds(false, Color.green, false), toTxtFile(text, lBill.messageId + "_bill_passed"));
                 } else
-                    lCouncil.getLegislationChannel().sendMessage("Bill passed", lBill.toEmbed(false).setColor(Color.green));
+                    lCouncil.getLegislationChannel().sendMessage("Bill passed", lBill.toEmbed(false).setColor(Color.green), toTxtFile(text, lBill.messageId + "_bill_passed"));
             }
             bills.put(Long.toString(billId), lBill);
             saveBills();

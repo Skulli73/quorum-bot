@@ -75,11 +75,11 @@ public class Bill {
         lEmbedBuilder.setFooter("Message id: " + messageId);
         return lEmbedBuilder;
     }
-    public List<EmbedBuilder> toEmbeds(boolean pEditorMode, Color pColour) {
-        return MainQuorum.splitEmbeds(toString(pEditorMode), pColour, title);
+    public List<EmbedBuilder> toEmbeds(boolean pEditorMode, Color pColour, boolean pSplitAtStart) {
+        return MainQuorum.splitEmbeds(MainQuorum.cutOffText(toString(pEditorMode), pSplitAtStart), pColour, title);
     }
-    public List<EmbedBuilder> toEmbeds(boolean pEditorMode, Color pColour, String pFooter) {
-        return MainQuorum.splitEmbeds(toString(pEditorMode), pColour, title, pFooter);
+    public List<EmbedBuilder> toEmbeds(boolean pEditorMode, Color pColour, String pFooter, boolean pSplitAtStart) {
+        return MainQuorum.splitEmbeds(MainQuorum.cutOffText(toString(pEditorMode), pSplitAtStart), pColour, title, pFooter);
     }
     public EmbedBuilder toEmbed(boolean pEditor) {
             return toEmbed(toString(pEditor));
@@ -127,7 +127,7 @@ public class Bill {
     public void update() {
         try {
             if(toString(true).length() > 2048) {
-                List<EmbedBuilder> lEmbedBuilders = toEmbeds(true, Color.yellow,"Message id: " + messageId);
+                List<EmbedBuilder> lEmbedBuilders = toEmbeds(true, Color.yellow,"Message id: " + messageId, false);
                 discordApi.getMessageById(messageId, discordApi.getUserById(initiatorId).get().openPrivateChannel().get()).get().edit(lEmbedBuilders);
             }
             else
