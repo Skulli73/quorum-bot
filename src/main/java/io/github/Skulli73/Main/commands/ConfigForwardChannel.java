@@ -1,0 +1,43 @@
+package io.github.Skulli73.Main.commands;
+
+import io.github.Skulli73.Main.objects.Council;
+import org.javacord.api.DiscordApi;
+import org.javacord.api.entity.channel.ServerChannel;
+import org.javacord.api.interaction.SlashCommandInteraction;
+
+import java.util.Optional;
+
+import static io.github.Skulli73.Main.MainQuorum.councils;
+import static io.github.Skulli73.Main.listeners.SlashCommandListener.saveCouncil;
+
+public class ConfigForwardChannel extends ConfigCommand{
+    public ConfigForwardChannel (SlashCommandInteraction pInteraction, DiscordApi pApi) {
+        super(pInteraction, pApi);
+    }
+
+    @Override
+    public void changeConfig(SlashCommandInteraction pInteraction, DiscordApi pApi) {
+        configName = "forward_channel";
+        Optional<ServerChannel> lForwardCouncilOptional = pInteraction.getOptions().get(0).getOptionChannelValueByName("channel");
+        if(lForwardCouncilOptional.isPresent()) {
+            if(lForwardCouncilOptional.get().getType().isTextChannelType()) {
+                if(Council.isChannelFloor(lForwardCouncilOptional.get().asTextChannel().get(), councils)) {
+                    Council lForWardCouncil = Council.councilByFloorChannel(lForwardCouncilOptional.get().asTextChannel().get(), councils);
+                    council.forwardCouncil = Math.toIntExact(lForWardCouncil.getId());
+                    lForWardCouncil.forwardCouncil = Math.toIntExact(council.getId());
+                    lForWardCouncil.isForwardChannel = true;
+                    councils.set((int) lForWardCouncil.getId(), lForWardCouncil);
+                } else
+                    pInteraction.getChannel().get().sendMessage("You did not mention a Floor Channel");
+            }
+        } else {
+            council.forwardCouncil = null;
+            Council lCouncil = council.getForwardChannel();
+            lCouncil.forwardCouncil = null;
+            lCouncil.isForwardChannel = false;
+            councils.set((int) council.getId(), council);
+            councils.set((int) lCouncil.getId(), lCouncil);
+            saveCouncil(lCouncil);
+        }
+    }
+}

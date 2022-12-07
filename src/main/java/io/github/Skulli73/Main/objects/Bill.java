@@ -54,6 +54,7 @@ public class Bill {
     @Expose
     public ArrayList<Amendment>     amendmentDrafts;
 
+
     public Bill(String pTitle, int pCouncilId, long pInitiatorId) {
         title           =pTitle;
         councilId       =pCouncilId;

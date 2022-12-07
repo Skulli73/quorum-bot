@@ -4,10 +4,12 @@ import io.github.Skulli73.Main.MainQuorum;
 import org.javacord.api.entity.channel.TextChannel;
 import org.javacord.api.entity.permission.Role;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 
+import static io.github.Skulli73.Main.MainQuorum.councils;
 import static io.github.Skulli73.Main.MainQuorum.discordApi;
 
 public class Council {
@@ -35,6 +37,10 @@ public class Council {
     public int                  amendmentTypeOfMajority;
 
     public ArrayList<VoteWeight> voteWeightArrayList;
+
+    public Integer forwardCouncil;
+
+    public boolean              isForwardChannel;
 
 
 
@@ -67,6 +73,8 @@ public class Council {
         amendmentTypeOfMajority = 0;
         voteWeightArrayList = new ArrayList<>();
         voteWeightArrayList.add(new VoteWeight(councillorRoleId, 1));
+        forwardCouncil = null;
+        isForwardChannel    = false;
     }
 
 
@@ -133,5 +141,13 @@ public class Council {
 
     public TextChannel getLegislationChannel() {
         return discordApi.getChannelById(legislationChannel).get().asTextChannel().get();
+    }
+
+    public boolean hasForwardChannel() {
+        return forwardCouncil != null;
+    }
+
+    public @Nullable Council getForwardChannel() {
+        return councils.get(forwardCouncil);
     }
 }
