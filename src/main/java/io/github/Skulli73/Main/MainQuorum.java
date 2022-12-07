@@ -374,6 +374,7 @@ public class MainQuorum {
 
     public static File toTxtFile(String pText, String pFileName) {
         try {
+            pText.replaceAll("/*/*", "");
             File lFile = new File(pFileName + ".txt");
             lFile.createNewFile();
             FileWriter lFileWriter = new FileWriter(pFileName + ".txt");
