@@ -45,3 +45,4 @@ TOKEN
 
 **/councils/*.json
 **/bills/*.json
+*.txt
