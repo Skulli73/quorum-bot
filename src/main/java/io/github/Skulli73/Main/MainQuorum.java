@@ -98,8 +98,10 @@ public class MainQuorum {
                     lCouncil.absentionsCountToQuorum = lJsonObject.get("absentionsCountToQuorum").getAsBoolean();
                     lCouncil.timeOutTime = lJsonObject.get("timeOutTime").getAsDouble();
                     lCouncil.legislationChannel = lJsonObject.get("legislationChannel").getAsLong();
-                    lCouncil.forwardCouncil = lJsonObject.get("forWardChannel").getAsInt();
-                    lCouncil.isForwardChannel = lJsonObject.get("isForwardChannel").getAsBoolean();
+                    if(lJsonObject.get("forwardCouncil") != null)
+                        lCouncil.forwardCouncil = lJsonObject.get("forwardCouncil").getAsInt();
+                    if(lJsonObject.get("isForwardCouncil") != null)
+                          lCouncil.isForwardCouncil = lJsonObject.get("isForwardCouncil").getAsBoolean();
 
                     councils.add(lCouncil);
                     for (JsonElement lJsonElement2 : lJsonObject.get("motionArrayList").getAsJsonArray()) {
@@ -204,9 +206,11 @@ public class MainQuorum {
             lHashmap.put(entry.getKey(), lBill);
             lBill.messageId = lJsonObject.get("messageId").getAsLong();
             lBill.draftFinished = lJsonObject.get("draftFinished").getAsBoolean();
-            lBill.firstReadingFinished = lJsonObject.get("firstReadingFinished").getAsBoolean();
-            lBill.thirdReadingFinished = lJsonObject.get("thirdReadingFinished").getAsBoolean();
-            lBill.amendmentsFinished = lJsonObject.get("amendmentsFinished").getAsBoolean();
+            lBill.firstReadingFinished  = lJsonObject.get("firstReadingFinished").getAsBoolean();
+            lBill.thirdReadingFinished  = lJsonObject.get("thirdReadingFinished").getAsBoolean();
+            lBill.amendmentsFinished    = lJsonObject.get("amendmentsFinished").getAsBoolean();
+            if(lJsonObject.get("oneHousePassed") != null)
+                lBill.oneHousePassed = lJsonObject.get("oneHousePassed").getAsBoolean();
             lBill.majority = lJsonObject.get("majority").getAsDouble();
             lBill.typeOfMajority = lJsonObject.get("typeOfMajority").getAsInt();
             lBill.partArrayList = new ArrayList<Part>();
@@ -236,41 +240,6 @@ public class MainQuorum {
                         lAmendment
                 );
 
-            }
-            if(false) {
-                for (JsonElement pJsonElement : lJsonObject.get("amendmentDrafts").getAsJsonArray()) {
-                    JsonObject lJsonObject2 = pJsonElement.getAsJsonObject();
-                    Amendment lAmendment = new Amendment();
-                    if(lJsonObject2.get("messageId" )!= null)
-                        lAmendment.messageId = lJsonObject2.get("messageId").getAsLong();
-                    if(lJsonObject2.get("introducerId" )!= null)
-                        lAmendment.introducerId = lJsonObject2.get("introducerId").getAsLong();
-                    for (JsonElement pJsonElement2 : lJsonObject2.get("omittings").getAsJsonArray()) {
-                        lAmendment.omittings.add(pJsonElement2.getAsString());
-                    }
-                    for (JsonElement pJsonElement2 : lJsonObject2.get("additions").getAsJsonArray()) {
-                        JsonArray lJsonObject3 = pJsonElement2.getAsJsonArray();
-                        for(int i = 0; i<lJsonObject3.size(); i++) {
-                            String[] lStringArray = new String[lJsonObject3.size()];
-                            for(int j = 0; j<lJsonObject3.size(); j++)
-                                lStringArray[j] = lJsonObject3.get(j).getAsString();
-                            lAmendment.additions.add(lStringArray);
-                        };
-                    }
-                    for (JsonElement pJsonElement2 : lJsonObject2.get("amendments").getAsJsonArray()) {
-                        JsonArray lJsonObject3 = pJsonElement2.getAsJsonArray();
-                        for(int i = 0; i<lJsonObject3.size(); i++) {
-                            String[] lStringArray = new String[lJsonObject3.size()];
-                            for(int j = 0; j<lJsonObject3.size(); j++)
-                                lStringArray[j] = lJsonObject3.get(j).getAsString();
-                            lAmendment.amendments.add(lStringArray);
-                        };
-                    }
-                    lBill.amendmentDrafts.add(
-                            lAmendment
-                    );
-
-                }
             }
             for (JsonElement pJsonElement : lJsonObject.get("partArrayList").getAsJsonArray()) {
                 JsonObject lJsonObject2 = pJsonElement.getAsJsonObject();

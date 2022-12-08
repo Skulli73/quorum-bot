@@ -7,7 +7,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
-import java.util.concurrent.ExecutionException;
 
 import static io.github.Skulli73.Main.MainQuorum.councils;
 import static io.github.Skulli73.Main.MainQuorum.discordApi;
@@ -40,7 +39,7 @@ public class Council {
 
     public Integer forwardCouncil;
 
-    public boolean              isForwardChannel;
+    public boolean isForwardCouncil;
 
 
 
@@ -74,7 +73,7 @@ public class Council {
         voteWeightArrayList = new ArrayList<>();
         voteWeightArrayList.add(new VoteWeight(councillorRoleId, 1));
         forwardCouncil = null;
-        isForwardChannel    = false;
+        isForwardCouncil = false;
     }
 
 
@@ -98,29 +97,21 @@ public class Council {
 
 
     public static boolean isChannelFloor(TextChannel pChannel, ArrayList<Council> pCouncils) {
-        System.out.println(pCouncils.size());
-        return pCouncils.stream().anyMatch(lCouncil -> {
-            try {
-                System.out.println(lCouncil.getServerId() + " - " + pChannel.getMessages(1).get().getNewestMessage().get().getServer().get().getId());
-                System.out.println(lCouncil.floorChannel + " - " + pChannel.getId());
-                return lCouncil.getServerId() == pChannel.getMessages(1).get().getNewestMessage().get().getServer().get().getId() && lCouncil.floorChannel == pChannel.getId();
-            } catch (InterruptedException | ExecutionException e) {
-                System.err.println("Failed to pull server id");
-                return false;
-            }
-        });
+
+        for(Council lCouncil: councils) {
+            if(lCouncil.getFloorChannel() == pChannel)
+                return  true;
+        }
+        return false;
     }
 
 
     public static Council councilByFloorChannel(TextChannel pChannel, ArrayList<Council> pCouncils) {
-        return pCouncils.stream().filter(lCouncil -> {
-            try {
-                return lCouncil.getServerId() == pChannel.getMessages(1).get().getNewestMessage().get().getServer().get().getId() && lCouncil.floorChannel == pChannel.getId();
-            } catch (InterruptedException | ExecutionException e) {
-                System.err.println("Failed to pull server id");
-                return false;
-            }
-        }).findFirst().orElse(null);
+        for(Council lCouncil: councils) {
+            if(lCouncil.getFloorChannel() == pChannel)
+                return lCouncil;
+        }
+        return null;
     }
 
     public void toNextMotion () {
@@ -147,7 +138,7 @@ public class Council {
         return forwardCouncil != null;
     }
 
-    public @Nullable Council getForwardChannel() {
+    public @Nullable Council getForwardCouncil() {
         return councils.get(forwardCouncil);
     }
 }

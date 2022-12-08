@@ -1,6 +1,5 @@
 package io.github.Skulli73.Main.commands;
 
-import com.google.gson.Gson;
 import io.github.Skulli73.Main.listeners.SlashCommandListener;
 import io.github.Skulli73.Main.objects.Council;
 import org.javacord.api.DiscordApi;
@@ -8,13 +7,9 @@ import org.javacord.api.entity.channel.TextChannel;
 import org.javacord.api.entity.permission.Role;
 import org.javacord.api.interaction.SlashCommandInteraction;
 
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.util.Arrays;
-import java.util.Scanner;
 
 import static io.github.Skulli73.Main.MainQuorum.councils;
-import static io.github.Skulli73.Main.MainQuorum.councilsPath;
 
 public class CreateCouncilCommand {
 
@@ -47,31 +42,9 @@ public class CreateCouncilCommand {
             interaction.createImmediateResponder().setContent("The Floor, Agenda and Result Channel must be **different** channels.").respond();
         }
 
-        for(int i = 0; i < councils.size()&&!lFail; i++) {
-            try {
-                StringBuilder lStringBuilder = new StringBuilder();
-                File myObj = new File(councilsPath + i + "council.json");
-                if(myObj.exists()){
-                    Scanner myReader = new Scanner(myObj);
-                    while (myReader.hasNextLine()) {
-                        String data = myReader.nextLine();
-                        lStringBuilder.append(data);
-                    }
-                    myReader.close();
-                    String lJson = lStringBuilder.toString();
-                    Gson lGson = new Gson();
-                    if(lGson.fromJson(lJson, Council.class).getFloorChannel() == lFloorChannel) {
-                        lFail = true;
-                        interaction.createImmediateResponder().setContent("The floor channel, you wish to use for your council, is already used by a council").respond();
-                    }
-                }
-            } catch (FileNotFoundException e) {
-                System.out.println("An error occurred.");
-                e.printStackTrace();
-            }
-        }
 
-        if(!lFail) {
+
+        if(!Council.isChannelFloor(lFloorChannel, councils)) {
             System.out.println(pApi);
             Council lCouncil = new Council(lCouncilName,lFloorChannel, lAgendaChannel, lMinuteChannel,  lCouncillorRole.getId(), interaction.getServer().get().getId(), councils.size());
             councils.add(lCouncil);

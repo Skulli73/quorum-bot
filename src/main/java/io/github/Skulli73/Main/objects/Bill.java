@@ -11,8 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
-import static io.github.Skulli73.Main.MainQuorum.councils;
-import static io.github.Skulli73.Main.MainQuorum.discordApi;
+import static io.github.Skulli73.Main.MainQuorum.*;
 
 public class Bill {
     @Expose()
@@ -53,7 +52,8 @@ public class Bill {
     public ArrayList<Amendment>     amendments;
     @Expose
     public ArrayList<Amendment>     amendmentDrafts;
-
+    @Expose
+    public boolean oneHousePassed;
 
     public Bill(String pTitle, int pCouncilId, long pInitiatorId) {
         title           =pTitle;
@@ -67,6 +67,7 @@ public class Bill {
         thirdReadingFinished = false;
         amendments = new ArrayList<>();
         amendmentDrafts = new ArrayList<>();
+        oneHousePassed = false;
     }
 
     public EmbedBuilder toEmbed(String pDesc) {

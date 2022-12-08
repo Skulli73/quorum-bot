@@ -37,7 +37,7 @@ public class MessageComponentListener implements MessageComponentCreateListener 
             Motion lMotion   = null;
             boolean lEnd     = true;
             Council lCouncil = councils.stream()
-                                        .filter(c -> c.motionArrayList.size()-1<=c.currentMotion)
+                                        .filter(c -> c.motionArrayList.size()>c.currentMotion)
                                         .filter(c -> c.motionArrayList.get(c.currentMotion).dmMessages.contains(messageComponentInteraction.getMessage().getIdAsString()))
                                         .findFirst()
                                         .orElse(null);

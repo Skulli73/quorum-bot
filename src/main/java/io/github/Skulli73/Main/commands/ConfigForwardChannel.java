@@ -25,16 +25,16 @@ public class ConfigForwardChannel extends ConfigCommand{
                     Council lForWardCouncil = Council.councilByFloorChannel(lForwardCouncilOptional.get().asTextChannel().get(), councils);
                     council.forwardCouncil = Math.toIntExact(lForWardCouncil.getId());
                     lForWardCouncil.forwardCouncil = Math.toIntExact(council.getId());
-                    lForWardCouncil.isForwardChannel = true;
+                    lForWardCouncil.isForwardCouncil = true;
                     councils.set((int) lForWardCouncil.getId(), lForWardCouncil);
                 } else
                     pInteraction.getChannel().get().sendMessage("You did not mention a Floor Channel");
             }
         } else {
+            Council lCouncil = council.getForwardCouncil();
             council.forwardCouncil = null;
-            Council lCouncil = council.getForwardChannel();
             lCouncil.forwardCouncil = null;
-            lCouncil.isForwardChannel = false;
+            lCouncil.isForwardCouncil = false;
             councils.set((int) council.getId(), council);
             councils.set((int) lCouncil.getId(), lCouncil);
             saveCouncil(lCouncil);

@@ -24,7 +24,6 @@ public class Amendment {
         omittings = new ArrayList<String>();
         amendments = new ArrayList<String[]>();
         additions = new ArrayList<String[]>();
-
     }
 
     public String toString() {

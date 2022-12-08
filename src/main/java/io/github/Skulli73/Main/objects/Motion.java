@@ -244,7 +244,7 @@ public class Motion {
             String lResultString = "";
             if(lPassed) {
                 lResultString = pCouncil.getName() + " divided";
-                onPassed();
+
             }
             else
                 lResultString = pCouncil.getName() + " divided " + lQuorumFailed;
@@ -335,6 +335,9 @@ public class Motion {
                     saveBills();
                 }// else lMessageBuilder.send(pCouncil.getMinuteChannel());
             } //else lMessageBuilder.send(pCouncil.getMinuteChannel());
+
+            if(lPassed)
+                onPassed();
         }
     }
 
@@ -368,27 +371,62 @@ public class Motion {
     private void onPassed() {
         if(isBill()) {
             Bill lBill = bills.get(Long.toString(billId));
+            Council lCouncil = councils.get(lBill.councilId);
             if(!lBill.firstReadingFinished)
                 lBill.endIntroduction();
             else {
                 lBill.thirdReadingFinished = true;
-                Council lCouncil = councils.get(lBill.councilId);
-                File lFile = toTxtFile(text, lBill.messageId + "_bill_passed");
-                if(lBill.toString(false).length() > 2048) {
-                    lCouncil.getLegislationChannel().sendMessage("Bill passed", lBill.toEmbeds(false, Color.green, false), lFile);
-                } else
-                    lCouncil.getLegislationChannel().sendMessage("Bill passed", lBill.toEmbed(false).setColor(Color.green), lFile);
+                File lFile = toTxtFile(text, lBill.messageId + "_bill_passed" + lCouncil.getId());
+                if(lCouncil.hasForwardChannel() && !lBill.oneHousePassed) {
+                    Council lCouncil2 =  councils.get(lCouncil.forwardCouncil);
+                    if (lBill.toString(false).length() > 2048) {
+                        lCouncil.getMinuteChannel().sendMessage("Bill passed in " + lCouncil.getName() + "\nIt is now required to be passed by " + lCouncil2.getName(), lBill.toEmbeds(false, Color.green, false), lFile);
+                    } else
+                        lCouncil.getMinuteChannel().sendMessage("Bill passed in " + lCouncil.getName()+ "\nIt is now required to be passed by " + lCouncil2.getName(), lBill.toEmbed(false).setColor(Color.green), lFile);
+                    lBill.thirdReadingFinished = false;
+                    lBill.firstReadingFinished = false;
+                    lBill.amendmentsFinished = false;
+                    lBill.amendments = new ArrayList<>();
+                    lBill.oneHousePassed = true;
+                    lBill.councilId = (int) lCouncil2.getId();
+                    try {
+                        SlashCommandListener.createMotionEnd(discordApi.getUserById(lBill.initiatorId).get(), lCouncil2, "Motion #" + (lCouncil2.motionArrayList.size()+1) + ": Introduction of " + lBill.title, lBill.majority, lBill.typeOfMajority, lBill.toString(true), discordApi.getServerById(lCouncil2.getServerId()).get(), (long) lBill.messageId, null);
+                    } catch (InterruptedException | ExecutionException e) {
+                        throw new RuntimeException(e);
+                    }
+                    councils.set((int) lCouncil2.getId(), lCouncil2);
+                    SlashCommandListener.saveCouncil(lCouncil2);
+                } else {
+                    TextChannel lLegislationChannel;
+                    if(lCouncil.isForwardCouncil)
+                        lLegislationChannel = councils.get(lCouncil.forwardCouncil).getLegislationChannel();
+                    else
+                        lLegislationChannel = lCouncil.getLegislationChannel();
+                    if (lBill.toString(false).length() > 2048) {
+                        lLegislationChannel.sendMessage("Bill passed ", lBill.toEmbeds(false, Color.green, false), lFile);
+                    } else
+                        lLegislationChannel.sendMessage("Bill passed", lBill.toEmbed(false).setColor(Color.green), lFile);
+                }
                 lFile.delete();
+
             }
+            councils.set((int) lCouncil.getId(), lCouncil);
             bills.put(Long.toString(billId), lBill);
+            SlashCommandListener.saveCouncil(lCouncil);
             saveBills();
         } else if (isAmendment()) {
             Bill lBill = bills.get(Long.toString(billId));
+            Council lCouncil = councils.get(lBill.councilId);
             Amendment lAmendment = lBill.amendments.get(Math.toIntExact(amendmentId));
             lAmendment.onAccepted(lBill);
-            if(amendmentId+1 == lBill.amendments.size()) {
-
+            if(lBill.oneHousePassed) {
+                lBill.oneHousePassed = false;
+                lCouncil.getMinuteChannel().sendMessage("As the Bill was amended, it now is required to pass through the other house again.");
             }
+            councils.set((int) lCouncil.getId(), lCouncil);
+            SlashCommandListener.saveCouncil(lCouncil);
+            bills.put(String.valueOf(lBill.messageId), lBill);
+            saveBills();
         }
     }
 }

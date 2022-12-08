@@ -91,7 +91,7 @@ public class SlashCommandManager {
                                 SlashCommandOption.create(SlashCommandOptionType.ROLE, "role", "The new Councillor Role.", true)
                         )),
                                 SlashCommandOption.createWithOptions(SlashCommandOptionType.SUB_COMMAND, "forward_channel", "Council that has to confirm a bill.", Arrays.asList(
-                                        SlashCommandOption.create(SlashCommandOptionType.ROLE, "channel", "The Floor Channel of the Council to forward the Bill to.", false)
+                                        SlashCommandOption.create(SlashCommandOptionType.CHANNEL, "channel", "The Floor Channel of the Council to forward the Bill to.", false)
                                 ))
                 ))
                         .setDefaultEnabledForPermissions(PermissionType.MANAGE_CHANNELS, PermissionType.ADMINISTRATOR)
