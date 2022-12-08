@@ -398,10 +398,7 @@ public class Motion {
                     SlashCommandListener.saveCouncil(lCouncil2);
                 } else {
                     TextChannel lLegislationChannel;
-                    if(lCouncil.isForwardCouncil)
-                        lLegislationChannel = councils.get(lCouncil.forwardCouncil).getLegislationChannel();
-                    else
-                        lLegislationChannel = lCouncil.getLegislationChannel();
+                    lLegislationChannel = lCouncil.getLegislationChannel();
                     if (lBill.toString(false).length() > 2048) {
                         lLegislationChannel.sendMessage("Bill passed ", lBill.toEmbeds(false, Color.green, false), lFile);
                     } else

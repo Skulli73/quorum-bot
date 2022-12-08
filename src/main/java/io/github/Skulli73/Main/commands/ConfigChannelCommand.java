@@ -6,6 +6,8 @@ import org.javacord.api.interaction.SlashCommandInteraction;
 
 import java.util.Optional;
 
+import static io.github.Skulli73.Main.MainQuorum.councils;
+
 public class ConfigChannelCommand extends ConfigCommand{
     public ConfigChannelCommand(SlashCommandInteraction pInteraction, DiscordApi pApi) {
         super(pInteraction, pApi);
@@ -48,6 +50,9 @@ public class ConfigChannelCommand extends ConfigCommand{
         if(lOptionalLegislationChannel.isPresent()) {
             if(lOptionalLegislationChannel.get().getType().isTextChannelType()) {
                 council.legislationChannel = lOptionalLegislationChannel.get().getId();
+                if(council.hasForwardChannel()) {
+                    councils.get(council.forwardCouncil).legislationChannel = council.legislationChannel;
+                }
             } else {
                 pInteraction.createImmediateResponder().append("Invalid Legislation Channel").respond();
                 return;

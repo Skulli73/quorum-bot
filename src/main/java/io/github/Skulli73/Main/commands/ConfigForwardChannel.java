@@ -24,6 +24,7 @@ public class ConfigForwardChannel extends ConfigCommand{
                 if(Council.isChannelFloor(lForwardCouncilOptional.get().asTextChannel().get(), councils)) {
                     Council lForWardCouncil = Council.councilByFloorChannel(lForwardCouncilOptional.get().asTextChannel().get(), councils);
                     council.forwardCouncil = Math.toIntExact(lForWardCouncil.getId());
+                    lForWardCouncil.legislationChannel = council.legislationChannel;
                     lForWardCouncil.forwardCouncil = Math.toIntExact(council.getId());
                     lForWardCouncil.isForwardCouncil = true;
                     councils.set((int) lForWardCouncil.getId(), lForWardCouncil);
