@@ -22,19 +22,20 @@ import java.util.concurrent.ExecutionException;
 import static io.github.Skulli73.Main.MainQuorum.*;
 import static io.github.Skulli73.Main.listeners.SlashCommandListener.lTypeOfMajorityArray;
 
-public class MoveCommand {
+public class MoveCommand extends CouncilCommand{
 
-    private final DiscordApi lApi;
+    public MoveCommand(SlashCommandInteraction pInteraction, DiscordApi pApi) {
+        super(pInteraction, pApi);
 
-    public MoveCommand(SlashCommandInteraction interaction, DiscordApi pApi) {
-        lApi = pApi;
 
-        if(councils.size()!=0) {
-            if(Council.isChannelFloor(interaction.getChannel().get(), councils)) {
-                Council lCouncil = Council.councilByFloorChannel(interaction.getChannel().get(), councils);
+    }
+
+    @Override
+    public void executeCommand(SlashCommandInteraction pInteraction, DiscordApi pApi) {
+                Council lCouncil = council;
                 Motion lMotion = lCouncil.motionArrayList.get(lCouncil.currentMotion);
                 if(!lMotion.isMoved) {
-                    if(lApi.getRoleById(lCouncil.getProposeRoleId()).get().hasUser(interaction.getUser())) {
+                    if(pApi.getRoleById(lCouncil.getProposeRoleId()).get().hasUser(pInteraction.getUser())) {
                         lMotion.isMoved = true;
                         int requiredCouncillors = (int )Math.ceil(lCouncil.getCouncillorRole().getUsers().size()*lMotion.neededMajority);
                         String lFooter;
@@ -59,7 +60,7 @@ public class MoveCommand {
                             }
                         }
                         try {
-                            lMotion.getMessage(lApi, lCouncil.getAgendaChannel()).edit(
+                            lMotion.getMessage(pApi, lCouncil.getAgendaChannel()).edit(
                                     lEmbed
                             );
                         } catch (ExecutionException | InterruptedException e) {
@@ -67,10 +68,10 @@ public class MoveCommand {
                         }
                         File lFile = toTxtFile(lMotion.getText(),  lCouncil.getId() + "_" + lMotion.id + "_bill_as_amended");
                         MessageBuilder lMessageBuilder = new MessageBuilder()
-                                .append(interaction.getUser().getMentionTag() + " moves " + lMotion.getTitle() + " from the agenda")
+                                .append(pInteraction.getUser().getMentionTag() + " moves " + lMotion.getTitle() + " from the agenda")
                                 .addEmbeds(lEmbed)
                                 .addAttachment(lFile);
-                        lMessageBuilder.send(interaction.getChannel().get());
+                        lMessageBuilder.send(pInteraction.getChannel().get());
                         lMessageBuilder.send(lCouncil.getMinuteChannel());
                         String lQuestion = "";
                         if(lMotion.isBill()) {
@@ -114,20 +115,16 @@ public class MoveCommand {
                                 throw new RuntimeException(e);
                             }
                         }
-                        lMotion.startMotionVote(pApi, lCouncil, interaction, lCouncillors);
+                        lMotion.startMotionVote(pApi, lCouncil, pInteraction, lCouncillors);
                         SlashCommandListener.saveMotion(lCouncil, lMotion);
                         lCouncil.getFloorChannel().asServerTextChannel().get().updateTopic("Current Motion: " + lMotion.getTitle() + " | " +lCouncillors.length+" Councillors left to vote.");
                     }
                     else
-                        interaction.getChannel().get().sendMessage(interaction.getUser().getMentionTag() + ", you do not have the propose role and cannot move the motion.");
+                        pInteraction.getChannel().get().sendMessage(pInteraction.getUser().getMentionTag() + ", you do not have the propose role and cannot move the motion.");
                 }
                 else
-                    interaction.getChannel().get().sendMessage(interaction.getUser().getMentionTag() + ", the motion is already moved.");
-            }
-            else
-                interaction.getChannel().get().sendMessage(interaction.getUser().getMentionTag() + ", this is not a floor channel");
-        }
-        else
-            interaction.getChannel().get().sendMessage(interaction.getUser().getMentionTag() + ", this is not a floor channel");
+                    pInteraction.getChannel().get().sendMessage(pInteraction.getUser().getMentionTag() + ", the motion is already moved.");
+
+
     }
 }
