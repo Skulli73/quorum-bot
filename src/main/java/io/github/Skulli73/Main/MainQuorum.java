@@ -82,7 +82,6 @@ public class MainQuorum {
                     lJsonBuilder.append(data);
                 }
                 myReader.close();
-                String lJson = lJsonBuilder.toString();
                 for (JsonElement lJsonElement : JsonParser.parseString(lJsonBuilder.toString()).getAsJsonArray()) {
                     JsonObject lJsonObject = lJsonElement.getAsJsonObject();
                     Council lCouncil = new Council(lJsonObject.get("name").getAsString(), lJsonObject.get("floorChannel").getAsLong(), lJsonObject.get("agendaChannel").getAsLong(), lJsonObject.get("minuteChannel").getAsLong(), lJsonObject.get("councillorRoleId").getAsLong(), lJsonObject.get("serverId").getAsLong(), lJsonObject.get("id").getAsInt());

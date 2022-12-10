@@ -45,4 +45,5 @@ TOKEN
 
 **/councils/*.json
 **/bills/*.json
+**/botConfig/*.json
 *.txt
