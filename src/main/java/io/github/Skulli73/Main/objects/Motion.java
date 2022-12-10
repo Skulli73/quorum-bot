@@ -229,15 +229,15 @@ public class Motion {
                 lPassed = !(nayVotesAmount>=lTotalCouncillors*neededMajority);
             String lQuorumFailed = "";
             if(pCouncil.absentionsCountToQuorum) {
-                if(ayeVotesAmount + nayVotesAmount + abstainVotesAmount <= pCouncil.quorum * lTotalCouncillors) {
+                if(ayeVotesAmount + nayVotesAmount + abstainVotesAmount < pCouncil.quorum * lTotalCouncillors) {
                     lPassed = false;
-                    lQuorumFailed = " due to the Quorum not being reached";
+                    lQuorumFailed = " but the Quorum was not reached";
                 }
             }
             else {
-                if(ayeVotesAmount + nayVotesAmount <= pCouncil.quorum * lTotalCouncillors) {
+                if(ayeVotesAmount + nayVotesAmount < pCouncil.quorum * lTotalCouncillors) {
                     lPassed = false;
-                    lQuorumFailed = "but the Quorum not being reached";
+                    lQuorumFailed = " but the Quorum was not reached";
                 }
             }
             Color lColour;
