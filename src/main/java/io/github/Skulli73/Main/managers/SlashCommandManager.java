@@ -92,7 +92,7 @@ public class SlashCommandManager {
                         )),
                                 SlashCommandOption.createWithOptions(SlashCommandOptionType.SUB_COMMAND, "quorum", "Necessary portion of councillors to have voted for it to be able to be passed.", Arrays.asList(
                                         SlashCommandOption.create(SlashCommandOptionType.DECIMAL, "quorum_percentage", "The percentage.", true),
-                                        SlashCommandOption.create(SlashCommandOptionType.BOOLEAN, "quorum_absentions_count_to_quorum", "Do absentions count to the quorum?", true)
+                                        SlashCommandOption.create(SlashCommandOptionType.BOOLEAN, "quorum_absentions_count_quorum", "Do absentions count to the quorum?", true)
                                 )),
                                 SlashCommandOption.createWithOptions(SlashCommandOptionType.SUB_COMMAND, "forward_channel", "Council that has to confirm a bill.", Arrays.asList(
                                         SlashCommandOption.create(SlashCommandOptionType.CHANNEL, "channel", "The Floor Channel of the Council to forward the Bill to.", false)

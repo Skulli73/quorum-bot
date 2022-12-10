@@ -11,6 +11,6 @@ public class ConfigQuorum extends ConfigCommand {
     public void changeConfig(SlashCommandInteraction pInteraction, DiscordApi pApi) {
         configName = "quorum";
         council.quorum = pInteraction.getOptionByName(configName).get().getOptionDecimalValueByName("quorum_percentage").get();
-        council.absentionsCountToQuorum = pInteraction.getOptionByName(configName).get().getOptionBooleanValueByName("quorum_absentions_count_to_quorum").get();
+        council.absentionsCountToQuorum = pInteraction.getOptionByName(configName).get().getOptionBooleanValueByName("quorum_absentions_count_quorum").get();
     }
 }
