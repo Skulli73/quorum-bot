@@ -89,7 +89,7 @@ public class MoveCommand extends CouncilCommand{
                     lQuestion = "That the amendment be agreed to";
                 } else
                     lQuestion = "That the motion be agreed to";
-                pCouncil.getMinuteChannel().sendMessage("Question-" + lQuestion + "-put");
+
                 Object[] lCouncillors = pCouncil.getCouncillorRole().getUsers().toArray();
                 lFile.delete();
                 for(int j = 0; i<lCouncillors.length;i++) {
@@ -121,6 +121,7 @@ public class MoveCommand extends CouncilCommand{
                         throw new RuntimeException(e);
                     }
                 }
+                pCouncil.getMinuteChannel().sendMessage("Question-" + lQuestion + "-put");
                 lMotion.startMotionVote(pApi, pCouncil, pInteraction, lCouncillors);
                 SlashCommandListener.saveMotion(pCouncil, lMotion);
                 pCouncil.getFloorChannel().asServerTextChannel().get().updateTopic("Current Motion: " + lMotion.getTitle() + " | " +lCouncillors.length+" Councillors left to vote.");
