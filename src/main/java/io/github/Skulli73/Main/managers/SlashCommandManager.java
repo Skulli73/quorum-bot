@@ -48,6 +48,7 @@ public class SlashCommandManager {
                         SlashCommandOption.create(SlashCommandOptionType.LONG, "motion_id", "Id of the Motion to move ahead", true)
                         )).
                         setEnabledInDms(false)
+                        .setDefaultEnabledForPermissions(PermissionType.MANAGE_CHANNELS, PermissionType.ADMINISTRATOR)
                         .createGlobal(api)
                         .join();
         SlashCommand configCommand =
