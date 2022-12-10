@@ -41,7 +41,7 @@ public class MoveCommand extends CouncilCommand{
         }
         Motion lMotion = pCouncil.motionArrayList.get(pCouncil.currentMotion);
         if(!lMotion.isMoved) {
-            if(pApi.getRoleById(pCouncil.getProposeRoleId()).get().hasUser(pInteraction.getUser())) {
+            if((pCouncil.getCouncillorRole().hasUser(pInteraction.getUser()))) {
                 lMotion.isMoved = true;
                 int requiredCouncillors = (int )Math.ceil(pCouncil.getCouncillorRole().getUsers().size()*lMotion.neededMajority);
                 String lFooter;

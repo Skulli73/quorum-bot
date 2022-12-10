@@ -17,9 +17,13 @@ public class ConfigShowCommand extends CouncilCommand{
     public void executeCommand(SlashCommandInteraction pInteraction, DiscordApi pApi) {
         EmbedBuilder lEmbedBuilder      = new EmbedBuilder();
         StringBuilder lVoteWeights      = new StringBuilder();
+        StringBuilder lProposeRoles     = new StringBuilder();
         DecimalFormat lFormat = new DecimalFormat("0.#");
         for(VoteWeight lVoteWeight : council.voteWeightArrayList) {
             lVoteWeights.append(pApi.getRoleById(lVoteWeight.roleId).get().getMentionTag()).append(": ").append(lFormat.format(lVoteWeight.votes)).append("\n");
+        }
+        for(Long lProposeRole : council.proposeRoleList) {
+            lProposeRoles.append(pApi.getRoleById(lProposeRole).get().getMentionTag() + "\n");
         }
         lEmbedBuilder.setTitle(council.getName() + " Configurations")
                 .addField("Floor Channel", "<#" + council.floorChannel + ">")
@@ -36,6 +40,7 @@ public class ConfigShowCommand extends CouncilCommand{
                 .addField("Type of Majority for Amendments", SlashCommandListener.lTypeOfMajorityArray[council.amendmentTypeOfMajority])
                 .addField("Motion Timeout Time", lFormat.format(council.timeOutTime) + "h")
                 .addField("Vote Weights", lVoteWeights.toString())
+                .addField("Propose Roles", lProposeRoles.toString())
         ;
         String lForwardChannel = "/";
         if(council.hasForwardChannel()) {

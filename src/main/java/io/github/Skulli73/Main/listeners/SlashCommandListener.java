@@ -96,6 +96,10 @@ public class SlashCommandListener implements SlashCommandCreateListener {
                 new ConfigVoteWeightsCommand(interaction, discordApi);
             if (interaction.getFullCommandName().equals("config forward_channel"))
                 new ConfigForwardChannel(interaction, discordApi);
+            if (interaction.getFullCommandName().equals("config add_propose_role"))
+                new ConfigAddProposeRole(interaction, discordApi);
+            if (interaction.getFullCommandName().equals("config remove_propose_role"))
+                new ConfigRemoveProposeRole(interaction, discordApi);
             if (interaction.getFullCommandName().equals("write_bill add_part"))
                 new WriteBillAddPartCommand(interaction, discordApi);
             if (interaction.getFullCommandName().equals("write_bill add_division"))

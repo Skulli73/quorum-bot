@@ -101,7 +101,10 @@ public class MainQuorum {
                         lCouncil.forwardCouncil = lJsonObject.get("forwardCouncil").getAsInt();
                     if(lJsonObject.get("isForwardCouncil") != null)
                           lCouncil.isForwardCouncil = lJsonObject.get("isForwardCouncil").getAsBoolean();
-
+                    lCouncil.proposeRoleList = new LinkedList<>();
+                    if(lJsonObject.get("proposeRoleList") != null)
+                        for(JsonElement lJsonElement2:lJsonObject.get("proposeRoleList").getAsJsonArray())
+                            lCouncil.proposeRoleList.add(lJsonElement2.getAsLong());
                     councils.add(lCouncil);
                     for (JsonElement lJsonElement2 : lJsonObject.get("motionArrayList").getAsJsonArray()) {
                         final JsonObject lJsonObject2 = lJsonElement2.getAsJsonObject();

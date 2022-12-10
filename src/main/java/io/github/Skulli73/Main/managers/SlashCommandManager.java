@@ -98,6 +98,12 @@ public class SlashCommandManager {
                         SlashCommandOption.createWithOptions(SlashCommandOptionType.SUB_COMMAND, "councillor_role", "The Role for Councillors.", Arrays.asList(
                                 SlashCommandOption.create(SlashCommandOptionType.ROLE, "role", "The new Councillor Role.", true)
                         )),
+                                SlashCommandOption.createWithOptions(SlashCommandOptionType.SUB_COMMAND, "add_propose_role", "Add a Role that is able to propose motions.", Arrays.asList(
+                                        SlashCommandOption.create(SlashCommandOptionType.ROLE, "role", "The to be added Role.", true)
+                                )),
+                                SlashCommandOption.createWithOptions(SlashCommandOptionType.SUB_COMMAND, "remove_propose_role", "Remove a Role from being able to propose motions.", Arrays.asList(
+                                        SlashCommandOption.create(SlashCommandOptionType.ROLE, "role", "The to be removed Role.", true)
+                                )),
                                 SlashCommandOption.createWithOptions(SlashCommandOptionType.SUB_COMMAND, "quorum", "Necessary portion of councillors to have voted for it to be able to be passed.", Arrays.asList(
                                         SlashCommandOption.create(SlashCommandOptionType.DECIMAL, "quorum_percentage", "The percentage.", true),
                                         SlashCommandOption.create(SlashCommandOptionType.BOOLEAN, "quorum_absentions_count_quorum", "Do absentions count to the quorum?", true)

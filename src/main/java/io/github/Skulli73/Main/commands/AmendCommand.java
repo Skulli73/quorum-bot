@@ -19,7 +19,7 @@ public class AmendCommand extends CouncilCommand {
 
     @Override
     public void executeCommand(SlashCommandInteraction pInteraction, DiscordApi pApi) {
-        if(council.getCouncillorRole().hasUser(pInteraction.getUser())) {
+        if(council.hasProposeRole(pInteraction.getUser())) {
             if(council.currentMotion < council.motionArrayList.size()) {
                 Motion lMotion = council.motionArrayList.get(council.currentMotion);
                 if(lMotion.isMoved && !lMotion.completed  && lMotion.isBill()) {
@@ -45,6 +45,6 @@ public class AmendCommand extends CouncilCommand {
             else
                 pInteraction.createImmediateResponder().append("There is no Introduction of a Motion right now.").respond();
         } else
-            pInteraction.createImmediateResponder().append("You are not a counicllor.");
+            pInteraction.createImmediateResponder().append("You may not propose motions.");
     }
 }

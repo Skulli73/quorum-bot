@@ -3,17 +3,20 @@ package io.github.Skulli73.Main.objects;
 import io.github.Skulli73.Main.MainQuorum;
 import org.javacord.api.entity.channel.TextChannel;
 import org.javacord.api.entity.permission.Role;
+import org.javacord.api.entity.user.User;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
 
 import static io.github.Skulli73.Main.MainQuorum.councils;
 import static io.github.Skulli73.Main.MainQuorum.discordApi;
 
 public class Council {
     private                    String name;
-    public long               floorChannel, agendaChannel, minuteChannel, legislationChannel, councillorRoleId, proposeRoleId;
+    public long               floorChannel, agendaChannel, minuteChannel, legislationChannel, councillorRoleId;
     private final int          id;
     private final long         serverId;
     public ArrayList<Motion>   motionArrayList;
@@ -37,9 +40,11 @@ public class Council {
 
     public ArrayList<VoteWeight> voteWeightArrayList;
 
-    public Integer forwardCouncil;
+    public Integer              forwardCouncil;
 
-    public boolean isForwardCouncil;
+    public boolean              isForwardCouncil;
+
+    public List<Long>           proposeRoleList;
 
 
 
@@ -55,8 +60,7 @@ public class Council {
         id                  = pId;
         serverId            = pServer;
         councillorRoleId    = pCouncillorRoleId;
-        proposeRoleId       = councillorRoleId;
-        legislationChannel = minuteChannel;
+        legislationChannel  = minuteChannel;
         motionArrayList     = new ArrayList<>();
         standardMajority    = 0.501;
         standardMajorityType= 0;
@@ -74,10 +78,10 @@ public class Council {
         voteWeightArrayList.add(new VoteWeight(councillorRoleId, 1));
         forwardCouncil = null;
         isForwardCouncil = false;
+        proposeRoleList = new LinkedList<>();
+        proposeRoleList.add(pCouncillorRoleId);
     }
 
-
-    // Getters & Setters
 
     public TextChannel  getAgendaChannel() { return discordApi.getServerById(serverId).get().getTextChannelById(agendaChannel).get(); }
     public TextChannel  getFloorChannel()  { return discordApi.getServerById(serverId).get().getTextChannelById(floorChannel).get();  }
@@ -86,14 +90,6 @@ public class Council {
     public String       getName() { return name; }
     public long         getId() { return id; }
     public long         getServerId() { return serverId; }
-    public long         getProposeRoleId(){ return proposeRoleId; }
-
-    public void setAgendaChannel(TextChannel pNewTextChannel) { agendaChannel = pNewTextChannel.getId(); }
-    public void setFloorChannel(TextChannel pNewTextChannel)  { floorChannel = pNewTextChannel.getId();  }
-    public void setMinuteChannel(TextChannel pNewTextChannel) { minuteChannel = pNewTextChannel.getId(); }
-    public void setName(String pName) { name = pName; }
-    public void setProposeRole(Role pProposeRole){proposeRoleId = pProposeRole.getId();}
-    public void setRoleChannel(long pCouncillorRoleId) {councillorRoleId = pCouncillorRoleId;}
 
 
     public static boolean isChannelFloor(TextChannel pChannel, ArrayList<Council> pCouncils) {
@@ -145,5 +141,9 @@ public class Council {
 
     public @Nullable Council getForwardCouncil() {
         return councils.get(forwardCouncil);
+    }
+
+    public boolean hasProposeRole(User pUser) {
+        return proposeRoleList.stream().filter(lLong -> discordApi.getRoleById(lLong).get().hasUser(pUser)).toList().size() > 0;
     }
 }
