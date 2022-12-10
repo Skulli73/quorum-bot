@@ -27,6 +27,7 @@ public class ConfigShowCommand extends CouncilCommand{
                 .addField("Minute Channel", "<#" + council.minuteChannel + ">")
                 .addField("Legislation Channel", "<#" + council.legislationChannel + ">")
                 .addField("Quorum", council.quorum*100 + "%")
+                .addField("Abstentions count to Quorum", String.valueOf(council.absentionsCountToQuorum))
                 .addField("Standard Majority", council.standardMajority*100 + "%")
                 .addField("Standard Type of Majority", SlashCommandListener.lTypeOfMajorityArray[council.standardMajorityType])
                 .addField("Standard Introduction Majority", council.firstReadingMajority*100 + "%")
@@ -36,6 +37,11 @@ public class ConfigShowCommand extends CouncilCommand{
                 .addField("Motion Timeout Time", lFormat.format(council.timeOutTime) + "h")
                 .addField("Vote Weights", lVoteWeights.toString())
         ;
+        String lForwardChannel = "/";
+        if(council.hasForwardChannel()) {
+            lForwardChannel = council.getForwardCouncil().getName();
+        }
+        lEmbedBuilder.addField("Forward Council", lForwardChannel);
         pInteraction.createImmediateResponder().addEmbed(lEmbedBuilder).respond();
     }
 }
