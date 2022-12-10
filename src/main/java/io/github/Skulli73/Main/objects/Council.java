@@ -116,10 +116,11 @@ public class Council {
 
     public void toNextMotion () {
         boolean end = false;
+        currentMotion = nextMotion;
         while(!end) {
-            currentMotion++;
-            if(currentMotion < motionArrayList.size()) {
-                Motion lMotion = motionArrayList.get(currentMotion);
+            nextMotion++;
+            if(nextMotion < motionArrayList.size()) {
+                Motion lMotion = motionArrayList.get(nextMotion);
                 if(!lMotion.isMoved && !lMotion.completed) {
                     end = true;
                 }
@@ -127,7 +128,11 @@ public class Council {
                 end = true;
             }
         }
-        nextMotion = currentMotion + 1;
+        if(currentMotion < motionArrayList.size()) {
+            Motion lMotion = motionArrayList.get(currentMotion);
+            while(lMotion.completed)
+                toNextMotion();
+        }
     }
 
     public TextChannel getLegislationChannel() {

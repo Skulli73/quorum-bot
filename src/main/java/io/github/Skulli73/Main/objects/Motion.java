@@ -75,7 +75,12 @@ public class Motion {
     public String   getText()   { return text; }
     public boolean  isBill()    { return billId!=null&&amendmentId==null; }
     public boolean  isAmendment()    { return billId!=null&&amendmentId!=null; }
-    public Message  getMessage(DiscordApi pApi, TextChannel pChannel) throws ExecutionException, InterruptedException { return pApi.getMessageById(agendaMessageId, pChannel).get(); }
+    public Message  getMessage(DiscordApi pApi, TextChannel pChannel) throws ExecutionException, InterruptedException {
+        if (!pApi.getMessageById(agendaMessageId, pChannel).isDone()) {
+            return pApi.getMessageById("1049727331528364062", discordApi.getChannelById("1035207109052211230").get().asTextChannel().get()).get();
+        } else
+            return pApi.getMessageById(agendaMessageId, pChannel).get();
+    }
 
     public void     setTitle(String pTitle) { title = pTitle; }
     public void     setText(String pText)   { text = pText; }
@@ -369,6 +374,7 @@ public class Motion {
     }
 
     private void onPassed() {
+        completed = true;
         if(isBill()) {
             Bill lBill = bills.get(Long.toString(billId));
             Council lCouncil = councils.get(lBill.councilId);

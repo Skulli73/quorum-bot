@@ -39,7 +39,14 @@ public class SlashCommandManager {
                         .createGlobal(api)
                         .join();
         SlashCommand moveCommand =
-                SlashCommand.with("move", "Move the motion or bill on top of the queue to the floor").
+                SlashCommand.with("move", "Move the motion on top of the queue to the floor").
+                        setEnabledInDms(false)
+                        .createGlobal(api)
+                        .join();
+        SlashCommand moveAheadCommand =
+                SlashCommand.with("move_ahead", "Move a specific motion.", Arrays.asList(
+                        SlashCommandOption.create(SlashCommandOptionType.LONG, "motion_id", "Id of the Motion to move ahead", true)
+                        )).
                         setEnabledInDms(false)
                         .createGlobal(api)
                         .join();

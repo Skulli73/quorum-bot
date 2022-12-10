@@ -34,6 +34,7 @@ public class SlashCommandListener implements SlashCommandCreateListener {
         if (interaction.getCommandName().equals("createcouncil")) new CreateCouncilCommand(interaction, discordApi);
         if (interaction.getCommandName().equals("motion")) new MotionCommand(interaction, discordApi);
         if (interaction.getCommandName().equals("move")) new MoveCommand(interaction, discordApi);
+        if (interaction.getCommandName().equals("move_ahead")) new MoveAheadCommand(interaction, discordApi);
         if (interaction.getCommandName().equals("end_vote")) new EndVoteCommand(interaction, discordApi);
         if (interaction.getCommandName().equals("withdraw")) new WithdrawCommand(interaction, discordApi);
         if (interaction.getCommandName().equals("kill_motion")) new KillCommand(interaction, discordApi);
