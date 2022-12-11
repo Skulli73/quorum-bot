@@ -116,6 +116,9 @@ public class SlashCommandManager {
                                 )),
                                 SlashCommandOption.createWithOptions(SlashCommandOptionType.SUB_COMMAND, "forward_channel", "Council that has to confirm a bill.", Arrays.asList(
                                         SlashCommandOption.create(SlashCommandOptionType.CHANNEL, "channel", "The Floor Channel of the Council to forward the Bill to.", false)
+                                )),
+                                SlashCommandOption.createWithOptions(SlashCommandOptionType.SUB_COMMAND, "seconding_required", "Does a motion have to be seconded before proposal.", Arrays.asList(
+                                        SlashCommandOption.create(SlashCommandOptionType.BOOLEAN, "seconding_required", "Is it required?", true)
                                 ))
                 ))
                         .setDefaultEnabledForPermissions(PermissionType.MANAGE_CHANNELS, PermissionType.ADMINISTRATOR)
@@ -140,6 +143,13 @@ public class SlashCommandManager {
                                 SlashCommandOption.create(SlashCommandOptionType.DECIMAL, "motion_id", "Id of the Motion you wish to kill", true)
                         ))
                         .setDefaultEnabledForPermissions(PermissionType.MANAGE_CHANNELS, PermissionType.ADMINISTRATOR)
+                        .setEnabledInDms(false)
+                        .createGlobal(api)
+                        .join();
+        SlashCommand secondCommand =
+                SlashCommand.with("second", "Second another motion in order to support it.", Arrays.asList(
+                                SlashCommandOption.create(SlashCommandOptionType.DECIMAL, "motion_id", "Id of the Motion you wish to second.", true)
+                        ))
                         .setEnabledInDms(false)
                         .createGlobal(api)
                         .join();

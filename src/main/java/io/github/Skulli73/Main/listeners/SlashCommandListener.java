@@ -75,6 +75,7 @@ public class SlashCommandListener implements SlashCommandCreateListener {
             if (interaction.getCommandName().equals("move")) new MoveCommand(interaction, discordApi);
             if (interaction.getCommandName().equals("move_ahead")) new MoveAheadCommand(interaction, discordApi);
             if (interaction.getCommandName().equals("postpone")) new PostponeCommand(interaction, discordApi);
+            if (interaction.getCommandName().equals("second")) new SecondCommand(interaction, discordApi);
             if (interaction.getCommandName().equals("end_vote")) new EndVoteCommand(interaction, discordApi);
             if (interaction.getCommandName().equals("withdraw")) new WithdrawCommand(interaction, discordApi);
             if (interaction.getCommandName().equals("kill_motion")) new KillCommand(interaction, discordApi);
@@ -101,6 +102,8 @@ public class SlashCommandListener implements SlashCommandCreateListener {
                 new ConfigAddProposeRole(interaction, discordApi);
             if (interaction.getFullCommandName().equals("config remove_propose_role"))
                 new ConfigRemoveProposeRole(interaction, discordApi);
+            if (interaction.getFullCommandName().equals("config seconding_required"))
+                new ConfigSecondingRequiredCommand(interaction, discordApi);
             if (interaction.getFullCommandName().equals("write_bill add_part"))
                 new WriteBillAddPartCommand(interaction, discordApi);
             if (interaction.getFullCommandName().equals("write_bill add_division"))

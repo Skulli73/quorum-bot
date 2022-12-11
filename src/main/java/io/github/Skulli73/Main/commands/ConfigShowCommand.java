@@ -41,6 +41,7 @@ public class ConfigShowCommand extends CouncilCommand{
                 .addField("Motion Timeout Time", lFormat.format(council.timeOutTime) + "h")
                 .addField("Vote Weights", lVoteWeights.toString())
                 .addField("Propose Roles", lProposeRoles.toString())
+                .addField("Seconding Required", String.valueOf(council.secondRequired))
         ;
         String lForwardChannel = "/";
         if(council.hasForwardChannel()) {

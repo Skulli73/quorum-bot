@@ -41,11 +41,11 @@ public class Motion {
 
    // public TimerTask                    timerTask;
     @Nullable
-    public Long                         billId;
-    @Nullable
-    public Long                         amendmentId;
+    public Long                         billId, amendmentId;
 
     public boolean                      approved;
+
+    public List<Long>                   seconderIdList;
 
     public Motion(String pTitle, String pText, long pIntroducerId, long pAgendaMessageId, double pNeededMajority, int pTypeOfMajority, int pId) {
         title           = pTitle;
@@ -63,6 +63,7 @@ public class Motion {
         dmMessagesCouncillors = new ArrayList<>();
         id              = pId;
         approved = false;
+        seconderIdList = new LinkedList<>();
     }
     public Motion(String pTitle, String pText, long pIntroducerId, long pAgendaMessageId, double pNeededMajority, int pTypeOfMajority, int pId, @Nullable Long pBillId, @Nullable Long pAmendmentId) {
         this(pTitle, pText, pIntroducerId, pAgendaMessageId, pNeededMajority, pTypeOfMajority, pId);
@@ -84,6 +85,22 @@ public class Motion {
 
     public void     setTitle(String pTitle) { title = pTitle; }
     public void     setText(String pText)   { text = pText; }
+
+    public String getSeconderString() {
+        StringBuilder lStringBuilder = new StringBuilder();
+        int i = 0;
+        for(Long lLong:seconderIdList) {
+            if(i!=0)
+                lStringBuilder.append(", ");
+            try {
+                lStringBuilder.append(discordApi.getUserById(lLong).get().getName());
+            } catch (InterruptedException | ExecutionException e) {
+                throw new RuntimeException(e);
+            }
+            i++;
+        }
+        return lStringBuilder.toString();
+    }
 
     public void endMotionVote(DiscordApi pApi, Council pCouncil, SlashCommandInteraction pInteraction, Object[] pCouncillors) {
         if(!this.completed) {

@@ -46,6 +46,8 @@ public class Council {
 
     public List<Long>           proposeRoleList;
 
+    public boolean              secondRequired;
+
 
 
     public Council(String pName, @NotNull TextChannel pFloorChannel, @NotNull TextChannel pAgendaChannel, @NotNull TextChannel pResultChannel, long pCouncillorRoleId, long pServer, int pId) {
@@ -80,6 +82,7 @@ public class Council {
         isForwardCouncil = false;
         proposeRoleList = new LinkedList<>();
         proposeRoleList.add(pCouncillorRoleId);
+        secondRequired = false;
     }
 
 

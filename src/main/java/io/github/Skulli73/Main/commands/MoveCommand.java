@@ -31,10 +31,18 @@ public class MoveCommand extends CouncilCommand{
 
     @Override
     public void executeCommand(SlashCommandInteraction pInteraction, DiscordApi pApi) {
-        executeMove(pInteraction, pApi, council, council.currentMotion);
+        if(council.motionArrayList.get(council.currentMotion).seconderIdList.isEmpty() && council.secondRequired && !council.motionArrayList.get(council.currentMotion).isAmendment())
+            if(council.motionArrayList.size() > council.nextMotion) {
+                executeMove(pInteraction, pApi, council, council.nextMotion);
+            } else {
+                pInteraction.createImmediateResponder().append("This motion is not seconded and is the last message on the agenda");
+            }
+        else
+            executeMove(pInteraction, pApi, council, council.currentMotion);
     }
 
     public static void executeMove(SlashCommandInteraction pInteraction, DiscordApi pApi, Council pCouncil, int pCurrentMotion) {
+        System.out.println("Moving of a motion was executed");
         if(pCouncil.currentMotion != pCurrentMotion) {
             pCouncil.nextMotion = pCouncil.currentMotion;
             pCouncil.currentMotion = pCurrentMotion;
@@ -50,12 +58,13 @@ public class MoveCommand extends CouncilCommand{
                 }else
                     lFooter = requiredCouncillors + " councillors need to vote against this bill for it not to be passed. \n";
                 lFooter = lFooter + lTypeOfMajorityArray[lMotion.typeOfMajority] + ", " +  lMotion.neededMajority*100 + "%";
+                lFooter = lFooter + "\nSeconded by: " + lMotion.getSeconderString();
                 List<EmbedBuilder> lEmbed;
                 if(lMotion.getText().length() > 2000) {
                     lEmbed = MainQuorum.splitEmbeds(MainQuorum.cutOffText(lMotion.getText(), false), Color.yellow, lMotion.getTitle(), lFooter);
                 } else {
                     lEmbed = new LinkedList<EmbedBuilder>();
-                    lEmbed.add(new EmbedBuilder().setTitle(lMotion.getTitle()).setDescription(lMotion.getText()).setColor(Color.yellow));
+                    lEmbed.add(new EmbedBuilder().setTitle(lMotion.getTitle()).setDescription(lMotion.getText()).setColor(Color.yellow).setFooter(lFooter));
                 }
                 int i = 0;
                 for(EmbedBuilder ignored:lEmbed) {
@@ -92,14 +101,15 @@ public class MoveCommand extends CouncilCommand{
 
                 Object[] lCouncillors = pCouncil.getCouncillorRole().getUsers().toArray();
                 lFile.delete();
-                for(int j = 0; i<lCouncillors.length;i++) {
+                for(int j = 0; i<lCouncillors.length;j++) {
+                    System.out.println("Councillor: " + ((User)lCouncillors[j]).getName());
                     PrivateChannel lChannel;
                     try {
                         lChannel = ((User)lCouncillors[j]).openPrivateChannel().get();
                     } catch (InterruptedException | ExecutionException e) {
                         throw new RuntimeException(e);
                     }
-                    lMotion.notVoted.add(((User)lCouncillors[i]).getIdAsString());
+                    lMotion.notVoted.add(((User)lCouncillors[j]).getIdAsString());
                     try {
                         File lFile2 = toTxtFile(lMotion.getText(),  pCouncil.getId() + "_" + lMotion.id + "_bill_as_amended");
                         lMotion.dmMessages.add( new MessageBuilder().append("Vote")
@@ -115,7 +125,7 @@ public class MoveCommand extends CouncilCommand{
                                 )
                                 .addAttachment(lFile2)
                                 .send(lChannel).get().getIdAsString());
-                        lMotion.dmMessagesCouncillors.add(((User) lCouncillors[i]).getIdAsString());
+                        lMotion.dmMessagesCouncillors.add(((User) lCouncillors[j]).getIdAsString());
                         lFile2.delete();
                     } catch (InterruptedException | ExecutionException e) {
                         throw new RuntimeException(e);
