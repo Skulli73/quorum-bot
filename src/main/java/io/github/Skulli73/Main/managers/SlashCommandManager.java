@@ -51,6 +51,12 @@ public class SlashCommandManager {
                         .setDefaultEnabledForPermissions(PermissionType.MANAGE_CHANNELS, PermissionType.ADMINISTRATOR)
                         .createGlobal(api)
                         .join();
+        SlashCommand postponeCommand =
+                SlashCommand.with("postpone", "Postpones the currently moved motion by making it not moved.").
+                        setEnabledInDms(false)
+                        .setDefaultEnabledForPermissions(PermissionType.MANAGE_CHANNELS, PermissionType.ADMINISTRATOR)
+                        .createGlobal(api)
+                        .join();
         SlashCommand configCommand =
                 SlashCommand.with("config", "Change the configurations of the Quorum Bot in this Council.", Arrays.asList(
                         SlashCommandOption.create(SlashCommandOptionType.SUB_COMMAND, "show", "Show all the current configs"),

@@ -22,10 +22,9 @@ public class MessageComponentListener implements MessageComponentCreateListener 
         Interaction                 lInteraction                = lEvent.getInteraction();
 
         boolean isAVote = false;
-        for(int i = 0; i<councils.size(); i++) {
-            Council lCouncil = councils.get(i);
-            if(lCouncil.motionArrayList.size() > lCouncil.currentMotion)
-                if(lCouncil.motionArrayList.get(lCouncil.currentMotion).dmMessages.contains(messageComponentInteraction.getMessage().getIdAsString()))
+        for (Council lCouncil : councils) {
+            if (lCouncil.motionArrayList.size() > lCouncil.currentMotion)
+                if (lCouncil.motionArrayList.get(lCouncil.currentMotion).dmMessages.contains(messageComponentInteraction.getMessage().getIdAsString()))
                     isAVote = true;
         }
         if(isAVote) {
@@ -81,38 +80,19 @@ public class MessageComponentListener implements MessageComponentCreateListener 
 
                 j++;
             }
-
+            while(lMotion.ayeVotes.contains(lUserId))
+                lMotion.ayeVotes.remove(lUserId);
+            while(lMotion.nayVotes.contains(lUserId))
+                lMotion.nayVotes.remove(lUserId);
+            while(lMotion.abstainVotes.contains(lUserId))
+                lMotion.abstainVotes.remove(lUserId);
+            while(lMotion.notVoted.contains(lUserId))
+                lMotion.notVoted.remove(lUserId);
             switch (customId) {
-                case "aye":
-                    assert lMotion != null;
-                    lMotion.ayeVotes.remove(lUserId);
-                    lMotion.nayVotes.remove(lUserId);
-                    lMotion.abstainVotes.remove(lUserId);
-                    lMotion.notVoted.remove(lUserId);
-
-                    lMotion.ayeVotes.add(lUserId);
-                    break;
-                case "nay":
-                    assert lMotion != null;
-                    lMotion.ayeVotes.remove(lUserId);
-                    lMotion.nayVotes.remove(lUserId);
-                    lMotion.abstainVotes.remove(lUserId);
-                    lMotion.notVoted.remove(lUserId);
-
-                    lMotion.nayVotes.add(lUserId);
-                    break;
-                case "abstain":
-                    assert lMotion != null;
-                    lMotion.ayeVotes.remove(lUserId);
-                    lMotion.nayVotes.remove(lUserId);
-                    lMotion.abstainVotes.remove(lUserId);
-                    lMotion.notVoted.remove(lUserId);
-
-
-                    lMotion.abstainVotes.add(lUserId);
-                    break;
+                case "aye" -> lMotion.ayeVotes.add(lUserId);
+                case "nay" -> lMotion.nayVotes.add(lUserId);
+                case "abstain" -> lMotion.abstainVotes.add(lUserId);
             }
-            assert lCouncil != null;
             SlashCommandListener.saveMotion(lCouncil, lMotion);
             lCouncil.getFloorChannel().asServerTextChannel().get().updateTopic("Current Motion: " + lMotion.getTitle() + " | " +(lCouncil.getCouncillorRole().getUsers().size() - lMotion.ayeVotes.size() - lMotion.nayVotes.size() - lMotion.abstainVotes.size())+" Councillor(s) left to vote.");
 
