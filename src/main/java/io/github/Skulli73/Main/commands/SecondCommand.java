@@ -24,6 +24,14 @@ public class SecondCommand extends CouncilCommand{
                     pInteraction.createImmediateResponder().append("This motion is already completed and cannot be seconded.");
                     return;
                 }
+                if(lMotion.seconderIdList.contains(pInteraction.getUser().getId())) {
+                    pInteraction.createImmediateResponder().append("You already seconded this motion");
+                    return;
+                }
+                if(lMotion.introducerId == pInteraction.getUser().getId()) {
+                    pInteraction.createImmediateResponder().append("Are you seriously trying to second your own motion?");
+                    return;
+                }
                 lMotion.seconderIdList.add(pInteraction.getUser().getId());
                 council.getMinuteChannel().sendMessage(lMotion.getTitle() + " was seconded by " + pInteraction.getUser().getMentionTag()+".");
                 SlashCommandListener.saveMotion(council, lMotion);
