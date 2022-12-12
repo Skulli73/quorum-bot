@@ -33,9 +33,16 @@ public class MoveCommand extends CouncilCommand{
     public void executeCommand(SlashCommandInteraction pInteraction, DiscordApi pApi) {
         if(council.motionArrayList.get(council.currentMotion).seconderIdList.isEmpty() && council.secondRequired && !council.motionArrayList.get(council.currentMotion).isAmendment())
             if(council.motionArrayList.size() > council.nextMotion) {
-                executeMove(pInteraction, pApi, council, council.nextMotion);
+                boolean end = false;
+                for(int i = council.currentMotion; i<council.motionArrayList.size() && !end; i++) {
+                    if(!council.motionArrayList.get(i).completed && !council.motionArrayList.get(i).seconderIdList.isEmpty()) {
+                        executeMove(pInteraction, pApi, council, i);
+                        end = true;
+                    }
+                }
+
             } else {
-                pInteraction.createImmediateResponder().append("This motion is not seconded and is the last message on the agenda");
+                pInteraction.createImmediateResponder().append("No seconded Motion is left");
             }
         else
             executeMove(pInteraction, pApi, council, council.currentMotion);
