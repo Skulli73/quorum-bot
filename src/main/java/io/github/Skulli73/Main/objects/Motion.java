@@ -178,8 +178,8 @@ public class Motion {
                 try {
                     String lComma = "";
                     if(i != 0)
-                        lComma = ", ";
-                    ayeVotesMembers.append(lComma).append(pApi.getUserById(ayeVotes.get(i)).get().getDisplayName(pInteraction.getServer().get()));
+                        lComma = "\n";
+                    ayeVotesMembers.append(lComma).append(pApi.getUserById(ayeVotes.get(i)).get().getMentionTag());
                     if(!lEveryoneOneVote)
                         ayeVotesMembers.append(" (").append(lFormat.format(lVoteWeightsCouncillors.get(Long.parseLong(ayeVotes.get(i))))).append(")");
                 }
@@ -193,8 +193,8 @@ public class Motion {
                 try {
                     String lComma = "";
                     if(i != 0)
-                        lComma = ", ";
-                    notVotedMembers.append(lComma).append(pApi.getUserById(notVoted.get(i)).get().getDisplayName(pInteraction.getServer().get()));
+                        lComma = "\n";
+                    notVotedMembers.append(lComma).append(pApi.getUserById(notVoted.get(i)).get().getMentionTag());
                     if(!lEveryoneOneVote)
                         notVotedMembers.append(" (").append(lFormat.format(lVoteWeightsCouncillors.get(Long.parseLong(notVoted.get(i))))).append(")");
                 }
@@ -208,8 +208,8 @@ public class Motion {
                 try {
                     String lComma = "";
                     if(i != 0)
-                        lComma = ", ";
-                    nayVotesMembers.append(lComma).append(pApi.getUserById(nayVotes.get(i)).get().getDisplayName(pInteraction.getServer().get()));
+                        lComma = "\n";
+                    nayVotesMembers.append(lComma).append(pApi.getUserById(nayVotes.get(i)).get().getMentionTag());
                     if(!lEveryoneOneVote)
                         nayVotesMembers.append(" (").append(lFormat.format(lVoteWeightsCouncillors.get(Long.parseLong(nayVotes.get(i))))).append(")");
                 }
@@ -223,8 +223,8 @@ public class Motion {
                 try {
                     String lComma = "";
                     if(i != 0)
-                        lComma = ", ";
-                    abstainVotesMembers.append(lComma).append(pApi.getUserById(abstainVotes.get(i)).get().getDisplayName(pInteraction.getServer().get()));
+                        lComma = "\n";
+                    abstainVotesMembers.append(lComma).append(pApi.getUserById(abstainVotes.get(i)).get().getMentionTag());
                     if(!lEveryoneOneVote)
                         abstainVotesMembers.append(" (").append(lFormat.format(lVoteWeightsCouncillors.get(Long.parseLong(abstainVotes.get(i))))).append(")");
                 }
@@ -270,13 +270,18 @@ public class Motion {
             }
             else
                 lResultString = pCouncil.getName() + " divided " + lQuorumFailed;
+            if(ayeVotesAmount > 0)
+                embed.addField("Aye - " + lFormat.format(ayeVotesAmount),  " " + ayeVotesMembers.toString());
+            if(nayVotesAmount>0)
+                embed.addField("Nay - " + lFormat.format(nayVotesAmount),  " " + nayVotesMembers.toString());
+            if(abstainVotesAmount > 0)
+                embed.addField("Abstain - " + lFormat.format(abstainVotesAmount),  " " + abstainVotesMembers.toString());
+            if(notVotedAmount > 0)
+                embed.addField("Not Voted - " + lFormat.format(notVotedAmount),  " " + notVotedMembers.toString());
             MessageBuilder lMessageBuilder = new MessageBuilder()
                     .append(lResultString)
                     .setEmbed(
-                            embed.addField("Aye", lFormat.format(ayeVotesAmount) + " (" + ayeVotesMembers + ")")
-                                    .addField("Nay", lFormat.format(nayVotesAmount) + " (" + nayVotesMembers + ")")
-                                    .addField("Abstain", lFormat.format(abstainVotesAmount) + " (" + abstainVotesMembers + ")")
-                                    .addField("Did not Vote", lFormat.format(notVotedAmount) + " (" + notVotedMembers + ")")
+                            embed
                                     .setColor(lColour)
                                     .setFooter(lTypeOfMajorityArray[typeOfMajority] + ", " +  neededMajority*100 + "%")
                     );

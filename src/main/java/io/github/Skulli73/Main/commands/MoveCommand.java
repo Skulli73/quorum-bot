@@ -108,7 +108,7 @@ public class MoveCommand extends CouncilCommand{
 
                 Object[] lCouncillors = pCouncil.getCouncillorRole().getUsers().toArray();
                 lFile.delete();
-                for(int j = 0; i<lCouncillors.length;j++) {
+                for(int j = 0; j<lCouncillors.length;j++) {
                     System.out.println("Councillor: " + ((User)lCouncillors[j]).getName());
                     PrivateChannel lChannel;
                     try {
