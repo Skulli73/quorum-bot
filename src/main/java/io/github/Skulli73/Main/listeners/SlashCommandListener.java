@@ -69,7 +69,7 @@ public class SlashCommandListener implements SlashCommandCreateListener {
                 throw new RuntimeException(e);
             }
         }
-        if(lCanUseBot.serverCanUseBot(interaction.getServer().get())) {
+        if(interaction.getChannel().get().asTextChannel().get().asPrivateChannel().isPresent() ||lCanUseBot.serverCanUseBot(interaction.getServer().get())) {
             if (interaction.getCommandName().equals("createcouncil")) new CreateCouncilCommand(interaction, discordApi);
             if (interaction.getCommandName().equals("motion")) new MotionCommand(interaction, discordApi);
             if (interaction.getCommandName().equals("move")) new MoveCommand(interaction, discordApi);
@@ -116,6 +116,8 @@ public class SlashCommandListener implements SlashCommandCreateListener {
                 new WriteBillFinish(interaction, discordApi);
             if (interaction.getFullCommandName().equals("write_bill undo"))
                 new WriteBillUndoCommand(interaction, discordApi);
+            if (interaction.getFullCommandName().equals("write_bill add_prefix"))
+                new WriteBillPrefixCommand(interaction, discordApi);
             if (interaction.getFullCommandName().equals("write_amendment omit"))
                 new WriteAmendmentOmit(interaction, discordApi);
             if (interaction.getFullCommandName().equals("write_amendment amend"))

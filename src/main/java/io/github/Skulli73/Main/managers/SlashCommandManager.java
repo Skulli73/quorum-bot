@@ -191,6 +191,10 @@ public class SlashCommandManager {
                                 )),
                                 SlashCommandOption.createWithOptions(SlashCommandOptionType.SUB_COMMAND, "undo", "Undo the last addition to a bill", Arrays.asList(
                                         SlashCommandOption.create(SlashCommandOptionType.STRING, "bill_message_id", "Id of the Message of the Bill", true)
+                                )),
+                                SlashCommandOption.createWithOptions(SlashCommandOptionType.SUB_COMMAND, "add_prefix", "Add a Prefix to the Bill", Arrays.asList(
+                                        SlashCommandOption.create(SlashCommandOptionType.STRING, "text", "Text of the Prefix", true),
+                                        SlashCommandOption.create(SlashCommandOptionType.STRING, "bill_message_id", "Id of the Message of the Bill", true)
                                 ))
                             )
                         )

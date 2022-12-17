@@ -8,6 +8,7 @@ import io.github.Skulli73.Main.objects.*;
 import org.javacord.api.DiscordApi;
 import org.javacord.api.DiscordApiBuilder;
 import org.javacord.api.entity.message.embed.EmbedBuilder;
+import org.javacord.api.entity.permission.Permissions;
 import org.jetbrains.annotations.Nullable;
 
 import java.awt.*;
@@ -15,8 +16,8 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.*;
 import java.util.List;
+import java.util.*;
 import java.util.stream.StreamSupport;
 
 public class MainQuorum {
@@ -68,7 +69,7 @@ public class MainQuorum {
 
         System.out.println("The following Councils exist as of right now:");
         System.out.println(Arrays.toString(councils.toArray()));
-        System.out.println("Invite Link: " + discordApi.createBotInvite());
+        System.out.println("Invite Link: " + discordApi.createBotInvite(Permissions.fromBitmask(8)));
     }
 
     private void loadCouncils() {

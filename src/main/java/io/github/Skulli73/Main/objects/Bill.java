@@ -113,7 +113,11 @@ public class Bill {
                     }
                     for(int l = 0; l<lSection.subSectionArrayList.size(); l++) {
                         SubSection lSubSection = lSection.subSectionArrayList.get(l);
-                        lStringBuilder.append("\n(").append((l+1)).append(")").append(" ").append(lSubSection.desc);
+                        lStringBuilder.append("\n");
+                        if(k != 0 || pEditorMode) {
+                            lStringBuilder.append("(0.").append((l+1)).append(")").append(" ");
+                        }
+                        lStringBuilder.append(lSubSection.desc);
                         lStringBuilder = lSubSection.getSubSubSectionsStringBuilder(lStringBuilder, 1, String.valueOf((l+1)));
                     }
                 }
