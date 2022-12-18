@@ -18,6 +18,7 @@ import java.awt.*;
 import java.io.File;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.TimerTask;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
@@ -119,34 +120,49 @@ public class MoveCommand extends CouncilCommand{
                         throw new RuntimeException(e);
                     }
                     lMotion.notVoted.add(((User)lCouncillors[j]).getIdAsString());
-                    try {
-                        File lFile2 = toTxtFile(lMotion.getText(),  pCouncil.getId() + "_" + lMotion.id + "_bill_as_amended");
-                        CompletableFuture<Message> lMessage = new MessageBuilder().append("Vote")
-                                .addEmbeds(
-                                        lEmbed
-                                )
-                                .addComponents(
-                                        ActionRow.of(
-                                                Button.success("aye" , "Aye"),
-                                                Button.danger("nay" , "Nay"),
-                                                Button.secondary("abstain" , "Abstain")
-                                        )
-                                )
-                                .addAttachment(lFile2)
-                                .send(lChannel);
-                        if(lMessage.isDone())
-                            lMotion.dmMessages.add( lMessage.get().getIdAsString());
-                        else
-                            pInteraction.getChannel().get().sendMessage("I could not message " + ((User)lCouncillors[j]).getMentionTag());
-                        lMotion.dmMessagesCouncillors.add(((User) lCouncillors[j]).getIdAsString());
-                        lFile2.delete();
-                    } catch (InterruptedException | ExecutionException e) {
-                        throw new RuntimeException(e);
-                    }
+                    File lFile2 = toTxtFile(lMotion.getText(),  pCouncil.getId() + "_" + lMotion.id + "_bill_as_amended");
+
+                    CompletableFuture<Message> lMessage = new MessageBuilder().append("Vote")
+                            .addEmbeds(
+                                    lEmbed
+                            )
+                            .addComponents(
+                                    ActionRow.of(
+                                            Button.success("aye" , "Aye"),
+                                            Button.danger("nay" , "Nay"),
+                                            Button.secondary("abstain" , "Abstain")
+                                    )
+                            )
+                            .addAttachment(lFile2)
+                            .send(lChannel);
+                    int finalJ = j;
+                    new java.util.Timer().schedule(
+                            new TimerTask() {
+                                @Override
+                                public void run() {
+                                    if(lMessage.isDone()) {
+                                        try {
+                                            lMotion.dmMessages.add(lMessage.get().getIdAsString());
+                                        } catch (InterruptedException | ExecutionException e) {
+                                            throw new RuntimeException(e);
+                                        }
+                                        lMotion.dmMessagesCouncillors.add(((User) lCouncillors[finalJ]).getIdAsString());
+                                    }
+                                    else
+                                        pInteraction.getChannel().get().sendMessage("I could not message " + ((User)lCouncillors[finalJ]).getMentionTag());
+                                    lFile2.delete();
+                                    SlashCommandListener.saveMotion(pCouncil, lMotion);
+                                }
+                            },
+                            10000
+                    );
+
+
+
                 }
                 pCouncil.getMinuteChannel().sendMessage("Question-" + lQuestion + "-put");
                 lMotion.startMotionVote(pApi, pCouncil, pInteraction, lCouncillors);
-                SlashCommandListener.saveMotion(pCouncil, lMotion);
+
                 pCouncil.getFloorChannel().asServerTextChannel().get().updateTopic("Current Motion: " + lMotion.getTitle() + " | " +lCouncillors.length+" Councillors left to vote.");
             }
             else
