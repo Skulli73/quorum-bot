@@ -6,6 +6,7 @@ import io.github.Skulli73.Main.objects.Council;
 import io.github.Skulli73.Main.objects.Motion;
 import org.javacord.api.DiscordApi;
 import org.javacord.api.entity.channel.PrivateChannel;
+import org.javacord.api.entity.message.Message;
 import org.javacord.api.entity.message.MessageBuilder;
 import org.javacord.api.entity.message.component.ActionRow;
 import org.javacord.api.entity.message.component.Button;
@@ -17,6 +18,7 @@ import java.awt.*;
 import java.io.File;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
 import static io.github.Skulli73.Main.MainQuorum.*;
@@ -119,7 +121,7 @@ public class MoveCommand extends CouncilCommand{
                     lMotion.notVoted.add(((User)lCouncillors[j]).getIdAsString());
                     try {
                         File lFile2 = toTxtFile(lMotion.getText(),  pCouncil.getId() + "_" + lMotion.id + "_bill_as_amended");
-                        lMotion.dmMessages.add( new MessageBuilder().append("Vote")
+                        CompletableFuture<Message> lMessage = new MessageBuilder().append("Vote")
                                 .addEmbeds(
                                         lEmbed
                                 )
@@ -131,7 +133,11 @@ public class MoveCommand extends CouncilCommand{
                                         )
                                 )
                                 .addAttachment(lFile2)
-                                .send(lChannel).get().getIdAsString());
+                                .send(lChannel);
+                        if(lMessage.isDone())
+                            lMotion.dmMessages.add( lMessage.get().getIdAsString());
+                        else
+                            pInteraction.getChannel().get().sendMessage("I could not message " + ((User)lCouncillors[j]).getMentionTag());
                         lMotion.dmMessagesCouncillors.add(((User) lCouncillors[j]).getIdAsString());
                         lFile2.delete();
                     } catch (InterruptedException | ExecutionException e) {
