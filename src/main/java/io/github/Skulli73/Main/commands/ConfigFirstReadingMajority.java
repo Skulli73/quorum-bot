@@ -11,7 +11,7 @@ public class ConfigFirstReadingMajority extends  ConfigCommand{
     @Override
     public void changeConfig(SlashCommandInteraction pInteraction, DiscordApi pApi) {
         configName = "config bills first_reading_majority";
-        council.firstReadingMajority = pInteraction.getOptionByName(configName).get().getOptionDecimalValueByName("majority").get();
-        council.firstReadingTypeOfMajority = pInteraction.getOptionByName(configName).get().getOptionDecimalValueByName("type_of_majority").get().intValue();
+        council.firstReadingMajority = pInteraction.getOptions().get(0).getOptions().get(0).getOptionDecimalValueByName("majority").get();
+        council.firstReadingTypeOfMajority = pInteraction.getOptions().get(0).getOptions().get(0).getOptionDecimalValueByName("type_of_majority").get().intValue();
     }
 }

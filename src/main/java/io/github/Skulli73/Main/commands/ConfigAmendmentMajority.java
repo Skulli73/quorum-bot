@@ -11,7 +11,7 @@ public class ConfigAmendmentMajority extends  ConfigCommand{
     @Override
     public void changeConfig(SlashCommandInteraction pInteraction, DiscordApi pApi) {
         configName = "config bills amendment_majority";
-        council.amendmentMajority = pInteraction.getOptionByName(configName).get().getOptionDecimalValueByName("majority").get();
-        council.amendmentTypeOfMajority = pInteraction.getOptionByName(configName).get().getOptionDecimalValueByName("type_of_majority").get().intValue();
+        council.amendmentMajority = pInteraction.getOptions().get(0).getOptions().get(0).getOptionDecimalValueByName("majority").get();
+        council.amendmentTypeOfMajority = pInteraction.getOptions().get(0).getOptions().get(0).getOptionDecimalValueByName("type_of_majority").get().intValue();
     }
 }
