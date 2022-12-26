@@ -35,7 +35,9 @@ public class MainQuorum {
     public static Gson                gson                 = new Gson();
 
     public static @Nullable DiscordApi discordApi;
-
+    public static void application(String[] args) {
+        main(args);
+    }
     public static void main(String[] args) {
         new DiscordApiBuilder()
                 .setToken(getToken())
