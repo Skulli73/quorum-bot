@@ -83,9 +83,9 @@ public class SlashCommandListener implements SlashCommandCreateListener {
             if (interaction.getCommandName().equals("amend")) new AmendCommand(interaction, discordApi);
             if (interaction.getFullCommandName().equals("config default_majority"))
                 new ConfigDefaultMajorityCommand(interaction, discordApi);
-            if (interaction.getFullCommandName().equals("config first_reading_majority"))
+            if (interaction.getFullCommandName().equals("config bills first_reading_majority"))
                 new ConfigFirstReadingMajority(interaction, discordApi);
-            if (interaction.getFullCommandName().equals("config amendment_majority"))
+            if (interaction.getFullCommandName().equals("config bills amendment_majority"))
                 new ConfigAmendmentMajority(interaction, discordApi);
             if (interaction.getFullCommandName().equals("config motion_timeout"))
                 new ConfigMotionTimeout(interaction, discordApi);
