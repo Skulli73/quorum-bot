@@ -154,7 +154,7 @@ public class MoveCommand extends CouncilCommand{
                                     SlashCommandListener.saveMotion(pCouncil, lMotion);
                                 }
                             },
-                            10000
+                            1000
                     );
 
 

@@ -2,7 +2,6 @@ package io.github.Skulli73.Main.listeners;
 
 import io.github.Skulli73.Main.objects.Council;
 import io.github.Skulli73.Main.objects.Motion;
-import org.javacord.api.entity.message.MessageBuilder;
 import org.javacord.api.event.interaction.MessageComponentCreateEvent;
 import org.javacord.api.interaction.Interaction;
 import org.javacord.api.interaction.MessageComponentInteraction;
@@ -18,10 +17,11 @@ import static io.github.Skulli73.Main.MainQuorum.councilsPath;
 public class MessageComponentListener implements MessageComponentCreateListener {
     @Override
     public void onComponentCreate(MessageComponentCreateEvent lEvent) {
+        System.out.println("Component Interaction happened");
         MessageComponentInteraction messageComponentInteraction = lEvent.getMessageComponentInteraction();
         String                      customId                    = messageComponentInteraction.getCustomId();
         Interaction                 lInteraction                = lEvent.getInteraction();
-        messageComponentInteraction.acknowledge();
+
         boolean isAVote = false;
         for (Council lCouncil : councils) {
             if (lCouncil.motionArrayList.size() > lCouncil.currentMotion)
@@ -30,7 +30,7 @@ public class MessageComponentListener implements MessageComponentCreateListener 
         }
         if(isAVote) {
 
-            new MessageBuilder().append("Your Vote has been registered.").send(messageComponentInteraction.getChannel().get());
+            lInteraction.createImmediateResponder().append("Your Vote has been registered.").respond();
 
             String lUserId = lInteraction.getUser().getIdAsString();
             Motion lMotion   = null;
@@ -98,5 +98,6 @@ public class MessageComponentListener implements MessageComponentCreateListener 
             lCouncil.getFloorChannel().asServerTextChannel().get().updateTopic("Current Motion: " + lMotion.getTitle() + " | " +(lCouncil.getCouncillorRole().getUsers().size() - lMotion.ayeVotes.size() - lMotion.nayVotes.size() - lMotion.abstainVotes.size())+" Councillor(s) left to vote.");
 
         }
+
     }
 }
