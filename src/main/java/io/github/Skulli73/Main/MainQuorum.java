@@ -26,7 +26,7 @@ public class MainQuorum {
 
     public static ArrayList<Timer>    timers               = new ArrayList<>();
 
-    public static String              path                 = System.getProperty("user.dir") + "\\src\\main\\java\\io\\github\\Skulli73\\Main\\";
+    public static String              path                 = "";
 
     public static String              councilsPath         = path + "councils\\";
     public static String              billsPath         = path + "bills\\bills.json";
@@ -38,6 +38,12 @@ public class MainQuorum {
         main(args);
     }
     public static void main(String[] args) {
+        File lFile = new File(councilsPath);
+        if(!lFile.exists())
+            lFile.mkdirs();
+        lFile = new File(path + bills + "\\");
+        if(!lFile.exists())
+            lFile.mkdirs();
         onShardLogin(new DiscordApiBuilder()
                 .setToken(getToken())
                 .setAllIntents()
