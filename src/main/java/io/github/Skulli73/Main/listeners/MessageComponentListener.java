@@ -2,6 +2,7 @@ package io.github.Skulli73.Main.listeners;
 
 import io.github.Skulli73.Main.objects.Council;
 import io.github.Skulli73.Main.objects.Motion;
+import org.javacord.api.entity.message.MessageBuilder;
 import org.javacord.api.event.interaction.MessageComponentCreateEvent;
 import org.javacord.api.interaction.Interaction;
 import org.javacord.api.interaction.MessageComponentInteraction;
@@ -20,7 +21,7 @@ public class MessageComponentListener implements MessageComponentCreateListener 
         MessageComponentInteraction messageComponentInteraction = lEvent.getMessageComponentInteraction();
         String                      customId                    = messageComponentInteraction.getCustomId();
         Interaction                 lInteraction                = lEvent.getInteraction();
-
+        messageComponentInteraction.acknowledge();
         boolean isAVote = false;
         for (Council lCouncil : councils) {
             if (lCouncil.motionArrayList.size() > lCouncil.currentMotion)
@@ -28,9 +29,8 @@ public class MessageComponentListener implements MessageComponentCreateListener 
                     isAVote = true;
         }
         if(isAVote) {
-            messageComponentInteraction.createImmediateResponder()
-                    .setContent("Your Vote has been registered")
-                    .respond();
+
+            new MessageBuilder().append("Your Vote has been registered.").send(messageComponentInteraction.getChannel().get());
 
             String lUserId = lInteraction.getUser().getIdAsString();
             Motion lMotion   = null;
@@ -43,7 +43,8 @@ public class MessageComponentListener implements MessageComponentCreateListener 
 
             if (lCouncil == null) {
                 System.err.println("Failed to find motion");
-                messageComponentInteraction.createImmediateResponder().append("An error has occurred! :frowning: :eggplant: :flushed:").respond();
+                messageComponentInteraction.acknowledge();
+                messageComponentInteraction.getChannel().get().sendMessage("An error has occurred! :frowning: :eggplant: :flushed:");
                 return;
             }
             lMotion = lCouncil.motionArrayList.get(lCouncil.currentMotion);
