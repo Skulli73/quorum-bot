@@ -41,7 +41,7 @@ public class MainQuorum {
         File lFile = new File(councilsPath);
         if(!lFile.exists())
             lFile.mkdirs();
-        lFile = new File(path + bills + "\\");
+        lFile = new File(path + "bills\\");
         if(!lFile.exists())
             lFile.mkdirs();
         onShardLogin(new DiscordApiBuilder()
