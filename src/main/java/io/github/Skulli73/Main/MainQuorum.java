@@ -9,7 +9,6 @@ import org.javacord.api.DiscordApi;
 import org.javacord.api.DiscordApiBuilder;
 import org.javacord.api.entity.message.embed.EmbedBuilder;
 import org.javacord.api.entity.permission.Permissions;
-import org.javacord.api.util.logging.ExceptionLogger;
 import org.jetbrains.annotations.Nullable;
 
 import java.awt.*;
@@ -19,6 +18,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.List;
 import java.util.*;
+import java.util.concurrent.ExecutionException;
 import java.util.stream.StreamSupport;
 
 public class MainQuorum {
@@ -39,15 +39,15 @@ public class MainQuorum {
         main(args);
     }
     public static void main(String[] args) {
-        new DiscordApiBuilder()
-                .setToken(getToken())
-                .setAllIntents()
-                .setRecommendedTotalShards().join()
-                .loginAllShards()
-                .forEach(shardFuture -> shardFuture
-                        .thenAccept(MainQuorum::onShardLogin)
-                        .exceptionally(ExceptionLogger.get())
-                );
+        try {
+            onShardLogin(new DiscordApiBuilder()
+                    .setToken(getToken())
+                    .setAllIntents()
+                    .login()
+                    .get());
+        } catch (InterruptedException | ExecutionException e) {
+            throw new RuntimeException(e);
+        }
 
     }
 
