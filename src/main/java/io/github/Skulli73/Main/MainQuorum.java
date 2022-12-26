@@ -28,8 +28,8 @@ public class MainQuorum {
 
     public static String              path                 = "";
 
-    public static String              councilsPath         = path + "councils\\";
-    public static String              billsPath         = path + "bills\\bills.json";
+    public static String              councilsPath         = path;
+    public static String              billsPath         = path + "bills.json";
 
     public static Gson                gson                 = new Gson();
 
@@ -38,12 +38,6 @@ public class MainQuorum {
         main(args);
     }
     public static void main(String[] args) {
-        File lFile = new File(councilsPath);
-        if(!lFile.exists())
-            lFile.mkdirs();
-        lFile = new File(path + "bills\\");
-        if(!lFile.exists())
-            lFile.mkdirs();
         onShardLogin(new DiscordApiBuilder()
                 .setToken(getToken())
                 .setAllIntents()
