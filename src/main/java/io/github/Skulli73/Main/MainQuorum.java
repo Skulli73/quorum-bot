@@ -18,7 +18,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.List;
 import java.util.*;
-import java.util.concurrent.ExecutionException;
 import java.util.stream.StreamSupport;
 
 public class MainQuorum {
@@ -39,15 +38,11 @@ public class MainQuorum {
         main(args);
     }
     public static void main(String[] args) {
-        try {
-            onShardLogin(new DiscordApiBuilder()
-                    .setToken(getToken())
-                    .setAllIntents()
-                    .login()
-                    .get());
-        } catch (InterruptedException | ExecutionException e) {
-            throw new RuntimeException(e);
-        }
+        onShardLogin(new DiscordApiBuilder()
+                .setToken(getToken())
+                .setAllIntents()
+                .login()
+                .join());
 
     }
 
