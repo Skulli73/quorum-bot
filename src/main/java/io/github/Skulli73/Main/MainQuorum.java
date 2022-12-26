@@ -9,6 +9,7 @@ import org.javacord.api.DiscordApi;
 import org.javacord.api.DiscordApiBuilder;
 import org.javacord.api.entity.message.embed.EmbedBuilder;
 import org.javacord.api.entity.permission.Permissions;
+import org.javacord.api.util.logging.ExceptionLogger;
 import org.jetbrains.annotations.Nullable;
 
 import java.awt.*;
@@ -36,7 +37,16 @@ public class MainQuorum {
     public static @Nullable DiscordApi discordApi;
 
     public static void main(String[] args) {
-        new MainQuorum();
+        new DiscordApiBuilder()
+                .setToken(getToken())
+                .setAllIntents()
+                .setRecommendedTotalShards().join()
+                .loginAllShards()
+                .forEach(shardFuture -> shardFuture
+                        .thenAccept(MainQuorum::onShardLogin)
+                        .exceptionally(ExceptionLogger.get())
+                );
+
     }
 
     public static SlashCommandListener slashCommandListener;
@@ -44,7 +54,8 @@ public class MainQuorum {
     public static MessageComponentListener messageComponentCreateListener;
     public static HashMap<String, Bill>                   bills;
 
-    public MainQuorum() {
+    private static void onShardLogin(DiscordApi pApi) {
+        discordApi = pApi;
         loadCouncils();
         loadBot();
         setAllMotionsToNotMoved();
@@ -52,12 +63,7 @@ public class MainQuorum {
     }
 
 
-    private void loadBot() {
-        discordApi = new DiscordApiBuilder()
-                .setToken(getToken())
-                .setAllIntents()
-                .login()
-                .join();
+    private static void loadBot() {
 
         new SlashCommandManager(discordApi);
 
@@ -72,7 +78,7 @@ public class MainQuorum {
         System.out.println("Invite Link: " + discordApi.createBotInvite(Permissions.fromBitmask(8)));
     }
 
-    private void loadCouncils() {
+    private static void loadCouncils() {
         StringBuilder lJsonBuilder = new StringBuilder();
         try {
             File myObj = new File(councilsPath + "council.json");
@@ -150,7 +156,7 @@ public class MainQuorum {
     }
 
 
-    private String getToken() {
+    private static String getToken() {
         StringBuilder token = new StringBuilder();
         try {
             File myObj = new File(path + "TOKEN");
@@ -169,7 +175,7 @@ public class MainQuorum {
         return token.toString();
     }
 
-    private void setAllMotionsToNotMoved() {
+    private static void setAllMotionsToNotMoved() {
         for(int i = 0; i<councils.size(); i++) {
             Council lCouncil = councils.get(i);
             if(lCouncil.motionArrayList.size() > lCouncil.currentMotion) {
@@ -179,7 +185,7 @@ public class MainQuorum {
         }
     }
 
-    private void loadBills() {
+    private static void loadBills() {
         StringBuilder billsString = new StringBuilder();
         try {
             File myObj = new File(billsPath);
