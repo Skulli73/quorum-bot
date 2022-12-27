@@ -22,19 +22,27 @@ public class WriteBillFinish extends WriteBillCommand{
         String billMessageId = pInteraction.getOptions().get(0).getOptionStringValueByName("bill_message_id").get();
         Bill lBill = bills.get(billMessageId);
         Council lCouncil = councils.get(lBill.councilId);
-        if(pInteraction.getOptions().get(0).getOptionDecimalValueByName("majority").isPresent())
-            lBill.majority = pInteraction.getOptions().get(0).getOptionDecimalValueByName("majority").get();
-        else
+
+        if (pInteraction.getOptions().get(0).getOptionDecimalValueByName("majority").isEmpty()) {
             lBill.majority = lCouncil.standardMajority;
-        if(pInteraction.getOptions().get(0).getOptionLongValueByName("type_of_majority").isPresent())
-            lBill.typeOfMajority = Math.toIntExact(pInteraction.getOptions().get(0).getOptionLongValueByName("type_of_majority").get());
-        else
+            return;
+        }
+
+        lBill.majority = pInteraction.getOptions().get(0).getOptionDecimalValueByName("majority").get();
+
+        if (pInteraction.getOptions().get(0).getOptionLongValueByName("type_of_majority").isEmpty()) {
             lBill.typeOfMajority = lCouncil.standardMajorityType;
+            return;
+        }
+
+        lBill.typeOfMajority = Math.toIntExact(pInteraction.getOptions().get(0).getOptionLongValueByName("type_of_majority").get());
+
         try {
             SlashCommandListener.createMotionEnd(pInteraction.getUser(), lCouncil, "Motion #" + (lCouncil.motionArrayList.size()+1) + ": Introduction of \"" + lBill.title + "\"", lCouncil.firstReadingMajority, lCouncil.firstReadingTypeOfMajority, lBill.toString(), pApi.getServerById(lCouncil.getServerId()).get(), lBill.messageId, null);
         } catch (InterruptedException | ExecutionException e) {
             throw new RuntimeException(e);
         }
+
         lBill.draftFinished = true;
         pInteraction.createImmediateResponder().append("Your bill was successfully finished").respond();
         bills.put(billMessageId, lBill);
