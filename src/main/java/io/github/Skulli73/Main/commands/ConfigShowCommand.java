@@ -7,6 +7,7 @@ import org.javacord.api.entity.message.embed.EmbedBuilder;
 import org.javacord.api.interaction.SlashCommandInteraction;
 
 import java.text.DecimalFormat;
+import java.util.Objects;
 
 public class ConfigShowCommand extends CouncilCommand{
     public ConfigShowCommand(SlashCommandInteraction pInteraction, DiscordApi pApi) {
@@ -19,12 +20,15 @@ public class ConfigShowCommand extends CouncilCommand{
         StringBuilder lVoteWeights      = new StringBuilder();
         StringBuilder lProposeRoles     = new StringBuilder();
         DecimalFormat lFormat = new DecimalFormat("0.#");
+
         for(VoteWeight lVoteWeight : council.voteWeightArrayList) {
             lVoteWeights.append(pApi.getRoleById(lVoteWeight.roleId).get().getMentionTag()).append(": ").append(lFormat.format(lVoteWeight.votes)).append("\n");
         }
+
         for(Long lProposeRole : council.proposeRoleList) {
-            lProposeRoles.append(pApi.getRoleById(lProposeRole).get().getMentionTag() + "\n");
+            lProposeRoles.append(pApi.getRoleById(lProposeRole).get().getMentionTag()).append("\n");
         }
+
         lEmbedBuilder.setTitle(council.getName() + " Configurations")
                 .addField("Floor Channel", "<#" + council.floorChannel + ">")
                 .addField("Agenda Channel", "<#" + council.agendaChannel + ">")
@@ -43,10 +47,13 @@ public class ConfigShowCommand extends CouncilCommand{
                 .addField("Propose Roles", lProposeRoles.toString())
                 .addField("Seconding Required", String.valueOf(council.secondRequired))
         ;
+
         String lForwardChannel = "/";
+
         if(council.hasForwardChannel()) {
-            lForwardChannel = council.getForwardCouncil().getName();
+            lForwardChannel = Objects.requireNonNull(council.getForwardCouncil()).getName();
         }
+
         lEmbedBuilder.addField("Forward Council", lForwardChannel);
         pInteraction.createImmediateResponder().addEmbed(lEmbedBuilder).respond();
     }
