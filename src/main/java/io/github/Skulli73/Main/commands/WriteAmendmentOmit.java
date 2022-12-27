@@ -70,6 +70,7 @@ public class WriteAmendmentOmit extends WriteAmendmentCommand {
 
                 if(!lValid) {
                     pInteraction.createImmediateResponder().append("Not a valid Sub-Section.\nError Code: 01").respond();
+                    return;
                 }
 
                 if(lSubSectionIdIntArray[0] < bill.partArrayList.get(lPartId).divisionArrayList.get(lDivisionId).sectionArrayList.get(lSectionId).subSectionArrayList.size()) {

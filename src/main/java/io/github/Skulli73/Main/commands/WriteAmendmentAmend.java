@@ -22,6 +22,7 @@ public class WriteAmendmentAmend extends WriteAmendmentCommand{
         int lPartId = Math.toIntExact(lSlashCommandInteractionOption.getOptionLongValueByName("part_id").get());
         if(!(lPartId < bill.partArrayList.size())) {
             pInteraction.createImmediateResponder().append("This Part does not exist").respond();
+            return;
         }
 
         System.out.println("Part Id: " + lPartId);

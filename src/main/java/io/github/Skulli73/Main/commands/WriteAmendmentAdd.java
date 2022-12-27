@@ -47,6 +47,7 @@ public class WriteAmendmentAdd extends WriteAmendmentCommand{
                 assert amendment != null;
                 amendment.additions.add(new String[]{lPartId + "." + lDivisionId, lAmendmentText, lAmendmentTitle});
                 successfullyExecutedCommandMessage(pInteraction);
+                return;
             }
 
             int lSectionId = Math.toIntExact(lSlashCommandInteractionOption.getOptionLongValueByName("section_id").get());
@@ -55,11 +56,13 @@ public class WriteAmendmentAdd extends WriteAmendmentCommand{
             if(!(lDivisionId < bill.partArrayList.get(lPartId).divisionArrayList.get(lDivisionId).sectionArrayList.size())) {
                 assert amendment != null;
                 amendment.additions.add(new String[]{lPartId + "." + lDivisionId + "." + lSectionId, lAmendmentText, lAmendmentTitle});
+                return;
             }
 
             if(lSlashCommandInteractionOption.getOptionStringValueByName("sub_section_id").isEmpty()) {
                 assert amendment != null;
                 amendment.additions.add(new String[]{lPartId + "." + lDivisionId + "." + lSectionId, lAmendmentText, lAmendmentTitle});
+                return;
             }
 
             String lSubSectionIdString = lSlashCommandInteractionOption.getOptionStringValueByName("sub_section_id").get();
