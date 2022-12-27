@@ -1,7 +1,6 @@
 package io.github.Skulli73.Main.commands;
 
 import io.github.Skulli73.Main.MainQuorum;
-import io.github.Skulli73.Main.listeners.SlashCommandListener;
 import io.github.Skulli73.Main.objects.Council;
 import io.github.Skulli73.Main.objects.Motion;
 import org.javacord.api.DiscordApi;
@@ -18,12 +17,12 @@ import java.awt.*;
 import java.io.File;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.TimerTask;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
 import static io.github.Skulli73.Main.MainQuorum.*;
 import static io.github.Skulli73.Main.listeners.SlashCommandListener.lTypeOfMajorityArray;
+import static io.github.Skulli73.Main.listeners.SlashCommandListener.saveCouncil;
 
 public class MoveCommand extends CouncilCommand{
 
@@ -119,7 +118,7 @@ public class MoveCommand extends CouncilCommand{
                     lMotion.notVoted.add(((User)lCouncillors[j]).getIdAsString());
                     File lFile2 = toTxtFile(lMotion.getText(),  pCouncil.getId() + "_" + lMotion.id + "_bill_as_amended");
 
-                    CompletableFuture<Message> lMessage = new MessageBuilder().append("Vote")
+                    new MessageBuilder().append("Vote")
                             .addEmbeds(lEmbed)
                             .addComponents(ActionRow.of(
                                             Button.success("aye" , "Aye"),
@@ -128,29 +127,19 @@ public class MoveCommand extends CouncilCommand{
                                     )
                             )
                             .addAttachment(lFile2)
-                            .send(lChannel);
+                            .send(lChannel)
+                            .thenAccept(c -> {
+                                lMotion.dmMessages.add(c.getIdAsString());
+                                lMotion.dmMessagesCouncillors.add(String.valueOf(c.getUserAuthor().get()));
+                            });
 
                     int finalJ = j;
 
-                    new java.util.Timer().schedule(new TimerTask() {
-                        @Override
-                        public void run() {
-                            if(lMessage.isDone()) {
-                                try {
-                                    lMotion.dmMessages.add(lMessage.get().getIdAsString());
-                                } catch (InterruptedException | ExecutionException e) {
-                                    throw new RuntimeException(e);
-                                }
-                                lMotion.dmMessagesCouncillors.add(((User) lCouncillors[finalJ]).getIdAsString());
-                            }
-                            else
-                                pInteraction.getChannel().get().sendMessage("I could not message " + ((User)lCouncillors[finalJ]).getMentionTag());
-                            lFile2.delete();
-                            SlashCommandListener.saveMotion(pCouncil, lMotion);
-                        }
-                    }, 1000);
-                }
 
+                }
+                pCouncil.motionArrayList.set(lMotion.id, lMotion);
+                councils.set((int) pCouncil.getId(), pCouncil);
+                saveCouncil(pCouncil);
                 pCouncil.getMinuteChannel().sendMessage("Question-" + lQuestion + "-put");
                 lMotion.startMotionVote(pApi, pCouncil, pInteraction, lCouncillors);
 
@@ -159,4 +148,6 @@ public class MoveCommand extends CouncilCommand{
             } else pInteraction.getChannel().get().sendMessage(pInteraction.getUser().getMentionTag() + ", you do not have the propose role and cannot move the motion.");
         } else pInteraction.getChannel().get().sendMessage(pInteraction.getUser().getMentionTag() + ", the motion is already moved.");
     }
+
+    private void addTo
 }
