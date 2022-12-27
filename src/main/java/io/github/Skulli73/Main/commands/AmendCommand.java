@@ -19,32 +19,41 @@ public class AmendCommand extends CouncilCommand {
 
     @Override
     public void executeCommand(SlashCommandInteraction pInteraction, DiscordApi pApi) {
-        if(council.hasProposeRole(pInteraction.getUser())) {
-            if(council.currentMotion < council.motionArrayList.size()) {
-                Motion lMotion = council.motionArrayList.get(council.currentMotion);
-                if(lMotion.isMoved && !lMotion.completed  && lMotion.isBill()) {
-                    Bill lBill = bills.get(String.valueOf(lMotion.billId));
-                    if(!lBill.firstReadingFinished) {
-                        Amendment lAmendment = new Amendment();
-                        lAmendment.introducerId = pInteraction.getUser().getId();
-                        try {
-                            lAmendment.messageId = new MessageBuilder().addEmbed(lAmendment.toEmbed("n", lBill.amendmentDrafts.size(), lBill)).send(pInteraction.getUser()).get().getId();
-                        } catch (InterruptedException | ExecutionException e) {
-                            throw new RuntimeException(e);
-                        }
-                        lBill.amendmentDrafts.add(lAmendment);
-
-                        bills.put(String.valueOf(lMotion.billId), lBill);
-                        saveBills();
-                        pInteraction.createImmediateResponder().append("Amendment creation process initiated, look in dms.").respond();
-                    } else
-                        pInteraction.createImmediateResponder().append("This is not the first reading.").respond();
-                } else
-                    pInteraction.createImmediateResponder().append("There is no Introduction of a Motion right now.").respond();
-            }
-            else
-                pInteraction.createImmediateResponder().append("There is no Introduction of a Motion right now.").respond();
-        } else
+        // Check permissions
+        if(!council.hasProposeRole(pInteraction.getUser())) {
             pInteraction.createImmediateResponder().append("You may not propose motions.");
+            return;
+        }
+
+        if(!(council.currentMotion < council.motionArrayList.size())) {
+            pInteraction.createImmediateResponder().append("There is no Introduction of a Motion right now.").respond();
+            return;
+        }
+
+        Motion lMotion = council.motionArrayList.get(council.currentMotion);
+        if(lMotion.isMoved && !lMotion.completed  && lMotion.isBill()) {
+            pInteraction.createImmediateResponder().append("There is no Introduction of a Motion right now.").respond();
+            return;
+        }
+
+        Bill lBill = bills.get(String.valueOf(lMotion.billId));
+        if(!lBill.firstReadingFinished) {
+            pInteraction.createImmediateResponder().append("This is not the first reading.").respond();
+            return;
+        }
+
+        Amendment lAmendment = new Amendment();
+        lAmendment.introducerId = pInteraction.getUser().getId();
+        try {
+            lAmendment.messageId = new MessageBuilder().addEmbed(lAmendment.toEmbed("n", lBill.amendmentDrafts.size(), lBill)).send(pInteraction.getUser()).get().getId();
+        } catch (InterruptedException | ExecutionException e) {
+            throw new RuntimeException(e);
+        }
+
+        lBill.amendmentDrafts.add(lAmendment);
+
+        bills.put(String.valueOf(lMotion.billId), lBill);
+        saveBills();
+        pInteraction.createImmediateResponder().append("Amendment creation process initiated, look in dms.").respond();
     }
 }
