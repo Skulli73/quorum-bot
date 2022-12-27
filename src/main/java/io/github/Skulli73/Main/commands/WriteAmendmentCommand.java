@@ -15,28 +15,36 @@ public abstract class WriteAmendmentCommand {
     public WriteAmendmentCommand(SlashCommandInteraction pInteraction, DiscordApi pApi) {
         String lBillMessageId;
         String[] lSplitArgument = pInteraction.getOptions().get(0).getOptionStringValueByName("amendment_id").get().split("\\.") ;
-        if(lSplitArgument.length == 2) {
-            lBillMessageId = lSplitArgument[0];
-            amendmentDraftId = Integer.parseInt(lSplitArgument[1]);
-            if (bills.containsKey(lBillMessageId)) {
-                bill = bills.get(lBillMessageId);
-                if(bill.amendmentDrafts.size()> amendmentDraftId) {
-                    amendment = bill.amendmentDrafts.get(amendmentDraftId);
-                    if (bill.amendmentDrafts.get(amendmentDraftId) != null) {
-                        if (bill.amendmentDrafts.get(amendmentDraftId).introducerId == pInteraction.getUser().getId())
-                            this.executeCommand(pInteraction, pApi);
-                        else
-                            pInteraction.createImmediateResponder().append("This is not your amendment.");
-                    }
-                    else
-                        pInteraction.createImmediateResponder().append("This draft is already finished").respond();
-                } else
-                    pInteraction.createImmediateResponder().append("This amendment does not exist.").respond();
-            }
-            else
-                pInteraction.createImmediateResponder().append("This amendment does not exist.").respond();
-        } else
+        if(lSplitArgument.length != 2) {
             pInteraction.createImmediateResponder().append("This amendment does not exist.").respond();
+            return;
+        }
+
+        lBillMessageId = lSplitArgument[0];
+        amendmentDraftId = Integer.parseInt(lSplitArgument[1]);
+        if (!bills.containsKey(lBillMessageId)) {
+            pInteraction.createImmediateResponder().append("This amendment does not exist.").respond();
+            return;
+        }
+
+        bill = bills.get(lBillMessageId);
+        if(bill.amendmentDrafts.size()> amendmentDraftId) {
+            pInteraction.createImmediateResponder().append("This amendment does not exist.").respond();
+            return;
+        }
+
+        amendment = bill.amendmentDrafts.get(amendmentDraftId);
+        if (bill.amendmentDrafts.get(amendmentDraftId) != null) {
+            pInteraction.createImmediateResponder().append("This draft is already finished").respond();
+            return;
+        }
+
+        if (bill.amendmentDrafts.get(amendmentDraftId).introducerId == pInteraction.getUser().getId()) {
+            pInteraction.createImmediateResponder().append("This is not your amendment.");
+            return;
+        }
+
+        this.executeCommand(pInteraction, pApi);
     }
     public abstract void executeCommand(SlashCommandInteraction pInteraction, DiscordApi pApi);
 
