@@ -81,14 +81,11 @@ public class MessageComponentListener implements MessageComponentCreateListener 
 
                 j++;
             }
-            while(lMotion.ayeVotes.contains(lUserId))
-                lMotion.ayeVotes.remove(lUserId);
-            while(lMotion.nayVotes.contains(lUserId))
-                lMotion.nayVotes.remove(lUserId);
-            while(lMotion.abstainVotes.contains(lUserId))
-                lMotion.abstainVotes.remove(lUserId);
-            while(lMotion.notVoted.contains(lUserId))
-                lMotion.notVoted.remove(lUserId);
+            while(lMotion.ayeVotes.contains(lUserId))     lMotion.ayeVotes.remove(lUserId);
+            while(lMotion.nayVotes.contains(lUserId))     lMotion.nayVotes.remove(lUserId);
+            while(lMotion.abstainVotes.contains(lUserId)) lMotion.abstainVotes.remove(lUserId);
+            while(lMotion.notVoted.contains(lUserId))     lMotion.notVoted.remove(lUserId);
+
             switch (customId) {
                 case "aye" -> lMotion.ayeVotes.add(lUserId);
                 case "nay" -> lMotion.nayVotes.add(lUserId);

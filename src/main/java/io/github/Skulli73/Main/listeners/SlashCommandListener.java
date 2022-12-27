@@ -70,66 +70,42 @@ public class SlashCommandListener implements SlashCommandCreateListener {
             }
         }
         if(interaction.getChannel().get().asTextChannel().get().asPrivateChannel().isPresent() ||lCanUseBot.serverCanUseBot(interaction.getServer().get())) {
-            if (interaction.getCommandName().equals("createcouncil")) new CreateCouncilCommand(interaction, discordApi);
-            if (interaction.getCommandName().equals("motion")) new MotionCommand(interaction, discordApi);
-            if (interaction.getCommandName().equals("move")) new MoveCommand(interaction, discordApi);
-            if (interaction.getCommandName().equals("move_ahead")) new MoveAheadCommand(interaction, discordApi);
-            if (interaction.getCommandName().equals("postpone")) new PostponeCommand(interaction, discordApi);
-            if (interaction.getCommandName().equals("second")) new SecondCommand(interaction, discordApi);
-            if (interaction.getCommandName().equals("end_vote")) new EndVoteCommand(interaction, discordApi);
-            if (interaction.getCommandName().equals("withdraw")) new WithdrawCommand(interaction, discordApi);
-            if (interaction.getCommandName().equals("kill_motion")) new KillCommand(interaction, discordApi);
-            if (interaction.getCommandName().equals("bill")) new BillCommand(interaction, discordApi);
-            if (interaction.getCommandName().equals("amend")) new AmendCommand(interaction, discordApi);
-            if (interaction.getFullCommandName().equals("config default_majority"))
-                new ConfigDefaultMajorityCommand(interaction, discordApi);
-            if (interaction.getFullCommandName().equals("config bills first_reading_majority"))
-                new ConfigFirstReadingMajority(interaction, discordApi);
-            if (interaction.getFullCommandName().equals("config bills amendment_majority"))
-                new ConfigAmendmentMajority(interaction, discordApi);
-            if (interaction.getFullCommandName().equals("config motion_timeout"))
-                new ConfigMotionTimeout(interaction, discordApi);
-            if (interaction.getFullCommandName().equals("config channels"))
-                new ConfigChannelCommand(interaction, discordApi);
-            if (interaction.getFullCommandName().equals("config vote_weights"))
-                new ConfigVoteWeightsCommand(interaction, discordApi);
-            if (interaction.getFullCommandName().equals("config quorum")) new ConfigQuorum(interaction, discordApi);
-            if (interaction.getFullCommandName().equals("config councillor_role"))
-                new ConfigCouncillorRoleCommand(interaction, discordApi);
-            if (interaction.getFullCommandName().equals("config show"))
-                new ConfigShowCommand(interaction, discordApi);
-            if (interaction.getFullCommandName().equals("config vote_weights"))
-                new ConfigVoteWeightsCommand(interaction, discordApi);
-            if (interaction.getFullCommandName().equals("config forward_channel"))
-                new ConfigForwardChannel(interaction, discordApi);
-            if (interaction.getFullCommandName().equals("config add_propose_role"))
-                new ConfigAddProposeRole(interaction, discordApi);
-            if (interaction.getFullCommandName().equals("config remove_propose_role"))
-                new ConfigRemoveProposeRole(interaction, discordApi);
-            if (interaction.getFullCommandName().equals("config seconding_required"))
-                new ConfigSecondingRequiredCommand(interaction, discordApi);
-            if (interaction.getFullCommandName().equals("write_bill add_part"))
-                new WriteBillAddPartCommand(interaction, discordApi);
-            if (interaction.getFullCommandName().equals("write_bill add_division"))
-                new WriteBillAddDivsionCommand(interaction, discordApi);
-            if (interaction.getFullCommandName().equals("write_bill add_section"))
-                new WriteBillAddSectionCommand(interaction, discordApi);
-            if (interaction.getFullCommandName().equals("write_bill add_subsection"))
-                new WriteBillAddSubSectionCommand(interaction, discordApi);
-            if (interaction.getFullCommandName().equals("write_bill finish"))
-                new WriteBillFinish(interaction, discordApi);
-            if (interaction.getFullCommandName().equals("write_bill undo"))
-                new WriteBillUndoCommand(interaction, discordApi);
-            if (interaction.getFullCommandName().equals("write_bill add_prefix"))
-                new WriteBillPrefixCommand(interaction, discordApi);
-            if (interaction.getFullCommandName().equals("write_amendment omit"))
-                new WriteAmendmentOmit(interaction, discordApi);
-            if (interaction.getFullCommandName().equals("write_amendment amend"))
-                new WriteAmendmentAmend(interaction, discordApi);
-            if (interaction.getFullCommandName().equals("write_amendment add"))
-                new WriteAmendmentAdd(interaction, discordApi);
-            if (interaction.getFullCommandName().equals("write_amendment finish"))
-                new WriteAmendmentFinish(interaction, discordApi);
+            if (interaction.getCommandName().equals("createcouncil"))                               new CreateCouncilCommand(interaction, discordApi);
+            if (interaction.getCommandName().equals("motion"))                                      new MotionCommand(interaction, discordApi);
+            if (interaction.getCommandName().equals("move"))                                        new MoveCommand(interaction, discordApi);
+            if (interaction.getCommandName().equals("move_ahead"))                                  new MoveAheadCommand(interaction, discordApi);
+            if (interaction.getCommandName().equals("postpone"))                                    new PostponeCommand(interaction, discordApi);
+            if (interaction.getCommandName().equals("second"))                                      new SecondCommand(interaction, discordApi);
+            if (interaction.getCommandName().equals("end_vote"))                                    new EndVoteCommand(interaction, discordApi);
+            if (interaction.getCommandName().equals("withdraw"))                                    new WithdrawCommand(interaction, discordApi);
+            if (interaction.getCommandName().equals("kill_motion"))                                 new KillCommand(interaction, discordApi);
+            if (interaction.getCommandName().equals("bill"))                                        new BillCommand(interaction, discordApi);
+            if (interaction.getCommandName().equals("amend"))                                       new AmendCommand(interaction, discordApi);
+            if (interaction.getFullCommandName().equals("config default_majority"))                 new ConfigDefaultMajorityCommand(interaction, discordApi);
+            if (interaction.getFullCommandName().equals("config bills first_reading_majority"))     new ConfigFirstReadingMajority(interaction, discordApi);
+            if (interaction.getFullCommandName().equals("config bills amendment_majority"))         new ConfigAmendmentMajority(interaction, discordApi);
+            if (interaction.getFullCommandName().equals("config motion_timeout"))                   new ConfigMotionTimeout(interaction, discordApi);
+            if (interaction.getFullCommandName().equals("config channels"))                         new ConfigChannelCommand(interaction, discordApi);
+            if (interaction.getFullCommandName().equals("config vote_weights"))                     new ConfigVoteWeightsCommand(interaction, discordApi);
+            if (interaction.getFullCommandName().equals("config quorum"))                           new ConfigQuorum(interaction, discordApi);
+            if (interaction.getFullCommandName().equals("config councillor_role"))                  new ConfigCouncillorRoleCommand(interaction, discordApi);
+            if (interaction.getFullCommandName().equals("config show"))                             new ConfigShowCommand(interaction, discordApi);
+            if (interaction.getFullCommandName().equals("config vote_weights"))                     new ConfigVoteWeightsCommand(interaction, discordApi);
+            if (interaction.getFullCommandName().equals("config forward_channel"))                  new ConfigForwardChannel(interaction, discordApi);
+            if (interaction.getFullCommandName().equals("config add_propose_role"))                 new ConfigAddProposeRole(interaction, discordApi);
+            if (interaction.getFullCommandName().equals("config remove_propose_role"))              new ConfigRemoveProposeRole(interaction, discordApi);
+            if (interaction.getFullCommandName().equals("config seconding_required"))               new ConfigSecondingRequiredCommand(interaction, discordApi);
+            if (interaction.getFullCommandName().equals("write_bill add_part"))                     new WriteBillAddPartCommand(interaction, discordApi);
+            if (interaction.getFullCommandName().equals("write_bill add_division"))                 new WriteBillAddDivsionCommand(interaction, discordApi);
+            if (interaction.getFullCommandName().equals("write_bill add_section"))                  new WriteBillAddSectionCommand(interaction, discordApi);
+            if (interaction.getFullCommandName().equals("write_bill add_subsection"))               new WriteBillAddSubSectionCommand(interaction, discordApi);
+            if (interaction.getFullCommandName().equals("write_bill finish"))                       new WriteBillFinish(interaction, discordApi);
+            if (interaction.getFullCommandName().equals("write_bill undo"))                         new WriteBillUndoCommand(interaction, discordApi);
+            if (interaction.getFullCommandName().equals("write_bill add_prefix"))                   new WriteBillPrefixCommand(interaction, discordApi);
+            if (interaction.getFullCommandName().equals("write_amendment omit"))                    new WriteAmendmentOmit(interaction, discordApi);
+            if (interaction.getFullCommandName().equals("write_amendment amend"))                   new WriteAmendmentAmend(interaction, discordApi);
+            if (interaction.getFullCommandName().equals("write_amendment add"))                     new WriteAmendmentAdd(interaction, discordApi);
+            if (interaction.getFullCommandName().equals("write_amendment finish"))                  new WriteAmendmentFinish(interaction, discordApi);
         } else
             interaction.createImmediateResponder().append("This server cannot use the Quorum Bot").respond();
     }
