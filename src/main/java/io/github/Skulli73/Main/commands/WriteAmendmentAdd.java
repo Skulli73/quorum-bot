@@ -36,6 +36,7 @@ public class WriteAmendmentAdd extends WriteAmendmentCommand{
             assert amendment != null;
             amendment.additions.add(new String[]{String.valueOf(lPartId), lAmendmentText, lAmendmentTitle});
             successfullyExecutedCommandMessage(pInteraction);
+            return;
         }
 
         int lDivisionId = Math.toIntExact(lSlashCommandInteractionOption.getOptionLongValueByName("division_id").get());
