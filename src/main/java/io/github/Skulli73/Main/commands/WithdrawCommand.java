@@ -21,46 +21,55 @@ public class WithdrawCommand extends CouncilCommand{
     @Override
     public void executeCommand(SlashCommandInteraction pInteraction, DiscordApi pApi) {
         int motionId = pInteraction.getArguments().get(0).getDecimalValue().get().intValue()-1;
-        if(motionId < council.motionArrayList.size()) {
-            Motion lMotion = council.motionArrayList.get(motionId);
-            if(!lMotion.completed) {
-                if(isIntroductor(pApi, pInteraction, lMotion)) {
-                    if (lMotion.isMoved) {
-                        timers.get((int)council.getId()).cancel();
-                    }
-                    if (motionId == council.currentMotion) {
-                        council.toNextMotion();
-                    }
-                    lMotion.completed = true;
-                    TextChannel lAgendaChannel = council.getAgendaChannel();
-                    try {
-                        Message lMessage =lMotion.getMessage(pApi, lAgendaChannel);
-                        lMessage.edit(lMessage.getEmbeds().get(0).toBuilder().setColor(Color.DARK_GRAY));
-                    } catch (ExecutionException | InterruptedException e) {
-                        throw new RuntimeException(e);
-                    }
-                    lMotion.deleteMessages(pApi);
-                    SlashCommandListener.saveMotion(council, lMotion);
-                    pInteraction.createImmediateResponder()
-                            .append(pInteraction.getUser().getMentionTag() + " removed " + lMotion.getTitle() + "")
-                            .respond();
-                } else {
-                    pInteraction.createImmediateResponder()
-                            .append("You are not the author of this motion.")
-                            .respond();
-                }
-            } else {
-                pInteraction.createImmediateResponder()
-                        .append("This motion is already completed")
-                        .respond();
-            }
-        } else {
+
+        // Check if motion exists
+        if(!(motionId < council.motionArrayList.size())) {
             pInteraction.createImmediateResponder()
                     .append("This motion does not exist")
                     .respond();
+            return;
         }
 
-    }
+        // Check if motion is completed
+        Motion lMotion = council.motionArrayList.get(motionId);
+        if(lMotion.completed) {
+            pInteraction.createImmediateResponder()
+                    .append("This motion is already completed")
+                    .respond();
+            return;
+        }
+
+        // Check if one is the author
+        if(!isIntroductor(pApi, pInteraction, lMotion)) {
+            pInteraction.createImmediateResponder()
+                    .append("You are not the author of this motion.")
+                    .respond();
+            return;
+        }
+
+        if (lMotion.isMoved) {
+            timers.get((int)council.getId()).cancel();
+        }
+        if (motionId == council.currentMotion) {
+            council.toNextMotion();
+        }
+
+        lMotion.completed = true;
+        TextChannel lAgendaChannel = council.getAgendaChannel();
+
+        try {
+            Message lMessage = lMotion.getMessage(pApi, lAgendaChannel);
+            lMessage.edit(lMessage.getEmbeds().get(0).toBuilder().setColor(Color.DARK_GRAY));
+        } catch (ExecutionException | InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+
+        lMotion.deleteMessages(pApi);
+        SlashCommandListener.saveMotion(council, lMotion);
+        pInteraction.createImmediateResponder()
+                .append(pInteraction.getUser().getMentionTag() + " removed " + lMotion.getTitle() + "")
+                .respond();
+        }
 
     public boolean isIntroductor(DiscordApi pApi, SlashCommandInteraction pInteraction, Motion pMotion) {
         return pMotion.introducerId == pInteraction.getUser().getId();
