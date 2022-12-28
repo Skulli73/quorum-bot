@@ -307,7 +307,7 @@ public class Motion {
 
             deleteMessages(pApi);
             approved = lPassed;
-            lMessageBuilder.send(pCouncil.getMinuteChannel());
+            System.out.println(lMessageBuilder.send(pCouncil.getMinuteChannel()).toString());
             if(isBill()) {
                 if(bills.get(Long.toString(billId)).firstReadingFinished && bills.get(Long.toString(billId)).amendmentsFinished) {
                     bills.get(Long.toString(billId)).thirdReadingFinished = true;

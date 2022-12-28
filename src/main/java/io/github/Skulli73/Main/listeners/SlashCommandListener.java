@@ -32,7 +32,7 @@ public class SlashCommandListener implements SlashCommandCreateListener {
     public void onSlashCommandCreate(SlashCommandCreateEvent event) {
         SlashCommandInteraction interaction = event.getSlashCommandInteraction();
         CanUseBot lCanUseBot = new CanUseBot();
-        String lPath = path + "botConfig\\whitelist_config.json";
+        String lPath = path + "whitelist_config.json";
         File lFile = new File(lPath);
         if(lFile.exists()) {
             StringBuilder lJsonBuilder = new StringBuilder();

@@ -5,7 +5,6 @@ import io.github.Skulli73.Main.objects.Council;
 import io.github.Skulli73.Main.objects.Motion;
 import org.javacord.api.DiscordApi;
 import org.javacord.api.entity.channel.PrivateChannel;
-import org.javacord.api.entity.message.Message;
 import org.javacord.api.entity.message.MessageBuilder;
 import org.javacord.api.entity.message.component.ActionRow;
 import org.javacord.api.entity.message.component.Button;
@@ -17,7 +16,6 @@ import java.awt.*;
 import java.io.File;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
 import static io.github.Skulli73.Main.MainQuorum.*;
@@ -118,6 +116,7 @@ public class MoveCommand extends CouncilCommand{
                     lMotion.notVoted.add(((User)lCouncillors[j]).getIdAsString());
                     File lFile2 = toTxtFile(lMotion.getText(),  pCouncil.getId() + "_" + lMotion.id + "_bill_as_amended");
 
+                    int finalJ1 = j;
                     new MessageBuilder().append("Vote")
                             .addEmbeds(lEmbed)
                             .addComponents(ActionRow.of(
@@ -130,10 +129,8 @@ public class MoveCommand extends CouncilCommand{
                             .send(lChannel)
                             .thenAccept(c -> {
                                 lMotion.dmMessages.add(c.getIdAsString());
-                                lMotion.dmMessagesCouncillors.add(String.valueOf(c.getUserAuthor().get()));
+                                lMotion.dmMessagesCouncillors.add(((User)lCouncillors[finalJ1]).getIdAsString());
                             });
-
-                    int finalJ = j;
 
 
                 }
@@ -149,5 +146,4 @@ public class MoveCommand extends CouncilCommand{
         } else pInteraction.getChannel().get().sendMessage(pInteraction.getUser().getMentionTag() + ", the motion is already moved.");
     }
 
-    private void addTo
 }
